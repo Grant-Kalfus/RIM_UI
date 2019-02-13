@@ -17,10 +17,13 @@ namespace R.I.M.UI_Shell
 {
     public partial class Main_wnd : Form
     {
+        //Make an instance of the window that allows the user to configure UART-related settings
         private ConfigBox Cfg_box = new ConfigBox();
 
+        //Enum to keep track of
         public enum Direction {CLOCKWISE, COUNTERCLOCKWISE};
 
+        //For storing the stepper motor steps during percise execution mode
         public struct PreciseExecution_steps
         {
             public int motor_num; 
@@ -52,9 +55,11 @@ namespace R.I.M.UI_Shell
         {
             InitializeComponent();
             Disable_all();
+            //Change UART encoding to ASCII-Extended for charicter code transfers > 127
             UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
         }
 
+        //Debug mode output when transfering packets
 #if (DEBUG_MODE)
         private void Debug_Output(byte[] packet, int sz)
         {
@@ -194,13 +199,14 @@ namespace R.I.M.UI_Shell
 #endif
         }
 
-        //Turn byte array into string
+        //Turn byte array into the literal ASCII values and puts it into a string
         string Byte_array_to_literal_string(byte[] packet, int sz) {
             var temp = Encoding.GetEncoding("iso-8859-1");
 
             return temp.GetString(packet).ToString();
         }
 
+        //Turns byte array into human readable string
         string Byte_array_to_string(byte[] packet, int sz) {
             
             string temp = "";
