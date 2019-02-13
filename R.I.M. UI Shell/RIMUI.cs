@@ -392,7 +392,7 @@ namespace R.I.M.UI_Shell
 
         private void Test_BTN_Click(object sender, EventArgs e)
         {
-            matlab.Execute(@"cd A:\MATLAB\");
+            matlab.Execute(@"cd A:\Github\RIM UI\MATLAB Script");
             matlab.Feval("myfunc", 2, out object result, 3.14, 42.0, "world");
             object[] res = result as object[];
             Console.WriteLine(res[0]);
