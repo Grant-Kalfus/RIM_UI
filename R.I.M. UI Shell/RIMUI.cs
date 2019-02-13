@@ -23,6 +23,8 @@ namespace R.I.M.UI_Shell
         //Enum to keep track of
         public enum Direction {CLOCKWISE, COUNTERCLOCKWISE};
 
+        MLApp.MLApp matlab = new MLApp.MLApp();
+
         //For storing the stepper motor steps during percise execution mode
         public struct PreciseExecution_steps
         {
@@ -57,6 +59,7 @@ namespace R.I.M.UI_Shell
             Disable_all();
             //Change UART encoding to ASCII-Extended for charicter code transfers > 127
             UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
+            matlab.Visible = 0;
         }
 
         //Debug mode output when transfering packets
@@ -385,6 +388,15 @@ namespace R.I.M.UI_Shell
 
             CurUartCom_lbl.Text = "Current COM" + Cfg_box.COMNumber.ToString();
             UART_COM.PortName = "COM" + Cfg_box.COMNumber.ToString();
+        }
+
+        private void Test_BTN_Click(object sender, EventArgs e)
+        {
+            matlab.Execute(@"cd A:\MATLAB\");
+            matlab.Feval("myfunc", 2, out object result, 3.14, 42.0, "world");
+            object[] res = result as object[];
+            Console.WriteLine(res[0]);
+            Console.WriteLine(res[1]);
         }
     }
 }

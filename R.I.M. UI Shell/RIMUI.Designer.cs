@@ -33,6 +33,7 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.File_btn = new System.Windows.Forms.ToolStripDropDownButton();
             this.setUARTCOMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CurUartCom_lbl = new System.Windows.Forms.ToolStripTextBox();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.SetO_btn = new System.Windows.Forms.ToolStripDropDownButton();
@@ -70,6 +71,13 @@
             this.EditFile_btn = new System.Windows.Forms.Button();
             this.LoadFile_btn = new System.Windows.Forms.Button();
             this.PreciseExecutionMode_grp = new System.Windows.Forms.GroupBox();
+            this.Servo2_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Servo1_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Stepper5_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Stepper4_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Stepper3_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Stepper2_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Stepper1_entry = new System.Windows.Forms.MaskedTextBox();
             this.Stepper1_lbl = new System.Windows.Forms.Label();
             this.Stepper2_lbl = new System.Windows.Forms.Label();
             this.Stepper3_lbl = new System.Windows.Forms.Label();
@@ -79,14 +87,7 @@
             this.Servo2_lbl = new System.Windows.Forms.Label();
             this.OvrCurpos_lbl = new System.Windows.Forms.Label();
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
-            this.CurUartCom_lbl = new System.Windows.Forms.ToolStripTextBox();
-            this.Stepper1_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Stepper2_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Stepper3_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Stepper4_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Stepper5_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Servo1_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Servo2_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Test_BTN = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -120,6 +121,7 @@
             this.File_btn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.File_btn.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.setUARTCOMToolStripMenuItem,
+            this.Test_BTN,
             this.quitToolStripMenuItem});
             this.File_btn.Image = ((System.Drawing.Image)(resources.GetObject("File_btn.Image")));
             this.File_btn.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -135,6 +137,13 @@
             this.setUARTCOMToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
             this.setUARTCOMToolStripMenuItem.Text = "Set UART COM";
             this.setUARTCOMToolStripMenuItem.Click += new System.EventHandler(this.setUARTCOMToolStripMenuItem_Click);
+            // 
+            // CurUartCom_lbl
+            // 
+            this.CurUartCom_lbl.Name = "CurUartCom_lbl";
+            this.CurUartCom_lbl.ReadOnly = true;
+            this.CurUartCom_lbl.Size = new System.Drawing.Size(100, 27);
+            this.CurUartCom_lbl.Text = "Current COM: 3";
             // 
             // quitToolStripMenuItem
             // 
@@ -165,25 +174,25 @@
             // setXToolStripMenuItem
             // 
             this.setXToolStripMenuItem.Name = "setXToolStripMenuItem";
-            this.setXToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.setXToolStripMenuItem.Size = new System.Drawing.Size(127, 26);
             this.setXToolStripMenuItem.Text = "Set X";
             // 
             // setvYToolStripMenuItem
             // 
             this.setvYToolStripMenuItem.Name = "setvYToolStripMenuItem";
-            this.setvYToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.setvYToolStripMenuItem.Size = new System.Drawing.Size(127, 26);
             this.setvYToolStripMenuItem.Text = "Set Y";
             // 
             // setZToolStripMenuItem
             // 
             this.setZToolStripMenuItem.Name = "setZToolStripMenuItem";
-            this.setZToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.setZToolStripMenuItem.Size = new System.Drawing.Size(127, 26);
             this.setZToolStripMenuItem.Text = "Set Z";
             // 
             // setAllToolStripMenuItem
             // 
             this.setAllToolStripMenuItem.Name = "setAllToolStripMenuItem";
-            this.setAllToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.setAllToolStripMenuItem.Size = new System.Drawing.Size(127, 26);
             this.setAllToolStripMenuItem.Text = "Set All";
             // 
             // toolStripSeparator2
@@ -480,6 +489,70 @@
             this.PreciseExecutionMode_grp.TabStop = false;
             this.PreciseExecutionMode_grp.Text = "Precise Execution Controls";
             // 
+            // Servo2_entry
+            // 
+            this.Servo2_entry.Location = new System.Drawing.Point(88, 189);
+            this.Servo2_entry.Mask = "#00000000000";
+            this.Servo2_entry.Name = "Servo2_entry";
+            this.Servo2_entry.PromptChar = ' ';
+            this.Servo2_entry.Size = new System.Drawing.Size(100, 22);
+            this.Servo2_entry.TabIndex = 24;
+            // 
+            // Servo1_entry
+            // 
+            this.Servo1_entry.Location = new System.Drawing.Point(88, 161);
+            this.Servo1_entry.Mask = "#00000000000";
+            this.Servo1_entry.Name = "Servo1_entry";
+            this.Servo1_entry.PromptChar = ' ';
+            this.Servo1_entry.Size = new System.Drawing.Size(100, 22);
+            this.Servo1_entry.TabIndex = 23;
+            // 
+            // Stepper5_entry
+            // 
+            this.Stepper5_entry.Location = new System.Drawing.Point(88, 133);
+            this.Stepper5_entry.Mask = "#00000000000";
+            this.Stepper5_entry.Name = "Stepper5_entry";
+            this.Stepper5_entry.PromptChar = ' ';
+            this.Stepper5_entry.Size = new System.Drawing.Size(100, 22);
+            this.Stepper5_entry.TabIndex = 22;
+            // 
+            // Stepper4_entry
+            // 
+            this.Stepper4_entry.Location = new System.Drawing.Point(88, 105);
+            this.Stepper4_entry.Mask = "#00000000000";
+            this.Stepper4_entry.Name = "Stepper4_entry";
+            this.Stepper4_entry.PromptChar = ' ';
+            this.Stepper4_entry.Size = new System.Drawing.Size(100, 22);
+            this.Stepper4_entry.TabIndex = 21;
+            // 
+            // Stepper3_entry
+            // 
+            this.Stepper3_entry.Location = new System.Drawing.Point(88, 77);
+            this.Stepper3_entry.Mask = "#00000000000";
+            this.Stepper3_entry.Name = "Stepper3_entry";
+            this.Stepper3_entry.PromptChar = ' ';
+            this.Stepper3_entry.Size = new System.Drawing.Size(100, 22);
+            this.Stepper3_entry.TabIndex = 20;
+            // 
+            // Stepper2_entry
+            // 
+            this.Stepper2_entry.Location = new System.Drawing.Point(88, 49);
+            this.Stepper2_entry.Mask = "#00000000000";
+            this.Stepper2_entry.Name = "Stepper2_entry";
+            this.Stepper2_entry.PromptChar = ' ';
+            this.Stepper2_entry.Size = new System.Drawing.Size(100, 22);
+            this.Stepper2_entry.TabIndex = 19;
+            // 
+            // Stepper1_entry
+            // 
+            this.Stepper1_entry.Location = new System.Drawing.Point(88, 21);
+            this.Stepper1_entry.Mask = "#00000000000";
+            this.Stepper1_entry.Name = "Stepper1_entry";
+            this.Stepper1_entry.PromptChar = ' ';
+            this.Stepper1_entry.Size = new System.Drawing.Size(100, 22);
+            this.Stepper1_entry.TabIndex = 18;
+            this.Stepper1_entry.ValidatingType = typeof(int);
+            // 
             // Stepper1_lbl
             // 
             this.Stepper1_lbl.AutoSize = true;
@@ -558,76 +631,12 @@
             this.UART_COM.BaudRate = 115200;
             this.UART_COM.PortName = "COM3";
             // 
-            // CurUartCom_lbl
+            // Test_BTN
             // 
-            this.CurUartCom_lbl.Name = "CurUartCom_lbl";
-            this.CurUartCom_lbl.ReadOnly = true;
-            this.CurUartCom_lbl.Size = new System.Drawing.Size(100, 27);
-            this.CurUartCom_lbl.Text = "Current COM: 3";
-            // 
-            // Stepper1_entry
-            // 
-            this.Stepper1_entry.Location = new System.Drawing.Point(88, 21);
-            this.Stepper1_entry.Mask = "#00000000000";
-            this.Stepper1_entry.Name = "Stepper1_entry";
-            this.Stepper1_entry.PromptChar = ' ';
-            this.Stepper1_entry.Size = new System.Drawing.Size(100, 22);
-            this.Stepper1_entry.TabIndex = 18;
-            this.Stepper1_entry.ValidatingType = typeof(int);
-            // 
-            // Stepper2_entry
-            // 
-            this.Stepper2_entry.Location = new System.Drawing.Point(88, 49);
-            this.Stepper2_entry.Mask = "#00000000000";
-            this.Stepper2_entry.Name = "Stepper2_entry";
-            this.Stepper2_entry.PromptChar = ' ';
-            this.Stepper2_entry.Size = new System.Drawing.Size(100, 22);
-            this.Stepper2_entry.TabIndex = 19;
-            // 
-            // Stepper3_entry
-            // 
-            this.Stepper3_entry.Location = new System.Drawing.Point(88, 77);
-            this.Stepper3_entry.Mask = "#00000000000";
-            this.Stepper3_entry.Name = "Stepper3_entry";
-            this.Stepper3_entry.PromptChar = ' ';
-            this.Stepper3_entry.Size = new System.Drawing.Size(100, 22);
-            this.Stepper3_entry.TabIndex = 20;
-            // 
-            // Stepper4_entry
-            // 
-            this.Stepper4_entry.Location = new System.Drawing.Point(88, 105);
-            this.Stepper4_entry.Mask = "#00000000000";
-            this.Stepper4_entry.Name = "Stepper4_entry";
-            this.Stepper4_entry.PromptChar = ' ';
-            this.Stepper4_entry.Size = new System.Drawing.Size(100, 22);
-            this.Stepper4_entry.TabIndex = 21;
-            // 
-            // Stepper5_entry
-            // 
-            this.Stepper5_entry.Location = new System.Drawing.Point(88, 133);
-            this.Stepper5_entry.Mask = "#00000000000";
-            this.Stepper5_entry.Name = "Stepper5_entry";
-            this.Stepper5_entry.PromptChar = ' ';
-            this.Stepper5_entry.Size = new System.Drawing.Size(100, 22);
-            this.Stepper5_entry.TabIndex = 22;
-            // 
-            // Servo1_entry
-            // 
-            this.Servo1_entry.Location = new System.Drawing.Point(88, 161);
-            this.Servo1_entry.Mask = "#00000000000";
-            this.Servo1_entry.Name = "Servo1_entry";
-            this.Servo1_entry.PromptChar = ' ';
-            this.Servo1_entry.Size = new System.Drawing.Size(100, 22);
-            this.Servo1_entry.TabIndex = 23;
-            // 
-            // Servo2_entry
-            // 
-            this.Servo2_entry.Location = new System.Drawing.Point(88, 189);
-            this.Servo2_entry.Mask = "#00000000000";
-            this.Servo2_entry.Name = "Servo2_entry";
-            this.Servo2_entry.PromptChar = ' ';
-            this.Servo2_entry.Size = new System.Drawing.Size(100, 22);
-            this.Servo2_entry.TabIndex = 24;
+            this.Test_BTN.Name = "Test_BTN";
+            this.Test_BTN.Size = new System.Drawing.Size(216, 26);
+            this.Test_BTN.Text = "TEST";
+            this.Test_BTN.Click += new System.EventHandler(this.Test_BTN_Click);
             // 
             // Main_wnd
             // 
@@ -720,6 +729,7 @@
         private System.Windows.Forms.MaskedTextBox Stepper3_entry;
         private System.Windows.Forms.MaskedTextBox Stepper2_entry;
         private System.Windows.Forms.MaskedTextBox Stepper1_entry;
+        private System.Windows.Forms.ToolStripMenuItem Test_BTN;
     }
 }
 
