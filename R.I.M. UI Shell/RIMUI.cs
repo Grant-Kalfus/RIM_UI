@@ -23,7 +23,12 @@ namespace R.I.M.UI_Shell
         //Enum to keep track of
         public enum Direction {CLOCKWISE, COUNTERCLOCKWISE};
 
+        //Matlab console instance for DH parameters
         MLApp.MLApp matlab = new MLApp.MLApp();
+
+        //String for keeping track of what the last command that was sent was
+        public string Last_command_sent;
+        public bool Last_command_response = false; 
 
         //For storing the stepper motor steps during percise execution mode
         public struct PreciseExecution_steps
@@ -376,9 +381,9 @@ namespace R.I.M.UI_Shell
             Stop_btn.Enabled = true;
             Start_btn.Enabled = false;
 
-            M1Running_ind.BackColor = Color.LimeGreen;
-            M1_lbl.BackColor = Color.LimeGreen;
-            M1_lbl.Text = "Running";
+            //M1Running_ind.BackColor = Color.LimeGreen;
+            //M1_lbl.BackColor = Color.LimeGreen;
+            //M1_lbl.Text = "Running";
 
         }
 
@@ -390,9 +395,9 @@ namespace R.I.M.UI_Shell
             Stop_btn.Enabled = false;
             Start_btn.Enabled = true;
 
-            M1Running_ind.BackColor = Color.IndianRed;
-            M1_lbl.BackColor = Color.IndianRed;
-            M1_lbl.Text = "Not Running";
+            //M1Running_ind.BackColor = Color.IndianRed;
+            //M1_lbl.BackColor = Color.IndianRed;
+            //M1_lbl.Text = "Not Running";
         }
 
         private void setUARTCOMToolStripMenuItem_Click(object sender, EventArgs e)
