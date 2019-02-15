@@ -32,6 +32,9 @@ namespace R.I.M.UI_Shell
 
             public ushort[] motors;
 
+            public bool[] motor_sendcmd;
+            public bool[] motor_running;
+
             public Direction[] motor_dirs;
 
             public PreciseExecution_steps(int motor_amount = 7)
@@ -39,10 +42,18 @@ namespace R.I.M.UI_Shell
                 motor_num = motor_amount;
 
                 motors = new ushort[motor_num];
-                motor_dirs = new Direction[motor_num]; 
+                motor_dirs = new Direction[motor_num];
+                motor_sendcmd = new bool[motor_num];
+                motor_running = new bool[motor_num];
 
                 for (int i = 0; i < motor_num; i++) 
                     motors[i] = 0;
+
+                for (int i = 0; i < motor_num; i++)
+                    motor_sendcmd[i] = false;
+
+                for (int i = 0; i < motor_num; i++)
+                    motor_running[i] = false;
 
                 for (int i = 0; i < motor_num; i++)
                     motor_dirs[i] = Direction.CLOCKWISE;
@@ -206,7 +217,7 @@ namespace R.I.M.UI_Shell
         string Byte_array_to_literal_string(byte[] packet, int sz) {
             var temp = Encoding.GetEncoding("iso-8859-1");
 
-            return temp.GetString(packet).ToString();
+            return temp.GetString(packet).ToString();           
         }
 
         //Turns byte array into human readable string
@@ -253,7 +264,7 @@ namespace R.I.M.UI_Shell
                 r = UART_COM.ReadChar();
             };
 #if (DEBUG_MODE)
-            Console.WriteLine("Recieved: " + r.ToString() + " from the PSoC");
+                Console.WriteLine("Recieved: " + r.ToString() + " from the PSoC");
 #endif
             return r;
         }
@@ -279,9 +290,12 @@ namespace R.I.M.UI_Shell
                     Debug_Output(packet, 3);
 #endif
                     UART_COM.Write(Byte_array_to_literal_string(packet, 3));
-                    UART_wait_for_msg();
-                    if (packet[1] != 0) UART_wait_for_msg();
-                    if (packet[2] != 0) UART_wait_for_msg();
+
+                    commands.motor_sendcmd[i] = true;
+
+                    //UART_wait_for_msg();
+                    //if (packet[1] != 0) UART_wait_for_msg();
+                    //if (packet[2] != 0) UART_wait_for_msg();
                 }
 
             }
@@ -362,9 +376,9 @@ namespace R.I.M.UI_Shell
             Stop_btn.Enabled = true;
             Start_btn.Enabled = false;
 
-            Running_ind.BackColor = Color.LimeGreen;
-            Running_lbl.BackColor = Color.LimeGreen;
-            Running_lbl.Text = "Running";
+            M1Running_ind.BackColor = Color.LimeGreen;
+            M1_lbl.BackColor = Color.LimeGreen;
+            M1_lbl.Text = "Running";
 
         }
 
@@ -376,9 +390,9 @@ namespace R.I.M.UI_Shell
             Stop_btn.Enabled = false;
             Start_btn.Enabled = true;
 
-            Running_ind.BackColor = Color.IndianRed;
-            Running_lbl.BackColor = Color.IndianRed;
-            Running_lbl.Text = "Not Running";
+            M1Running_ind.BackColor = Color.IndianRed;
+            M1_lbl.BackColor = Color.IndianRed;
+            M1_lbl.Text = "Not Running";
         }
 
         private void setUARTCOMToolStripMenuItem_Click(object sender, EventArgs e)
@@ -392,11 +406,16 @@ namespace R.I.M.UI_Shell
 
         private void Test_BTN_Click(object sender, EventArgs e)
         {
-            matlab.Execute(@"cd A:\MATLAB\");
+            matlab.Execute(@"cd C:\MATLAB_Script");
             matlab.Feval("myfunc", 2, out object result, 3.14, 42.0, "world");
             object[] res = result as object[];
             Console.WriteLine(res[0]);
             Console.WriteLine(res[1]);
+        }
+
+        private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
+        {
+
         }
     }
 }
