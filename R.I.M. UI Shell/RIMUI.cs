@@ -15,8 +15,15 @@ using System.Threading;
 
 namespace R.I.M.UI_Shell
 {
+
     public partial class Main_wnd : Form
     {
+        static class PSoC_OpCodes
+        {
+            public const byte RIM_OP_MOTOR_RUNNING = 0x00,
+                              RIM_OP_MOTOR_STOP = 0x10;
+        };
+
         //Make an instance of the window that allows the user to configure UART-related settings
         private ConfigBox Cfg_box = new ConfigBox();
 
@@ -289,7 +296,8 @@ namespace R.I.M.UI_Shell
             {
                 if (commands.motors[i] != 0)
                 {
-                    Format_packet(i+1, commands.motors[i], commands.motor_dirs[i], ref packet, 3);
+                    //Format packet into motor id, the command, and direction
+                    Format_packet(i, commands.motors[i], commands.motor_dirs[i], ref packet, 3);
 
 #if (DEBUG_MODE)
                     Debug_Output(packet, 3);
@@ -298,6 +306,7 @@ namespace R.I.M.UI_Shell
 
                     commands.motor_sendcmd[i] = true;
 
+                    Last_command_sent = "MOTOR_MOVE";
                     //UART_wait_for_msg();
                     //if (packet[1] != 0) UART_wait_for_msg();
                     //if (packet[2] != 0) UART_wait_for_msg();
@@ -340,29 +349,34 @@ namespace R.I.M.UI_Shell
             Disable_all('t');
         }
 
+        //When the start button is clicked
         private void Start_btn_Click(object sender, EventArgs e)
         {
             //Do Start Stuff
+            if (!UART_COM.IsOpen)
+            { 
+                try
+                {
+                    UART_COM.Open();
+                }
+                catch
+                {
+                    MessageBox.Show("Error: COM Port " + UART_COM.PortName + " is in use or doesn't exist!");
+                    return;
+                };
+            }
+
+#if (DEBUG_MODE)
+            Console.WriteLine("COM port " + UART_COM.PortName + " opened");
+#endif
+
 #if (DEBUG_MODE)
             Console.WriteLine("Start button pressed");
 #endif
             PreciseExecution_steps commands = new PreciseExecution_steps(7);
 
-
-            try
+            switch (Check_enable())
             {
-                UART_COM.Open();
-            }
-            catch
-            {
-                MessageBox.Show("Error: COM Port " + UART_COM.PortName + " is in use or doesn't exist!");
-                return;
-            };
-
-#if (DEBUG_MODE)
-            Console.WriteLine("COM port " + UART_COM.PortName + " opened");
-#endif
-            switch (Check_enable()) {
                 case 'o':
                     break;
                 case 'p':
@@ -390,17 +404,17 @@ namespace R.I.M.UI_Shell
         private void Stop_btn_Click(object sender, EventArgs e)
         {
             //Do Stop Stuff
-            UART_COM.Close();
+            //UART_COM.Close();
 
-            Stop_btn.Enabled = false;
-            Start_btn.Enabled = true;
+            //Stop_btn.Enabled = false;
+            //Start_btn.Enabled = true;
 
             //M1Running_ind.BackColor = Color.IndianRed;
             //M1_lbl.BackColor = Color.IndianRed;
             //M1_lbl.Text = "Not Running";
         }
 
-        private void setUARTCOMToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SetUARTCOMToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Cfg_box.StartPosition = this.StartPosition;
             Cfg_box.ShowDialog();
@@ -420,7 +434,47 @@ namespace R.I.M.UI_Shell
 
         private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
+            int msg;
+            byte opcode = 0,
+                   info = 0;
 
+            msg = UART_COM.ReadChar();
+            opcode = (byte)(msg & 0xF0);
+            info   = (byte)(msg & 0x0F);
+            if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_RUNNING)
+            {
+                switch (info)
+                {
+                    case 0:
+                        M1Running_ind.BackColor = Color.LimeGreen;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_STOP)
+            {
+                switch (info)
+                {
+                    case 0:
+                        M1Running_ind.BackColor = Color.Gold;
+                        
+                        if (Stop_btn.InvokeRequired)
+                            Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
+                        if (Start_btn.InvokeRequired)
+                            Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+
+        //Closes the port on form close
+        private void Main_wnd_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            UART_COM.Close();
         }
     }
 }

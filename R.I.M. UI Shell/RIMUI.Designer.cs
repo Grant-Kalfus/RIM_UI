@@ -54,7 +54,31 @@
             this.Stop_btn = new System.Windows.Forms.Button();
             this.Start_btn = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.feedback_grd = new System.Windows.Forms.TableLayoutPanel();
+            this.MotorError_lbl = new System.Windows.Forms.Label();
+            this.M7Running_ind = new System.Windows.Forms.PictureBox();
+            this.M6Running_ind = new System.Windows.Forms.PictureBox();
+            this.M7Error_ind = new System.Windows.Forms.PictureBox();
+            this.M6Error_ind = new System.Windows.Forms.PictureBox();
+            this.M5Error_ind = new System.Windows.Forms.PictureBox();
+            this.M5Running_ind = new System.Windows.Forms.PictureBox();
+            this.M4Running_ind = new System.Windows.Forms.PictureBox();
+            this.M4Error_ind = new System.Windows.Forms.PictureBox();
+            this.M3Running_ind = new System.Windows.Forms.PictureBox();
+            this.M3Error_ind = new System.Windows.Forms.PictureBox();
+            this.M2Running_ind = new System.Windows.Forms.PictureBox();
+            this.M2Error_ind = new System.Windows.Forms.PictureBox();
             this.M1Error_ind = new System.Windows.Forms.PictureBox();
+            this.M1Running_ind = new System.Windows.Forms.PictureBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.M1_lbl = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.MotorRunning_lbl = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.TraverseLineMode_grp = new System.Windows.Forms.GroupBox();
             this.NextPos_entry = new System.Windows.Forms.MaskedTextBox();
@@ -85,52 +109,28 @@
             this.Servo2_lbl = new System.Windows.Forms.Label();
             this.OvrCurpos_lbl = new System.Windows.Forms.Label();
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
-            this.M2Running_ind = new System.Windows.Forms.PictureBox();
-            this.M3Running_ind = new System.Windows.Forms.PictureBox();
-            this.M4Running_ind = new System.Windows.Forms.PictureBox();
-            this.M5Running_ind = new System.Windows.Forms.PictureBox();
-            this.M6Running_ind = new System.Windows.Forms.PictureBox();
-            this.M7Running_ind = new System.Windows.Forms.PictureBox();
-            this.M1Running_ind = new System.Windows.Forms.PictureBox();
-            this.M1_lbl = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.feedback_grd = new System.Windows.Forms.TableLayoutPanel();
-            this.M2Error_ind = new System.Windows.Forms.PictureBox();
-            this.M3Error_ind = new System.Windows.Forms.PictureBox();
-            this.M4Error_ind = new System.Windows.Forms.PictureBox();
-            this.M5Error_ind = new System.Windows.Forms.PictureBox();
-            this.M6Error_ind = new System.Windows.Forms.PictureBox();
-            this.M7Error_ind = new System.Windows.Forms.PictureBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.MotorRunning_lbl = new System.Windows.Forms.Label();
-            this.MotorError_lbl = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.feedback_grd.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.M7Running_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M6Running_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M7Error_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M6Error_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M5Error_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M5Running_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M4Running_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M4Error_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M3Running_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M3Error_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M2Running_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M2Error_ind)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.M1Error_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M1Running_ind)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.TraverseLineMode_grp.SuspendLayout();
             this.ProgrammedExecutionMode_grp.SuspendLayout();
             this.PreciseExecutionMode_grp.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.M2Running_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M3Running_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M4Running_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M5Running_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M6Running_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M7Running_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M1Running_ind)).BeginInit();
-            this.feedback_grd.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.M2Error_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M3Error_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M4Error_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M5Error_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M6Error_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M7Error_ind)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -168,28 +168,28 @@
             this.setUARTCOMToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CurUartCom_lbl});
             this.setUARTCOMToolStripMenuItem.Name = "setUARTCOMToolStripMenuItem";
-            this.setUARTCOMToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.setUARTCOMToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.setUARTCOMToolStripMenuItem.Text = "Set UART COM";
-            this.setUARTCOMToolStripMenuItem.Click += new System.EventHandler(this.setUARTCOMToolStripMenuItem_Click);
+            this.setUARTCOMToolStripMenuItem.Click += new System.EventHandler(this.SetUARTCOMToolStripMenuItem_Click);
             // 
             // CurUartCom_lbl
             // 
             this.CurUartCom_lbl.Name = "CurUartCom_lbl";
             this.CurUartCom_lbl.ReadOnly = true;
             this.CurUartCom_lbl.Size = new System.Drawing.Size(100, 23);
-            this.CurUartCom_lbl.Text = "Current COM: 3";
+            this.CurUartCom_lbl.Text = "Current COM: 4";
             // 
             // Test_BTN
             // 
             this.Test_BTN.Name = "Test_BTN";
-            this.Test_BTN.Size = new System.Drawing.Size(153, 22);
+            this.Test_BTN.Size = new System.Drawing.Size(180, 22);
             this.Test_BTN.Text = "TEST";
             this.Test_BTN.Click += new System.EventHandler(this.Test_BTN_Click);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.QuitToolStripMenuItem_Click);
             // 
@@ -299,9 +299,9 @@
             this.Common_grp.Controls.Add(this.Stop_btn);
             this.Common_grp.Controls.Add(this.Start_btn);
             this.Common_grp.Location = new System.Drawing.Point(9, 225);
-            this.Common_grp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Common_grp.Margin = new System.Windows.Forms.Padding(2);
             this.Common_grp.Name = "Common_grp";
-            this.Common_grp.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Common_grp.Padding = new System.Windows.Forms.Padding(2);
             this.Common_grp.Size = new System.Drawing.Size(124, 179);
             this.Common_grp.TabIndex = 1;
             this.Common_grp.TabStop = false;
@@ -311,7 +311,7 @@
             // 
             this.Stop_btn.Enabled = false;
             this.Stop_btn.Location = new System.Drawing.Point(4, 96);
-            this.Stop_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stop_btn.Margin = new System.Windows.Forms.Padding(2);
             this.Stop_btn.Name = "Stop_btn";
             this.Stop_btn.Size = new System.Drawing.Size(112, 75);
             this.Stop_btn.TabIndex = 1;
@@ -322,7 +322,7 @@
             // Start_btn
             // 
             this.Start_btn.Location = new System.Drawing.Point(4, 17);
-            this.Start_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Start_btn.Margin = new System.Windows.Forms.Padding(2);
             this.Start_btn.Name = "Start_btn";
             this.Start_btn.Size = new System.Drawing.Size(112, 75);
             this.Start_btn.TabIndex = 0;
@@ -334,13 +334,228 @@
             // 
             this.groupBox1.Controls.Add(this.feedback_grd);
             this.groupBox1.Location = new System.Drawing.Point(143, 224);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox1.Size = new System.Drawing.Size(446, 180);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Common Feedback";
+            // 
+            // feedback_grd
+            // 
+            this.feedback_grd.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.feedback_grd.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
+            this.feedback_grd.ColumnCount = 8;
+            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
+            this.feedback_grd.Controls.Add(this.MotorError_lbl, 0, 2);
+            this.feedback_grd.Controls.Add(this.M7Running_ind, 7, 1);
+            this.feedback_grd.Controls.Add(this.M6Running_ind, 6, 1);
+            this.feedback_grd.Controls.Add(this.M7Error_ind, 7, 2);
+            this.feedback_grd.Controls.Add(this.M6Error_ind, 6, 2);
+            this.feedback_grd.Controls.Add(this.M5Error_ind, 5, 2);
+            this.feedback_grd.Controls.Add(this.M5Running_ind, 5, 1);
+            this.feedback_grd.Controls.Add(this.M4Running_ind, 4, 1);
+            this.feedback_grd.Controls.Add(this.M4Error_ind, 4, 2);
+            this.feedback_grd.Controls.Add(this.M3Running_ind, 3, 1);
+            this.feedback_grd.Controls.Add(this.M3Error_ind, 3, 2);
+            this.feedback_grd.Controls.Add(this.M2Running_ind, 2, 1);
+            this.feedback_grd.Controls.Add(this.M2Error_ind, 2, 2);
+            this.feedback_grd.Controls.Add(this.M1Error_ind, 1, 2);
+            this.feedback_grd.Controls.Add(this.M1Running_ind, 1, 1);
+            this.feedback_grd.Controls.Add(this.label9, 7, 0);
+            this.feedback_grd.Controls.Add(this.label8, 6, 0);
+            this.feedback_grd.Controls.Add(this.label7, 5, 0);
+            this.feedback_grd.Controls.Add(this.label6, 4, 0);
+            this.feedback_grd.Controls.Add(this.label5, 3, 0);
+            this.feedback_grd.Controls.Add(this.label4, 2, 0);
+            this.feedback_grd.Controls.Add(this.M1_lbl, 1, 0);
+            this.feedback_grd.Controls.Add(this.label10, 0, 0);
+            this.feedback_grd.Controls.Add(this.MotorRunning_lbl, 0, 1);
+            this.feedback_grd.Location = new System.Drawing.Point(5, 17);
+            this.feedback_grd.Name = "feedback_grd";
+            this.feedback_grd.RowCount = 3;
+            this.feedback_grd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            this.feedback_grd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42.5F));
+            this.feedback_grd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42.5F));
+            this.feedback_grd.Size = new System.Drawing.Size(434, 158);
+            this.feedback_grd.TabIndex = 4;
+            // 
+            // MotorError_lbl
+            // 
+            this.MotorError_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.MotorError_lbl.AutoSize = true;
+            this.MotorError_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.MotorError_lbl.ForeColor = System.Drawing.Color.Black;
+            this.MotorError_lbl.Location = new System.Drawing.Point(9, 111);
+            this.MotorError_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.MotorError_lbl.Name = "MotorError_lbl";
+            this.MotorError_lbl.Size = new System.Drawing.Size(37, 26);
+            this.MotorError_lbl.TabIndex = 23;
+            this.MotorError_lbl.Text = "Motor Error";
+            // 
+            // M7Running_ind
+            // 
+            this.M7Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.M7Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.M7Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M7Running_ind.Location = new System.Drawing.Point(381, 27);
+            this.M7Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M7Running_ind.Name = "M7Running_ind";
+            this.M7Running_ind.Size = new System.Drawing.Size(50, 61);
+            this.M7Running_ind.TabIndex = 9;
+            this.M7Running_ind.TabStop = false;
+            // 
+            // M6Running_ind
+            // 
+            this.M6Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.M6Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.M6Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M6Running_ind.Location = new System.Drawing.Point(327, 27);
+            this.M6Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M6Running_ind.Name = "M6Running_ind";
+            this.M6Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M6Running_ind.TabIndex = 8;
+            this.M6Running_ind.TabStop = false;
+            // 
+            // M7Error_ind
+            // 
+            this.M7Error_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.M7Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M7Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M7Error_ind.Location = new System.Drawing.Point(381, 93);
+            this.M7Error_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M7Error_ind.Name = "M7Error_ind";
+            this.M7Error_ind.Size = new System.Drawing.Size(50, 61);
+            this.M7Error_ind.TabIndex = 20;
+            this.M7Error_ind.TabStop = false;
+            // 
+            // M6Error_ind
+            // 
+            this.M6Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.M6Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M6Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M6Error_ind.Location = new System.Drawing.Point(327, 93);
+            this.M6Error_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M6Error_ind.Name = "M6Error_ind";
+            this.M6Error_ind.Size = new System.Drawing.Size(49, 62);
+            this.M6Error_ind.TabIndex = 19;
+            this.M6Error_ind.TabStop = false;
+            // 
+            // M5Error_ind
+            // 
+            this.M5Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.M5Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M5Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M5Error_ind.Location = new System.Drawing.Point(273, 93);
+            this.M5Error_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M5Error_ind.Name = "M5Error_ind";
+            this.M5Error_ind.Size = new System.Drawing.Size(49, 62);
+            this.M5Error_ind.TabIndex = 18;
+            this.M5Error_ind.TabStop = false;
+            // 
+            // M5Running_ind
+            // 
+            this.M5Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.M5Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.M5Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M5Running_ind.Location = new System.Drawing.Point(273, 27);
+            this.M5Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M5Running_ind.Name = "M5Running_ind";
+            this.M5Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M5Running_ind.TabIndex = 7;
+            this.M5Running_ind.TabStop = false;
+            // 
+            // M4Running_ind
+            // 
+            this.M4Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.M4Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.M4Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M4Running_ind.Location = new System.Drawing.Point(219, 27);
+            this.M4Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M4Running_ind.Name = "M4Running_ind";
+            this.M4Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M4Running_ind.TabIndex = 6;
+            this.M4Running_ind.TabStop = false;
+            // 
+            // M4Error_ind
+            // 
+            this.M4Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.M4Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M4Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M4Error_ind.Location = new System.Drawing.Point(219, 93);
+            this.M4Error_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M4Error_ind.Name = "M4Error_ind";
+            this.M4Error_ind.Size = new System.Drawing.Size(49, 62);
+            this.M4Error_ind.TabIndex = 17;
+            this.M4Error_ind.TabStop = false;
+            // 
+            // M3Running_ind
+            // 
+            this.M3Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.M3Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.M3Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M3Running_ind.Location = new System.Drawing.Point(165, 27);
+            this.M3Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M3Running_ind.Name = "M3Running_ind";
+            this.M3Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M3Running_ind.TabIndex = 5;
+            this.M3Running_ind.TabStop = false;
+            // 
+            // M3Error_ind
+            // 
+            this.M3Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.M3Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M3Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M3Error_ind.Location = new System.Drawing.Point(165, 93);
+            this.M3Error_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M3Error_ind.Name = "M3Error_ind";
+            this.M3Error_ind.Size = new System.Drawing.Size(49, 62);
+            this.M3Error_ind.TabIndex = 16;
+            this.M3Error_ind.TabStop = false;
+            // 
+            // M2Running_ind
+            // 
+            this.M2Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.M2Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.M2Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M2Running_ind.Location = new System.Drawing.Point(111, 27);
+            this.M2Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M2Running_ind.Name = "M2Running_ind";
+            this.M2Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M2Running_ind.TabIndex = 4;
+            this.M2Running_ind.TabStop = false;
+            // 
+            // M2Error_ind
+            // 
+            this.M2Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.M2Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M2Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M2Error_ind.Location = new System.Drawing.Point(111, 93);
+            this.M2Error_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M2Error_ind.Name = "M2Error_ind";
+            this.M2Error_ind.Size = new System.Drawing.Size(49, 62);
+            this.M2Error_ind.TabIndex = 15;
+            this.M2Error_ind.TabStop = false;
             // 
             // M1Error_ind
             // 
@@ -348,12 +563,142 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.M1Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M1Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M1Error_ind.Location = new System.Drawing.Point(57, 93);
-            this.M1Error_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.M1Error_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M1Error_ind.Name = "M1Error_ind";
             this.M1Error_ind.Size = new System.Drawing.Size(49, 62);
             this.M1Error_ind.TabIndex = 1;
             this.M1Error_ind.TabStop = false;
+            // 
+            // M1Running_ind
+            // 
+            this.M1Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.M1Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.M1Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.M1Running_ind.Location = new System.Drawing.Point(57, 27);
+            this.M1Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.M1Running_ind.Name = "M1Running_ind";
+            this.M1Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M1Running_ind.TabIndex = 0;
+            this.M1Running_ind.TabStop = false;
+            // 
+            // label9
+            // 
+            this.label9.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label9.ForeColor = System.Drawing.Color.Black;
+            this.label9.Location = new System.Drawing.Point(384, 6);
+            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(43, 13);
+            this.label9.TabIndex = 14;
+            this.label9.Text = "Motor 7";
+            // 
+            // label8
+            // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label8.ForeColor = System.Drawing.Color.Black;
+            this.label8.Location = new System.Drawing.Point(330, 6);
+            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(43, 13);
+            this.label8.TabIndex = 13;
+            this.label8.Text = "Motor 6";
+            // 
+            // label7
+            // 
+            this.label7.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label7.ForeColor = System.Drawing.Color.Black;
+            this.label7.Location = new System.Drawing.Point(276, 6);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(43, 13);
+            this.label7.TabIndex = 12;
+            this.label7.Text = "Motor 5";
+            // 
+            // label6
+            // 
+            this.label6.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label6.ForeColor = System.Drawing.Color.Black;
+            this.label6.Location = new System.Drawing.Point(222, 6);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(43, 13);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Motor 4";
+            // 
+            // label5
+            // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label5.ForeColor = System.Drawing.Color.Black;
+            this.label5.Location = new System.Drawing.Point(168, 6);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(43, 13);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "Motor 3";
+            // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label4.ForeColor = System.Drawing.Color.Black;
+            this.label4.Location = new System.Drawing.Point(114, 6);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(43, 13);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Motor 2";
+            // 
+            // M1_lbl
+            // 
+            this.M1_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.M1_lbl.AutoSize = true;
+            this.M1_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.M1_lbl.ForeColor = System.Drawing.Color.Black;
+            this.M1_lbl.Location = new System.Drawing.Point(60, 6);
+            this.M1_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.M1_lbl.Name = "M1_lbl";
+            this.M1_lbl.Size = new System.Drawing.Size(43, 13);
+            this.M1_lbl.TabIndex = 2;
+            this.M1_lbl.Text = "Motor 1";
+            // 
+            // label10
+            // 
+            this.label10.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label10.AutoSize = true;
+            this.label10.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label10.ForeColor = System.Drawing.Color.Black;
+            this.label10.Location = new System.Drawing.Point(11, 6);
+            this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(32, 13);
+            this.label10.TabIndex = 21;
+            this.label10.Text = "Desc";
+            // 
+            // MotorRunning_lbl
+            // 
+            this.MotorRunning_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.MotorRunning_lbl.AutoSize = true;
+            this.MotorRunning_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.MotorRunning_lbl.ForeColor = System.Drawing.Color.Black;
+            this.MotorRunning_lbl.Location = new System.Drawing.Point(4, 44);
+            this.MotorRunning_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.MotorRunning_lbl.Name = "MotorRunning_lbl";
+            this.MotorRunning_lbl.Size = new System.Drawing.Size(47, 26);
+            this.MotorRunning_lbl.TabIndex = 22;
+            this.MotorRunning_lbl.Text = "Motor Running";
             // 
             // groupBox2
             // 
@@ -362,9 +707,9 @@
             this.groupBox2.Controls.Add(this.PreciseExecutionMode_grp);
             this.groupBox2.Controls.Add(this.OvrCurpos_lbl);
             this.groupBox2.Location = new System.Drawing.Point(9, 24);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox2.Size = new System.Drawing.Size(580, 196);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
@@ -379,9 +724,9 @@
             this.TraverseLineMode_grp.Controls.Add(this.label2);
             this.TraverseLineMode_grp.Controls.Add(this.label1);
             this.TraverseLineMode_grp.Location = new System.Drawing.Point(435, 18);
-            this.TraverseLineMode_grp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TraverseLineMode_grp.Margin = new System.Windows.Forms.Padding(2);
             this.TraverseLineMode_grp.Name = "TraverseLineMode_grp";
-            this.TraverseLineMode_grp.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TraverseLineMode_grp.Padding = new System.Windows.Forms.Padding(2);
             this.TraverseLineMode_grp.Size = new System.Drawing.Size(141, 173);
             this.TraverseLineMode_grp.TabIndex = 17;
             this.TraverseLineMode_grp.TabStop = false;
@@ -390,7 +735,7 @@
             // NextPos_entry
             // 
             this.NextPos_entry.Location = new System.Drawing.Point(7, 82);
-            this.NextPos_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.NextPos_entry.Margin = new System.Windows.Forms.Padding(2);
             this.NextPos_entry.Mask = "(0.00, 0.00, 0.00)";
             this.NextPos_entry.Name = "NextPos_entry";
             this.NextPos_entry.Size = new System.Drawing.Size(131, 20);
@@ -411,7 +756,7 @@
             // 
             this.TL_curPos_lbl.Enabled = false;
             this.TL_curPos_lbl.Location = new System.Drawing.Point(7, 33);
-            this.TL_curPos_lbl.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TL_curPos_lbl.Margin = new System.Windows.Forms.Padding(2);
             this.TL_curPos_lbl.Name = "TL_curPos_lbl";
             this.TL_curPos_lbl.Size = new System.Drawing.Size(131, 20);
             this.TL_curPos_lbl.TabIndex = 15;
@@ -452,9 +797,9 @@
             this.ProgrammedExecutionMode_grp.Controls.Add(this.EditFile_btn);
             this.ProgrammedExecutionMode_grp.Controls.Add(this.LoadFile_btn);
             this.ProgrammedExecutionMode_grp.Location = new System.Drawing.Point(269, 17);
-            this.ProgrammedExecutionMode_grp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ProgrammedExecutionMode_grp.Margin = new System.Windows.Forms.Padding(2);
             this.ProgrammedExecutionMode_grp.Name = "ProgrammedExecutionMode_grp";
-            this.ProgrammedExecutionMode_grp.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ProgrammedExecutionMode_grp.Padding = new System.Windows.Forms.Padding(2);
             this.ProgrammedExecutionMode_grp.Size = new System.Drawing.Size(160, 174);
             this.ProgrammedExecutionMode_grp.TabIndex = 16;
             this.ProgrammedExecutionMode_grp.TabStop = false;
@@ -473,7 +818,7 @@
             // NewFile_btn
             // 
             this.NewFile_btn.Location = new System.Drawing.Point(4, 94);
-            this.NewFile_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.NewFile_btn.Margin = new System.Windows.Forms.Padding(2);
             this.NewFile_btn.Name = "NewFile_btn";
             this.NewFile_btn.Size = new System.Drawing.Size(152, 32);
             this.NewFile_btn.TabIndex = 4;
@@ -483,7 +828,7 @@
             // EditFile_btn
             // 
             this.EditFile_btn.Location = new System.Drawing.Point(4, 58);
-            this.EditFile_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.EditFile_btn.Margin = new System.Windows.Forms.Padding(2);
             this.EditFile_btn.Name = "EditFile_btn";
             this.EditFile_btn.Size = new System.Drawing.Size(152, 32);
             this.EditFile_btn.TabIndex = 3;
@@ -493,7 +838,7 @@
             // LoadFile_btn
             // 
             this.LoadFile_btn.Location = new System.Drawing.Point(4, 21);
-            this.LoadFile_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.LoadFile_btn.Margin = new System.Windows.Forms.Padding(2);
             this.LoadFile_btn.Name = "LoadFile_btn";
             this.LoadFile_btn.Size = new System.Drawing.Size(152, 32);
             this.LoadFile_btn.TabIndex = 2;
@@ -517,9 +862,9 @@
             this.PreciseExecutionMode_grp.Controls.Add(this.Servo1_lbl);
             this.PreciseExecutionMode_grp.Controls.Add(this.Servo2_lbl);
             this.PreciseExecutionMode_grp.Location = new System.Drawing.Point(115, 14);
-            this.PreciseExecutionMode_grp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PreciseExecutionMode_grp.Margin = new System.Windows.Forms.Padding(2);
             this.PreciseExecutionMode_grp.Name = "PreciseExecutionMode_grp";
-            this.PreciseExecutionMode_grp.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PreciseExecutionMode_grp.Padding = new System.Windows.Forms.Padding(2);
             this.PreciseExecutionMode_grp.Size = new System.Drawing.Size(150, 177);
             this.PreciseExecutionMode_grp.TabIndex = 15;
             this.PreciseExecutionMode_grp.TabStop = false;
@@ -528,7 +873,7 @@
             // Servo2_entry
             // 
             this.Servo2_entry.Location = new System.Drawing.Point(66, 154);
-            this.Servo2_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Servo2_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Servo2_entry.Mask = "#00000000000";
             this.Servo2_entry.Name = "Servo2_entry";
             this.Servo2_entry.PromptChar = ' ';
@@ -538,7 +883,7 @@
             // Servo1_entry
             // 
             this.Servo1_entry.Location = new System.Drawing.Point(66, 131);
-            this.Servo1_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Servo1_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Servo1_entry.Mask = "#00000000000";
             this.Servo1_entry.Name = "Servo1_entry";
             this.Servo1_entry.PromptChar = ' ';
@@ -548,7 +893,7 @@
             // Stepper5_entry
             // 
             this.Stepper5_entry.Location = new System.Drawing.Point(66, 108);
-            this.Stepper5_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stepper5_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Stepper5_entry.Mask = "#00000000000";
             this.Stepper5_entry.Name = "Stepper5_entry";
             this.Stepper5_entry.PromptChar = ' ';
@@ -558,7 +903,7 @@
             // Stepper4_entry
             // 
             this.Stepper4_entry.Location = new System.Drawing.Point(66, 85);
-            this.Stepper4_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stepper4_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Stepper4_entry.Mask = "#00000000000";
             this.Stepper4_entry.Name = "Stepper4_entry";
             this.Stepper4_entry.PromptChar = ' ';
@@ -568,7 +913,7 @@
             // Stepper3_entry
             // 
             this.Stepper3_entry.Location = new System.Drawing.Point(66, 63);
-            this.Stepper3_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stepper3_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Stepper3_entry.Mask = "#00000000000";
             this.Stepper3_entry.Name = "Stepper3_entry";
             this.Stepper3_entry.PromptChar = ' ';
@@ -578,7 +923,7 @@
             // Stepper2_entry
             // 
             this.Stepper2_entry.Location = new System.Drawing.Point(66, 40);
-            this.Stepper2_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stepper2_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Stepper2_entry.Mask = "#00000000000";
             this.Stepper2_entry.Name = "Stepper2_entry";
             this.Stepper2_entry.PromptChar = ' ';
@@ -588,7 +933,7 @@
             // Stepper1_entry
             // 
             this.Stepper1_entry.Location = new System.Drawing.Point(66, 17);
-            this.Stepper1_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stepper1_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Stepper1_entry.Mask = "#00000000000";
             this.Stepper1_entry.Name = "Stepper1_entry";
             this.Stepper1_entry.PromptChar = ' ';
@@ -683,337 +1028,6 @@
             this.UART_COM.PortName = "COM4";
             this.UART_COM.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.UART_COM_DataReceived);
             // 
-            // M2Running_ind
-            // 
-            this.M2Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.M2Running_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M2Running_ind.Location = new System.Drawing.Point(111, 27);
-            this.M2Running_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M2Running_ind.Name = "M2Running_ind";
-            this.M2Running_ind.Size = new System.Drawing.Size(49, 61);
-            this.M2Running_ind.TabIndex = 4;
-            this.M2Running_ind.TabStop = false;
-            // 
-            // M3Running_ind
-            // 
-            this.M3Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.M3Running_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M3Running_ind.Location = new System.Drawing.Point(165, 27);
-            this.M3Running_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M3Running_ind.Name = "M3Running_ind";
-            this.M3Running_ind.Size = new System.Drawing.Size(49, 61);
-            this.M3Running_ind.TabIndex = 5;
-            this.M3Running_ind.TabStop = false;
-            // 
-            // M4Running_ind
-            // 
-            this.M4Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.M4Running_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M4Running_ind.Location = new System.Drawing.Point(219, 27);
-            this.M4Running_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M4Running_ind.Name = "M4Running_ind";
-            this.M4Running_ind.Size = new System.Drawing.Size(49, 61);
-            this.M4Running_ind.TabIndex = 6;
-            this.M4Running_ind.TabStop = false;
-            // 
-            // M5Running_ind
-            // 
-            this.M5Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.M5Running_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M5Running_ind.Location = new System.Drawing.Point(273, 27);
-            this.M5Running_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M5Running_ind.Name = "M5Running_ind";
-            this.M5Running_ind.Size = new System.Drawing.Size(49, 61);
-            this.M5Running_ind.TabIndex = 7;
-            this.M5Running_ind.TabStop = false;
-            // 
-            // M6Running_ind
-            // 
-            this.M6Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.M6Running_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M6Running_ind.Location = new System.Drawing.Point(327, 27);
-            this.M6Running_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M6Running_ind.Name = "M6Running_ind";
-            this.M6Running_ind.Size = new System.Drawing.Size(49, 61);
-            this.M6Running_ind.TabIndex = 8;
-            this.M6Running_ind.TabStop = false;
-            // 
-            // M7Running_ind
-            // 
-            this.M7Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.M7Running_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M7Running_ind.Location = new System.Drawing.Point(381, 27);
-            this.M7Running_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M7Running_ind.Name = "M7Running_ind";
-            this.M7Running_ind.Size = new System.Drawing.Size(50, 61);
-            this.M7Running_ind.TabIndex = 9;
-            this.M7Running_ind.TabStop = false;
-            // 
-            // M1Running_ind
-            // 
-            this.M1Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.M1Running_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M1Running_ind.Location = new System.Drawing.Point(57, 27);
-            this.M1Running_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M1Running_ind.Name = "M1Running_ind";
-            this.M1Running_ind.Size = new System.Drawing.Size(49, 61);
-            this.M1Running_ind.TabIndex = 0;
-            this.M1Running_ind.TabStop = false;
-            // 
-            // M1_lbl
-            // 
-            this.M1_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.M1_lbl.AutoSize = true;
-            this.M1_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.M1_lbl.ForeColor = System.Drawing.Color.Black;
-            this.M1_lbl.Location = new System.Drawing.Point(60, 6);
-            this.M1_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.M1_lbl.Name = "M1_lbl";
-            this.M1_lbl.Size = new System.Drawing.Size(43, 13);
-            this.M1_lbl.TabIndex = 2;
-            this.M1_lbl.Text = "Motor 1";
-            // 
-            // label4
-            // 
-            this.label4.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label4.ForeColor = System.Drawing.Color.Black;
-            this.label4.Location = new System.Drawing.Point(114, 6);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(43, 13);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "Motor 2";
-            // 
-            // label5
-            // 
-            this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label5.AutoSize = true;
-            this.label5.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label5.ForeColor = System.Drawing.Color.Black;
-            this.label5.Location = new System.Drawing.Point(168, 6);
-            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(43, 13);
-            this.label5.TabIndex = 11;
-            this.label5.Text = "Motor 3";
-            // 
-            // label6
-            // 
-            this.label6.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label6.AutoSize = true;
-            this.label6.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label6.ForeColor = System.Drawing.Color.Black;
-            this.label6.Location = new System.Drawing.Point(222, 6);
-            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(43, 13);
-            this.label6.TabIndex = 11;
-            this.label6.Text = "Motor 4";
-            // 
-            // label7
-            // 
-            this.label7.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label7.AutoSize = true;
-            this.label7.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label7.ForeColor = System.Drawing.Color.Black;
-            this.label7.Location = new System.Drawing.Point(276, 6);
-            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(43, 13);
-            this.label7.TabIndex = 12;
-            this.label7.Text = "Motor 5";
-            // 
-            // label8
-            // 
-            this.label8.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label8.AutoSize = true;
-            this.label8.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label8.ForeColor = System.Drawing.Color.Black;
-            this.label8.Location = new System.Drawing.Point(330, 6);
-            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(43, 13);
-            this.label8.TabIndex = 13;
-            this.label8.Text = "Motor 6";
-            // 
-            // label9
-            // 
-            this.label9.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label9.AutoSize = true;
-            this.label9.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label9.ForeColor = System.Drawing.Color.Black;
-            this.label9.Location = new System.Drawing.Point(384, 6);
-            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(43, 13);
-            this.label9.TabIndex = 14;
-            this.label9.Text = "Motor 7";
-            // 
-            // feedback_grd
-            // 
-            this.feedback_grd.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.feedback_grd.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
-            this.feedback_grd.ColumnCount = 8;
-            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.feedback_grd.Controls.Add(this.MotorError_lbl, 0, 2);
-            this.feedback_grd.Controls.Add(this.M7Running_ind, 7, 1);
-            this.feedback_grd.Controls.Add(this.M6Running_ind, 6, 1);
-            this.feedback_grd.Controls.Add(this.M7Error_ind, 7, 2);
-            this.feedback_grd.Controls.Add(this.M6Error_ind, 6, 2);
-            this.feedback_grd.Controls.Add(this.M5Error_ind, 5, 2);
-            this.feedback_grd.Controls.Add(this.M5Running_ind, 5, 1);
-            this.feedback_grd.Controls.Add(this.M4Running_ind, 4, 1);
-            this.feedback_grd.Controls.Add(this.M4Error_ind, 4, 2);
-            this.feedback_grd.Controls.Add(this.M3Running_ind, 3, 1);
-            this.feedback_grd.Controls.Add(this.M3Error_ind, 3, 2);
-            this.feedback_grd.Controls.Add(this.M2Running_ind, 2, 1);
-            this.feedback_grd.Controls.Add(this.M2Error_ind, 2, 2);
-            this.feedback_grd.Controls.Add(this.M1Error_ind, 1, 2);
-            this.feedback_grd.Controls.Add(this.M1Running_ind, 1, 1);
-            this.feedback_grd.Controls.Add(this.label9, 7, 0);
-            this.feedback_grd.Controls.Add(this.label8, 6, 0);
-            this.feedback_grd.Controls.Add(this.label7, 5, 0);
-            this.feedback_grd.Controls.Add(this.label6, 4, 0);
-            this.feedback_grd.Controls.Add(this.label5, 3, 0);
-            this.feedback_grd.Controls.Add(this.label4, 2, 0);
-            this.feedback_grd.Controls.Add(this.M1_lbl, 1, 0);
-            this.feedback_grd.Controls.Add(this.label10, 0, 0);
-            this.feedback_grd.Controls.Add(this.MotorRunning_lbl, 0, 1);
-            this.feedback_grd.Location = new System.Drawing.Point(5, 17);
-            this.feedback_grd.Name = "feedback_grd";
-            this.feedback_grd.RowCount = 3;
-            this.feedback_grd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.feedback_grd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42.5F));
-            this.feedback_grd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42.5F));
-            this.feedback_grd.Size = new System.Drawing.Size(434, 158);
-            this.feedback_grd.TabIndex = 4;
-            // 
-            // M2Error_ind
-            // 
-            this.M2Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.M2Error_ind.BackColor = System.Drawing.Color.LimeGreen;
-            this.M2Error_ind.Location = new System.Drawing.Point(111, 93);
-            this.M2Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M2Error_ind.Name = "M2Error_ind";
-            this.M2Error_ind.Size = new System.Drawing.Size(49, 62);
-            this.M2Error_ind.TabIndex = 15;
-            this.M2Error_ind.TabStop = false;
-            // 
-            // M3Error_ind
-            // 
-            this.M3Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.M3Error_ind.BackColor = System.Drawing.Color.LimeGreen;
-            this.M3Error_ind.Location = new System.Drawing.Point(165, 93);
-            this.M3Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M3Error_ind.Name = "M3Error_ind";
-            this.M3Error_ind.Size = new System.Drawing.Size(49, 62);
-            this.M3Error_ind.TabIndex = 16;
-            this.M3Error_ind.TabStop = false;
-            // 
-            // M4Error_ind
-            // 
-            this.M4Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.M4Error_ind.BackColor = System.Drawing.Color.LimeGreen;
-            this.M4Error_ind.Location = new System.Drawing.Point(219, 93);
-            this.M4Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M4Error_ind.Name = "M4Error_ind";
-            this.M4Error_ind.Size = new System.Drawing.Size(49, 62);
-            this.M4Error_ind.TabIndex = 17;
-            this.M4Error_ind.TabStop = false;
-            // 
-            // M5Error_ind
-            // 
-            this.M5Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.M5Error_ind.BackColor = System.Drawing.Color.LimeGreen;
-            this.M5Error_ind.Location = new System.Drawing.Point(273, 93);
-            this.M5Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M5Error_ind.Name = "M5Error_ind";
-            this.M5Error_ind.Size = new System.Drawing.Size(49, 62);
-            this.M5Error_ind.TabIndex = 18;
-            this.M5Error_ind.TabStop = false;
-            // 
-            // M6Error_ind
-            // 
-            this.M6Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.M6Error_ind.BackColor = System.Drawing.Color.LimeGreen;
-            this.M6Error_ind.Location = new System.Drawing.Point(327, 93);
-            this.M6Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M6Error_ind.Name = "M6Error_ind";
-            this.M6Error_ind.Size = new System.Drawing.Size(49, 62);
-            this.M6Error_ind.TabIndex = 19;
-            this.M6Error_ind.TabStop = false;
-            // 
-            // M7Error_ind
-            // 
-            this.M7Error_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.M7Error_ind.BackColor = System.Drawing.Color.LimeGreen;
-            this.M7Error_ind.Location = new System.Drawing.Point(381, 93);
-            this.M7Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M7Error_ind.Name = "M7Error_ind";
-            this.M7Error_ind.Size = new System.Drawing.Size(50, 61);
-            this.M7Error_ind.TabIndex = 20;
-            this.M7Error_ind.TabStop = false;
-            // 
-            // label10
-            // 
-            this.label10.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label10.AutoSize = true;
-            this.label10.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label10.ForeColor = System.Drawing.Color.Black;
-            this.label10.Location = new System.Drawing.Point(11, 6);
-            this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(32, 13);
-            this.label10.TabIndex = 21;
-            this.label10.Text = "Desc";
-            // 
-            // MotorRunning_lbl
-            // 
-            this.MotorRunning_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.MotorRunning_lbl.AutoSize = true;
-            this.MotorRunning_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.MotorRunning_lbl.ForeColor = System.Drawing.Color.Black;
-            this.MotorRunning_lbl.Location = new System.Drawing.Point(4, 44);
-            this.MotorRunning_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.MotorRunning_lbl.Name = "MotorRunning_lbl";
-            this.MotorRunning_lbl.Size = new System.Drawing.Size(47, 26);
-            this.MotorRunning_lbl.TabIndex = 22;
-            this.MotorRunning_lbl.Text = "Motor Running";
-            // 
-            // MotorError_lbl
-            // 
-            this.MotorError_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.MotorError_lbl.AutoSize = true;
-            this.MotorError_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.MotorError_lbl.ForeColor = System.Drawing.Color.Black;
-            this.MotorError_lbl.Location = new System.Drawing.Point(9, 111);
-            this.MotorError_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.MotorError_lbl.Name = "MotorError_lbl";
-            this.MotorError_lbl.Size = new System.Drawing.Size(37, 26);
-            this.MotorError_lbl.TabIndex = 23;
-            this.MotorError_lbl.Text = "Motor Error";
-            // 
             // Main_wnd
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1023,15 +1037,31 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Common_grp);
             this.Controls.Add(this.toolStrip1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Main_wnd";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "R.I.M. Test App";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Main_wnd_FormClosed);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.Common_grp.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
+            this.feedback_grd.ResumeLayout(false);
+            this.feedback_grd.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.M7Running_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M6Running_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M7Error_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M6Error_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M5Error_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M5Running_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M4Running_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M4Error_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M3Running_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M3Error_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M2Running_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M2Error_ind)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.M1Error_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.M1Running_ind)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.TraverseLineMode_grp.ResumeLayout(false);
@@ -1040,21 +1070,6 @@
             this.ProgrammedExecutionMode_grp.PerformLayout();
             this.PreciseExecutionMode_grp.ResumeLayout(false);
             this.PreciseExecutionMode_grp.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.M2Running_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M3Running_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M4Running_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M5Running_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M6Running_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M7Running_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M1Running_ind)).EndInit();
-            this.feedback_grd.ResumeLayout(false);
-            this.feedback_grd.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.M2Error_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M3Error_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M4Error_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M5Error_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M6Error_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M7Error_ind)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
