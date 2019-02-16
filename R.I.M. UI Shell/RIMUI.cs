@@ -20,8 +20,15 @@ namespace R.I.M.UI_Shell
     {
         static class PSoC_OpCodes
         {
-            public const byte RIM_OP_MOTOR_RUNNING = 0x00,
-                              RIM_OP_MOTOR_STOP = 0x10;
+            //RIM Operation codes 
+            public const byte RIM_OP_MOTOR_RUN           = 0x00,
+                              RIM_OP_MOTOR_STOP          = 0x10,
+                              RIM_OP_MOTOR_SET_PARAM     = 0x20,
+                              RIM_OP_MOTOR_STATUS        = 0x30,
+                              RIM_OP_ENCODER_INFO        = 0x40,
+                              RIM_OP_MOTOR_EXTENDED_STEP = 0x80;
+
+
         };
 
         //Make an instance of the window that allows the user to configure UART-related settings
@@ -257,10 +264,10 @@ namespace R.I.M.UI_Shell
             }
 
             if (dir == Direction.COUNTERCLOCKWISE)
-                packet[0] |= 0x80;
+                packet[0] |= 0x08;
 
-            packet[0] |= (byte)(motor_id << 4);
-            packet[1] |= (byte)(command);
+            packet[0] |= (byte)motor_id;
+            packet[1] |= (byte)command;
             packet[2] |= (byte)(command >> 8);
 
 #if (DEBUG_MODE)
@@ -441,7 +448,7 @@ namespace R.I.M.UI_Shell
             msg = UART_COM.ReadChar();
             opcode = (byte)(msg & 0xF0);
             info   = (byte)(msg & 0x0F);
-            if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_RUNNING)
+            if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_RUN)
             {
                 switch (info)
                 {
