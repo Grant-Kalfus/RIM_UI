@@ -47,9 +47,6 @@ namespace R.I.M.UI_Shell
 
             public ushort[] motors;
 
-            public bool[] motor_sendcmd;
-            public bool[] motor_running;
-
             public Direction[] motor_dirs;
 
             public PreciseExecution_steps(int motor_amount = 7)
@@ -58,17 +55,9 @@ namespace R.I.M.UI_Shell
 
                 motors = new ushort[motor_num];
                 motor_dirs = new Direction[motor_num];
-                motor_sendcmd = new bool[motor_num];
-                motor_running = new bool[motor_num];
 
                 for (int i = 0; i < motor_num; i++) 
                     motors[i] = 0;
-
-                for (int i = 0; i < motor_num; i++)
-                    motor_sendcmd[i] = false;
-
-                for (int i = 0; i < motor_num; i++)
-                    motor_running[i] = false;
 
                 for (int i = 0; i < motor_num; i++)
                     motor_dirs[i] = Direction.CLOCKWISE;
@@ -272,7 +261,10 @@ namespace R.I.M.UI_Shell
                     packet[1] |= (byte)command;
                     packet[2] |= (byte)(command >> 8);
                     break;
-
+                case PSoC_OpCodes.RIM_OP_MOTOR_STATUS:
+                    packet[0] |= PSoC_OpCodes.RIM_OP_MOTOR_STATUS;
+                    packet[0] |= (byte)motor_id;
+                    break;
             }
 
 
@@ -283,7 +275,7 @@ namespace R.I.M.UI_Shell
             return true;
         }
 
-        int UART_wait_for_msg() {
+        byte UART_wait_for_msg() {
             int r = 0;
             while (r == 0)
             {
@@ -292,7 +284,7 @@ namespace R.I.M.UI_Shell
 #if (DEBUG_MODE)
                 Console.WriteLine("Recieved: " + r.ToString() + " from the PSoC");
 #endif
-            return r;
+            return (byte)r;
         }
 
 
@@ -318,7 +310,6 @@ namespace R.I.M.UI_Shell
 #endif
                     UART_COM.Write(Byte_array_to_literal_string(packet, 3));
 
-                    commands.motor_sendcmd[i] = true;
 
                 }
 
@@ -435,11 +426,31 @@ namespace R.I.M.UI_Shell
 
         private void Test_BTN_Click(object sender, EventArgs e)
         {
-            matlab.Execute(@"cd C:\MATLAB_Script");
-            matlab.Feval("myfunc", 2, out object result, 3.14, 42.0, "world");
-            object[] res = result as object[];
-            Console.WriteLine(res[0]);
-            Console.WriteLine(res[1]);
+            byte[] packet = new byte[3];
+
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 0, 0, ref packet, 3);
+
+            if (!UART_COM.IsOpen)
+            {
+                try
+                {
+                    UART_COM.Open();
+                }
+                catch
+                {
+                    MessageBox.Show("Error: COM Port " + UART_COM.PortName + " is in use or doesn't exist!");
+                    return;
+                };
+            }
+
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+            
+            
+            //matlab.Execute(@"cd C:\MATLAB_Script");
+            //matlab.Feval("myfunc", 2, out object result, 3.14, 42.0, "world");
+            //object[] res = result as object[];
+            //Console.WriteLine(res[0]);
+            //Console.WriteLine(res[1]);
         }
 
         private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
@@ -447,6 +458,9 @@ namespace R.I.M.UI_Shell
             int msg;
             byte opcode = 0,
                    info = 0;
+
+            byte[] rx = new byte[2];
+            ushort response = 0;
 
             msg = UART_COM.ReadChar();
             opcode = (byte)(msg & 0xF0);
@@ -468,7 +482,7 @@ namespace R.I.M.UI_Shell
                 {
                     case 0:
                         M1Running_ind.BackColor = Color.Gold;
-                        
+
                         if (Stop_btn.InvokeRequired)
                             Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
                         if (Start_btn.InvokeRequired)
@@ -476,6 +490,24 @@ namespace R.I.M.UI_Shell
                         break;
                     default:
                         break;
+                }
+            }
+            else if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_STATUS)
+            {
+                switch (info)
+                {
+                    case 0:
+                        rx[0] = (byte) UART_COM.ReadChar();
+                        rx[1] = (byte) UART_COM.ReadChar();
+                        response |= rx[0];
+                        response |= (ushort)(rx[1] << 8);
+
+
+#if (DEBUG_MODE)
+                        Console.WriteLine("Motor Driver id 0 Responded with: " + response.ToString("X2"));
+#endif
+                        break;
+
                 }
             }
         }
