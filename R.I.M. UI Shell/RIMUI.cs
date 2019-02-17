@@ -40,10 +40,6 @@ namespace R.I.M.UI_Shell
         //Matlab console instance for DH parameters
         MLApp.MLApp matlab = new MLApp.MLApp();
 
-        //String for keeping track of what the last command that was sent was
-        public string Last_command_sent;
-        public bool Last_command_response = false; 
-
         //For storing the stepper motor steps during percise execution mode
         public struct PreciseExecution_steps
         {
@@ -251,7 +247,7 @@ namespace R.I.M.UI_Shell
 
 
         //Formats into UART packet to be sent
-        private bool Format_packet(int motor_id, ushort command, Direction dir, ref byte[] packet, int sz) {
+        private bool Format_packet(byte OPCODE, Direction dir, int motor_id, ushort command, ref byte[] packet, int sz) {
 
 #if (DEBUG_MODE)
             Console.WriteLine("Entered UART packet format function");
@@ -259,16 +255,27 @@ namespace R.I.M.UI_Shell
             for (int i = 0; i < sz; i++) 
                 packet[i] = 0;
 
-            if (motor_id > 7) {
-                return false;
+            switch (OPCODE) {
+                case PSoC_OpCodes.RIM_OP_MOTOR_RUN:
+
+                    packet[0] |= PSoC_OpCodes.RIM_OP_MOTOR_RUN;
+
+                    if (dir == Direction.COUNTERCLOCKWISE)
+                        packet[0] |= 0x08;
+
+                    if (motor_id > 7)
+                    {
+                        return false;
+                    }
+
+                    packet[0] |= (byte)motor_id;
+                    packet[1] |= (byte)command;
+                    packet[2] |= (byte)(command >> 8);
+                    break;
+
             }
 
-            if (dir == Direction.COUNTERCLOCKWISE)
-                packet[0] |= 0x08;
 
-            packet[0] |= (byte)motor_id;
-            packet[1] |= (byte)command;
-            packet[2] |= (byte)(command >> 8);
 
 #if (DEBUG_MODE)
             Console.WriteLine("UART command formatted to: " + packet[0].ToString() + " " + packet[1].ToString() + " " + packet[2].ToString());
@@ -304,7 +311,7 @@ namespace R.I.M.UI_Shell
                 if (commands.motors[i] != 0)
                 {
                     //Format packet into motor id, the command, and direction
-                    Format_packet(i, commands.motors[i], commands.motor_dirs[i], ref packet, 3);
+                    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, commands.motor_dirs[i], i, commands.motors[i], ref packet, 3);
 
 #if (DEBUG_MODE)
                     Debug_Output(packet, 3);
@@ -313,10 +320,6 @@ namespace R.I.M.UI_Shell
 
                     commands.motor_sendcmd[i] = true;
 
-                    Last_command_sent = "MOTOR_MOVE";
-                    //UART_wait_for_msg();
-                    //if (packet[1] != 0) UART_wait_for_msg();
-                    //if (packet[2] != 0) UART_wait_for_msg();
                 }
 
             }
