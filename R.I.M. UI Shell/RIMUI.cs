@@ -78,14 +78,14 @@ namespace R.I.M.UI_Shell
         }
 
         //Debug mode output when transfering packets
-#if (DEBUG_MODE)
-        private void Debug_Output(byte[] packet, int sz)
+        #if (DEBUG_MODE)
+            private void Debug_Output(byte[] packet, int sz)
         {
             Console.WriteLine("Sending UART packet: " + Byte_array_to_string(packet, 3));
             Console.WriteLine("Sending physical UART packet: " + Byte_array_to_literal_string(packet, 3));
             Console.WriteLine("------------------");
         }
-#endif
+        #endif
 
         //Disables all controls on a given control group
         private void Disable_all(char type = 'n')
@@ -238,9 +238,10 @@ namespace R.I.M.UI_Shell
         //Formats into UART packet to be sent
         private bool Format_packet(byte OPCODE, Direction dir, int motor_id, ushort command, ref byte[] packet, int sz) {
 
-#if (DEBUG_MODE)
-            Console.WriteLine("Entered UART packet format function");
-#endif
+            #if (DEBUG_MODE)
+                Console.WriteLine("Entered UART packet format function");
+            #endif
+
             for (int i = 0; i < sz; i++) 
                 packet[i] = 0;
 
@@ -269,9 +270,10 @@ namespace R.I.M.UI_Shell
 
 
 
-#if (DEBUG_MODE)
-            Console.WriteLine("UART command formatted to: " + packet[0].ToString() + " " + packet[1].ToString() + " " + packet[2].ToString());
-#endif
+            #if (DEBUG_MODE)
+                Console.WriteLine("UART command formatted to: " + packet[0].ToString() + " " + packet[1].ToString() + " " + packet[2].ToString());
+            #endif
+
             return true;
         }
 
@@ -281,9 +283,9 @@ namespace R.I.M.UI_Shell
             {
                 r = UART_COM.ReadChar();
             };
-#if (DEBUG_MODE)
-                Console.WriteLine("Recieved: " + r.ToString() + " from the PSoC");
-#endif
+                #if (DEBUG_MODE)
+                    Console.WriteLine("Recieved: " + r.ToString() + " from the PSoC");
+                #endif
             return (byte)r;
         }
 
@@ -292,9 +294,10 @@ namespace R.I.M.UI_Shell
         private void UART_prep_send_command(PreciseExecution_steps commands)
         {
 
-#if (DEBUG_MODE)
-            Console.WriteLine("Entered UART SendCommand");
-#endif
+            #if (DEBUG_MODE)
+                Console.WriteLine("Entered UART SendCommand");
+            #endif
+
             byte[] packet = new byte[3];
 
 
@@ -305,9 +308,10 @@ namespace R.I.M.UI_Shell
                     //Format packet into motor id, the command, and direction
                     Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, commands.motor_dirs[i], i, commands.motors[i], ref packet, 3);
 
-#if (DEBUG_MODE)
-                    Debug_Output(packet, 3);
-#endif
+                    #if (DEBUG_MODE)
+                        Debug_Output(packet, 3);
+                    #endif
+
                     UART_COM.Write(Byte_array_to_literal_string(packet, 3));
 
 
@@ -367,13 +371,14 @@ namespace R.I.M.UI_Shell
                 };
             }
 
-#if (DEBUG_MODE)
-            Console.WriteLine("COM port " + UART_COM.PortName + " opened");
-#endif
+            #if (DEBUG_MODE)
+                Console.WriteLine("COM port " + UART_COM.PortName + " opened");
+            #endif
 
-#if (DEBUG_MODE)
-            Console.WriteLine("Start button pressed");
-#endif
+            #if (DEBUG_MODE)
+                Console.WriteLine("Start button pressed");
+            #endif
+
             PreciseExecution_steps commands = new PreciseExecution_steps(7);
 
             switch (Check_enable())
@@ -442,6 +447,10 @@ namespace R.I.M.UI_Shell
                     return;
                 };
             }
+            
+            #if (DEBUG_MODE)
+                Debug_Output(packet, 3);
+            #endif
 
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
             
@@ -453,6 +462,33 @@ namespace R.I.M.UI_Shell
             //Console.WriteLine(res[1]);
         }
 
+        //Get encoder info
+        private void EncoderStatusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            byte[] packet = new byte[3];
+
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
+
+            if (!UART_COM.IsOpen)
+            {
+                try
+                {
+                    UART_COM.Open();
+                }
+                catch
+                {
+                    MessageBox.Show("Error: COM Port " + UART_COM.PortName + " is in use or doesn't exist!");
+                    return;
+                };
+            }
+
+            #if (DEBUG_MODE)
+                Debug_Output(packet, 3);
+            #endif
+
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+        }
+        //Event handler for PSoC data recieved
         private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             int msg;
@@ -465,12 +501,21 @@ namespace R.I.M.UI_Shell
             msg = UART_COM.ReadChar();
             opcode = (byte)(msg & 0xF0);
             info   = (byte)(msg & 0x0F);
+
+            #if (DEBUG_MODE)
+                Console.WriteLine("Recieved Opcode: " + opcode.ToString() + ", Info: " + info.ToString());
+            #endif
+
             if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_RUN)
             {
                 switch (info)
                 {
                     case 0:
                         M1Running_ind.BackColor = Color.LimeGreen;
+                        
+                        #if (DEBUG_MODE)
+                            Console.WriteLine("Recieved a motor start confirm");
+                        #endif
                         break;
                     default:
                         break;
@@ -487,6 +532,11 @@ namespace R.I.M.UI_Shell
                             Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
                         if (Start_btn.InvokeRequired)
                             Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
+                        
+                        #if (DEBUG_MODE)
+                            Console.WriteLine("Recieved a motor stop message");
+                        #endif
+
                         break;
                     default:
                         break;
@@ -503,13 +553,35 @@ namespace R.I.M.UI_Shell
                         response |= (ushort)(rx[1] << 8);
 
 
-#if (DEBUG_MODE)
-                        Console.WriteLine("Motor Driver id 0 Responded with: " + response.ToString("X2"));
-#endif
+                        #if (DEBUG_MODE)
+                            Console.WriteLine("Motor Driver id 0 Responded with: " + response.ToString("X2"));
+                        #endif
+
                         break;
 
                 }
             }
+            else if(opcode == PSoC_OpCodes.RIM_OP_ENCODER_INFO)
+            {
+                switch (info)
+                {
+                    case 0:
+                        rx[0] = (byte)UART_COM.ReadChar();
+                        rx[1] = (byte)UART_COM.ReadChar();
+                        response |= rx[0];
+                        response |= (ushort)(rx[1] << 8);
+                        #if (DEBUG_MODE)
+                            Console.WriteLine("Encoder id 0 is currently at position: " + response.ToString());
+                        #endif
+                        break;
+                }
+
+            }
+
+            #if (DEBUG_MODE)
+                Console.WriteLine("---------------------");
+            #endif
+
         }
 
 
@@ -518,6 +590,8 @@ namespace R.I.M.UI_Shell
         {
             UART_COM.Close();
         }
+
+
     }
 }
 

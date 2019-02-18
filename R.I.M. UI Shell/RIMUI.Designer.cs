@@ -109,6 +109,7 @@
             this.Servo2_lbl = new System.Windows.Forms.Label();
             this.OvrCurpos_lbl = new System.Windows.Forms.Label();
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
+            this.encoderStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -181,6 +182,8 @@
             // 
             // Test_BTN
             // 
+            this.Test_BTN.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.encoderStatusToolStripMenuItem});
             this.Test_BTN.Name = "Test_BTN";
             this.Test_BTN.Size = new System.Drawing.Size(180, 22);
             this.Test_BTN.Text = "TEST";
@@ -1028,6 +1031,13 @@
             this.UART_COM.PortName = "COM4";
             this.UART_COM.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.UART_COM_DataReceived);
             // 
+            // encoderStatusToolStripMenuItem
+            // 
+            this.encoderStatusToolStripMenuItem.Name = "encoderStatusToolStripMenuItem";
+            this.encoderStatusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.encoderStatusToolStripMenuItem.Text = "Encoder Status";
+            this.encoderStatusToolStripMenuItem.Click += new System.EventHandler(this.EncoderStatusToolStripMenuItem_Click);
+            // 
             // Main_wnd
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1156,6 +1166,7 @@
         private System.Windows.Forms.PictureBox M2Error_ind;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label MotorRunning_lbl;
+        private System.Windows.Forms.ToolStripMenuItem encoderStatusToolStripMenuItem;
     }
 }
 
