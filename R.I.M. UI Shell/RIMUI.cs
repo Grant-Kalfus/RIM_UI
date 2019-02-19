@@ -266,6 +266,11 @@ namespace R.I.M.UI_Shell
                     packet[0] |= PSoC_OpCodes.RIM_OP_MOTOR_STATUS;
                     packet[0] |= (byte)motor_id;
                     break;
+
+                case PSoC_OpCodes.RIM_OP_ENCODER_INFO:
+                    packet[0] |= PSoC_OpCodes.RIM_OP_ENCODER_INFO;
+                    packet[0] |= (byte)motor_id;
+                    break;
             }
 
 
@@ -591,7 +596,19 @@ namespace R.I.M.UI_Shell
             UART_COM.Close();
         }
 
+        private void MATLABScriptRunToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            matlab.Execute(@"cd C:\MATLAB_Script");
+            matlab.Feval("myfunc", 2, out object result, 3.14, 42.0, "world");
+            object[] res = result as object[];
+            Console.WriteLine(res[0]);
+            Console.WriteLine(res[1]);
+        }
 
+        private void ClearConsoleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Console.Clear();
+        }
     }
 }
 
