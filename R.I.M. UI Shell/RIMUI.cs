@@ -489,9 +489,12 @@ namespace R.I.M.UI_Shell
 
             #if (DEBUG_MODE)
                 Debug_Output(packet, 3);
-            #endif
-
-            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+#endif
+            for (int i = 0; i < 100; i++)
+            {
+                UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                Thread.Sleep(100);
+            }
         }
         //Event handler for PSoC data recieved
         private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
