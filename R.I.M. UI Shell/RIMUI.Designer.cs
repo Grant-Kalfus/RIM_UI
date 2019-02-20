@@ -35,6 +35,9 @@
             this.setUARTCOMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CurUartCom_lbl = new System.Windows.Forms.ToolStripTextBox();
             this.Test_BTN = new System.Windows.Forms.ToolStripMenuItem();
+            this.encoderStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mATLABScriptRunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.SetO_btn = new System.Windows.Forms.ToolStripDropDownButton();
@@ -181,10 +184,35 @@
             // 
             // Test_BTN
             // 
+            this.Test_BTN.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.encoderStatusToolStripMenuItem,
+            this.mATLABScriptRunToolStripMenuItem,
+            this.clearConsoleToolStripMenuItem});
             this.Test_BTN.Name = "Test_BTN";
             this.Test_BTN.Size = new System.Drawing.Size(180, 22);
             this.Test_BTN.Text = "TEST";
             this.Test_BTN.Click += new System.EventHandler(this.Test_BTN_Click);
+            // 
+            // encoderStatusToolStripMenuItem
+            // 
+            this.encoderStatusToolStripMenuItem.Name = "encoderStatusToolStripMenuItem";
+            this.encoderStatusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.encoderStatusToolStripMenuItem.Text = "Encoder Status";
+            this.encoderStatusToolStripMenuItem.Click += new System.EventHandler(this.EncoderStatusToolStripMenuItem_Click);
+            // 
+            // mATLABScriptRunToolStripMenuItem
+            // 
+            this.mATLABScriptRunToolStripMenuItem.Name = "mATLABScriptRunToolStripMenuItem";
+            this.mATLABScriptRunToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.mATLABScriptRunToolStripMenuItem.Text = "MATLAB Script Run";
+            this.mATLABScriptRunToolStripMenuItem.Click += new System.EventHandler(this.MATLABScriptRunToolStripMenuItem_Click);
+            // 
+            // clearConsoleToolStripMenuItem
+            // 
+            this.clearConsoleToolStripMenuItem.Name = "clearConsoleToolStripMenuItem";
+            this.clearConsoleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clearConsoleToolStripMenuItem.Text = "Clear Console";
+            this.clearConsoleToolStripMenuItem.Click += new System.EventHandler(this.ClearConsoleToolStripMenuItem_Click);
             // 
             // quitToolStripMenuItem
             // 
@@ -396,12 +424,12 @@
             this.MotorError_lbl.AutoSize = true;
             this.MotorError_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.MotorError_lbl.ForeColor = System.Drawing.Color.Black;
-            this.MotorError_lbl.Location = new System.Drawing.Point(9, 111);
+            this.MotorError_lbl.Location = new System.Drawing.Point(4, 111);
             this.MotorError_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.MotorError_lbl.Name = "MotorError_lbl";
-            this.MotorError_lbl.Size = new System.Drawing.Size(37, 26);
+            this.MotorError_lbl.Size = new System.Drawing.Size(47, 26);
             this.MotorError_lbl.TabIndex = 23;
-            this.MotorError_lbl.Text = "Motor Error";
+            this.MotorError_lbl.Text = "Encoder Status";
             // 
             // M7Running_ind
             // 
@@ -430,7 +458,7 @@
             // M7Error_ind
             // 
             this.M7Error_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.M7Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M7Error_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M7Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M7Error_ind.Location = new System.Drawing.Point(381, 93);
             this.M7Error_ind.Margin = new System.Windows.Forms.Padding(2);
@@ -444,7 +472,7 @@
             this.M6Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M6Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M6Error_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M6Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M6Error_ind.Location = new System.Drawing.Point(327, 93);
             this.M6Error_ind.Margin = new System.Windows.Forms.Padding(2);
@@ -458,7 +486,7 @@
             this.M5Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M5Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M5Error_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M5Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M5Error_ind.Location = new System.Drawing.Point(273, 93);
             this.M5Error_ind.Margin = new System.Windows.Forms.Padding(2);
@@ -496,7 +524,7 @@
             this.M4Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M4Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M4Error_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M4Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M4Error_ind.Location = new System.Drawing.Point(219, 93);
             this.M4Error_ind.Margin = new System.Windows.Forms.Padding(2);
@@ -522,7 +550,7 @@
             this.M3Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M3Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M3Error_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M3Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M3Error_ind.Location = new System.Drawing.Point(165, 93);
             this.M3Error_ind.Margin = new System.Windows.Forms.Padding(2);
@@ -548,7 +576,7 @@
             this.M2Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M2Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M2Error_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M2Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M2Error_ind.Location = new System.Drawing.Point(111, 93);
             this.M2Error_ind.Margin = new System.Windows.Forms.Padding(2);
@@ -562,7 +590,7 @@
             this.M1Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M1Error_ind.BackColor = System.Drawing.Color.LimeGreen;
+            this.M1Error_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M1Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M1Error_ind.Location = new System.Drawing.Point(57, 93);
             this.M1Error_ind.Margin = new System.Windows.Forms.Padding(2);
@@ -693,12 +721,12 @@
             this.MotorRunning_lbl.AutoSize = true;
             this.MotorRunning_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.MotorRunning_lbl.ForeColor = System.Drawing.Color.Black;
-            this.MotorRunning_lbl.Location = new System.Drawing.Point(4, 44);
+            this.MotorRunning_lbl.Location = new System.Drawing.Point(9, 44);
             this.MotorRunning_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.MotorRunning_lbl.Name = "MotorRunning_lbl";
-            this.MotorRunning_lbl.Size = new System.Drawing.Size(47, 26);
+            this.MotorRunning_lbl.Size = new System.Drawing.Size(37, 26);
             this.MotorRunning_lbl.TabIndex = 22;
-            this.MotorRunning_lbl.Text = "Motor Running";
+            this.MotorRunning_lbl.Text = "Motor Status";
             // 
             // groupBox2
             // 
@@ -1156,6 +1184,9 @@
         private System.Windows.Forms.PictureBox M2Error_ind;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label MotorRunning_lbl;
+        private System.Windows.Forms.ToolStripMenuItem encoderStatusToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mATLABScriptRunToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearConsoleToolStripMenuItem;
     }
 }
 
