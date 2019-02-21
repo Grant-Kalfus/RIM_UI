@@ -403,8 +403,8 @@ namespace R.I.M.UI_Shell
             }
 
 
-            Stop_btn.Enabled = true;
-            Start_btn.Enabled = false;
+            //Stop_btn.Enabled = true;
+            //Start_btn.Enabled = false;
 
             //M1Running_ind.BackColor = Color.LimeGreen;
             //M1_lbl.BackColor = Color.LimeGreen;
@@ -438,7 +438,7 @@ namespace R.I.M.UI_Shell
         {
             byte[] packet = new byte[3];
 
-            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 0, 0, ref packet, 3);
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 1, 0, ref packet, 3);
 
             if (!UART_COM.IsOpen)
             {
@@ -525,7 +525,15 @@ namespace R.I.M.UI_Shell
                             Console.WriteLine("Recieved a motor start confirm");
                         #endif
                         break;
+                    case 1:
+                        M2Running_ind.BackColor = Color.LimeGreen;
+
+                        #if (DEBUG_MODE)
+                            Console.WriteLine("Recieved a motor start confirm");
+                        #endif
+                        break;
                     default:
+
                         break;
                 }
             }
@@ -546,6 +554,20 @@ namespace R.I.M.UI_Shell
                         #endif
 
                         break;
+
+                    case 1:
+                        M2Running_ind.BackColor = Color.Gold;
+
+                        if (Stop_btn.InvokeRequired)
+                            Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
+                        if (Start_btn.InvokeRequired)
+                            Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
+
+                        #if (DEBUG_MODE)
+                            Console.WriteLine("Recieved a motor stop message");
+                        #endif
+                        break;
+
                     default:
                         break;
                 }
@@ -563,6 +585,18 @@ namespace R.I.M.UI_Shell
 
                         #if (DEBUG_MODE)
                             Console.WriteLine("Motor Driver id 0 Responded with: " + response.ToString("X2"));
+                        #endif
+
+                        break;
+                    case 1:
+                        rx[0] = (byte)UART_COM.ReadChar();
+                        rx[1] = (byte)UART_COM.ReadChar();
+                        response |= rx[0];
+                        response |= (ushort)(rx[1] << 8);
+
+
+                        #if (DEBUG_MODE)
+                            Console.WriteLine("Motor Driver id 1 Responded with: " + response.ToString("X2"));
                         #endif
 
                         break;
