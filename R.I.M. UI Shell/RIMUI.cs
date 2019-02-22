@@ -459,7 +459,7 @@ namespace R.I.M.UI_Shell
 
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
             
-            
+
             //matlab.Execute(@"cd C:\MATLAB_Script");
             //matlab.Feval("myfunc", 2, out object result, 3.14, 42.0, "world");
             //object[] res = result as object[];
@@ -489,10 +489,13 @@ namespace R.I.M.UI_Shell
 
             #if (DEBUG_MODE)
                 Debug_Output(packet, 3);
-#endif
+            #endif
+
             for (int i = 0; i < 100; i++)
             {
+                
                 UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                E1Running_ind.BackColor = Color.LimeGreen;
                 Thread.Sleep(100);
             }
         }
@@ -582,6 +585,7 @@ namespace R.I.M.UI_Shell
                         response |= rx[0];
                         response |= (ushort)(rx[1] << 8);
 
+                        M1Running_ind.BackColor = Color.Gold;
 
                         #if (DEBUG_MODE)
                             Console.WriteLine("Motor Driver id 0 Responded with: " + response.ToString("X2"));
@@ -594,6 +598,7 @@ namespace R.I.M.UI_Shell
                         response |= rx[0];
                         response |= (ushort)(rx[1] << 8);
 
+                        M2Running_ind.BackColor = Color.Gold;
 
                         #if (DEBUG_MODE)
                             Console.WriteLine("Motor Driver id 1 Responded with: " + response.ToString("X2"));
@@ -608,6 +613,7 @@ namespace R.I.M.UI_Shell
                 switch (info)
                 {
                     case 0:
+                        E1Running_ind.BackColor = Color.Gold;
                         rx[0] = (byte)UART_COM.ReadChar();
                         rx[1] = (byte)UART_COM.ReadChar();
                         response |= rx[0];
@@ -645,6 +651,40 @@ namespace R.I.M.UI_Shell
         private void ClearConsoleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Console.Clear();
+        }
+
+        private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            byte[] packet = new byte[3];
+
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 0, 0, ref packet, 3);
+
+            if (!UART_COM.IsOpen)
+            {
+                try
+                {
+                    UART_COM.Open();
+                }
+                catch
+                {
+                    MessageBox.Show("Error: COM Port " + UART_COM.PortName + " is in use or doesn't exist!");
+                    return;
+                };
+            }
+
+            #if (DEBUG_MODE)
+                Debug_Output(packet, 3);
+            #endif
+
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            //Check Motor 2
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 1, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            //Check incoder 1
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
         }
     }
 }

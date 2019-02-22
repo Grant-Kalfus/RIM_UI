@@ -36,6 +36,7 @@
             this.CurUartCom_lbl = new System.Windows.Forms.ToolStripTextBox();
             this.Test_BTN = new System.Windows.Forms.ToolStripMenuItem();
             this.encoderStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DeviceStatusCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mATLABScriptRunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,17 +62,17 @@
             this.MotorError_lbl = new System.Windows.Forms.Label();
             this.M7Running_ind = new System.Windows.Forms.PictureBox();
             this.M6Running_ind = new System.Windows.Forms.PictureBox();
-            this.M7Error_ind = new System.Windows.Forms.PictureBox();
-            this.M6Error_ind = new System.Windows.Forms.PictureBox();
-            this.M5Error_ind = new System.Windows.Forms.PictureBox();
+            this.E7Running_ind = new System.Windows.Forms.PictureBox();
+            this.E6Running_ind = new System.Windows.Forms.PictureBox();
+            this.E5Running_ind = new System.Windows.Forms.PictureBox();
             this.M5Running_ind = new System.Windows.Forms.PictureBox();
             this.M4Running_ind = new System.Windows.Forms.PictureBox();
-            this.M4Error_ind = new System.Windows.Forms.PictureBox();
+            this.E4Running_ind = new System.Windows.Forms.PictureBox();
             this.M3Running_ind = new System.Windows.Forms.PictureBox();
-            this.M3Error_ind = new System.Windows.Forms.PictureBox();
+            this.E3Running_ind = new System.Windows.Forms.PictureBox();
             this.M2Running_ind = new System.Windows.Forms.PictureBox();
-            this.M2Error_ind = new System.Windows.Forms.PictureBox();
-            this.M1Error_ind = new System.Windows.Forms.PictureBox();
+            this.E2Running_ind = new System.Windows.Forms.PictureBox();
+            this.E1Running_ind = new System.Windows.Forms.PictureBox();
             this.M1Running_ind = new System.Windows.Forms.PictureBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -118,17 +119,17 @@
             this.feedback_grd.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.M7Running_ind)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.M6Running_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M7Error_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M6Error_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M5Error_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E7Running_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E6Running_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E5Running_ind)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.M5Running_ind)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.M4Running_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M4Error_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E4Running_ind)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.M3Running_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M3Error_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E3Running_ind)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.M2Running_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M2Error_ind)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M1Error_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E2Running_ind)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E1Running_ind)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.M1Running_ind)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.TraverseLineMode_grp.SuspendLayout();
@@ -186,6 +187,7 @@
             // 
             this.Test_BTN.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.encoderStatusToolStripMenuItem,
+            this.DeviceStatusCheckToolStripMenuItem,
             this.mATLABScriptRunToolStripMenuItem,
             this.clearConsoleToolStripMenuItem});
             this.Test_BTN.Name = "Test_BTN";
@@ -199,6 +201,13 @@
             this.encoderStatusToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.encoderStatusToolStripMenuItem.Text = "Encoder Status";
             this.encoderStatusToolStripMenuItem.Click += new System.EventHandler(this.EncoderStatusToolStripMenuItem_Click);
+            // 
+            // DeviceStatusCheckToolStripMenuItem
+            // 
+            this.DeviceStatusCheckToolStripMenuItem.Name = "DeviceStatusCheckToolStripMenuItem";
+            this.DeviceStatusCheckToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.DeviceStatusCheckToolStripMenuItem.Text = "Device Status Check";
+            this.DeviceStatusCheckToolStripMenuItem.Click += new System.EventHandler(this.DeviceStatusCheckToolStripMenuItem_Click);
             // 
             // mATLABScriptRunToolStripMenuItem
             // 
@@ -388,17 +397,17 @@
             this.feedback_grd.Controls.Add(this.MotorError_lbl, 0, 2);
             this.feedback_grd.Controls.Add(this.M7Running_ind, 7, 1);
             this.feedback_grd.Controls.Add(this.M6Running_ind, 6, 1);
-            this.feedback_grd.Controls.Add(this.M7Error_ind, 7, 2);
-            this.feedback_grd.Controls.Add(this.M6Error_ind, 6, 2);
-            this.feedback_grd.Controls.Add(this.M5Error_ind, 5, 2);
+            this.feedback_grd.Controls.Add(this.E7Running_ind, 7, 2);
+            this.feedback_grd.Controls.Add(this.E6Running_ind, 6, 2);
+            this.feedback_grd.Controls.Add(this.E5Running_ind, 5, 2);
             this.feedback_grd.Controls.Add(this.M5Running_ind, 5, 1);
             this.feedback_grd.Controls.Add(this.M4Running_ind, 4, 1);
-            this.feedback_grd.Controls.Add(this.M4Error_ind, 4, 2);
+            this.feedback_grd.Controls.Add(this.E4Running_ind, 4, 2);
             this.feedback_grd.Controls.Add(this.M3Running_ind, 3, 1);
-            this.feedback_grd.Controls.Add(this.M3Error_ind, 3, 2);
+            this.feedback_grd.Controls.Add(this.E3Running_ind, 3, 2);
             this.feedback_grd.Controls.Add(this.M2Running_ind, 2, 1);
-            this.feedback_grd.Controls.Add(this.M2Error_ind, 2, 2);
-            this.feedback_grd.Controls.Add(this.M1Error_ind, 1, 2);
+            this.feedback_grd.Controls.Add(this.E2Running_ind, 2, 2);
+            this.feedback_grd.Controls.Add(this.E1Running_ind, 1, 2);
             this.feedback_grd.Controls.Add(this.M1Running_ind, 1, 1);
             this.feedback_grd.Controls.Add(this.label9, 7, 0);
             this.feedback_grd.Controls.Add(this.label8, 6, 0);
@@ -455,45 +464,45 @@
             this.M6Running_ind.TabIndex = 8;
             this.M6Running_ind.TabStop = false;
             // 
-            // M7Error_ind
+            // E7Running_ind
             // 
-            this.M7Error_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.M7Error_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M7Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M7Error_ind.Location = new System.Drawing.Point(381, 93);
-            this.M7Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M7Error_ind.Name = "M7Error_ind";
-            this.M7Error_ind.Size = new System.Drawing.Size(50, 61);
-            this.M7Error_ind.TabIndex = 20;
-            this.M7Error_ind.TabStop = false;
+            this.E7Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.E7Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.E7Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.E7Running_ind.Location = new System.Drawing.Point(381, 93);
+            this.E7Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.E7Running_ind.Name = "E7Running_ind";
+            this.E7Running_ind.Size = new System.Drawing.Size(50, 61);
+            this.E7Running_ind.TabIndex = 20;
+            this.E7Running_ind.TabStop = false;
             // 
-            // M6Error_ind
+            // E6Running_ind
             // 
-            this.M6Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.E6Running_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M6Error_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M6Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M6Error_ind.Location = new System.Drawing.Point(327, 93);
-            this.M6Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M6Error_ind.Name = "M6Error_ind";
-            this.M6Error_ind.Size = new System.Drawing.Size(49, 62);
-            this.M6Error_ind.TabIndex = 19;
-            this.M6Error_ind.TabStop = false;
+            this.E6Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.E6Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.E6Running_ind.Location = new System.Drawing.Point(327, 93);
+            this.E6Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.E6Running_ind.Name = "E6Running_ind";
+            this.E6Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E6Running_ind.TabIndex = 19;
+            this.E6Running_ind.TabStop = false;
             // 
-            // M5Error_ind
+            // E5Running_ind
             // 
-            this.M5Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.E5Running_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M5Error_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M5Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M5Error_ind.Location = new System.Drawing.Point(273, 93);
-            this.M5Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M5Error_ind.Name = "M5Error_ind";
-            this.M5Error_ind.Size = new System.Drawing.Size(49, 62);
-            this.M5Error_ind.TabIndex = 18;
-            this.M5Error_ind.TabStop = false;
+            this.E5Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.E5Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.E5Running_ind.Location = new System.Drawing.Point(273, 93);
+            this.E5Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.E5Running_ind.Name = "E5Running_ind";
+            this.E5Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E5Running_ind.TabIndex = 18;
+            this.E5Running_ind.TabStop = false;
             // 
             // M5Running_ind
             // 
@@ -519,19 +528,19 @@
             this.M4Running_ind.TabIndex = 6;
             this.M4Running_ind.TabStop = false;
             // 
-            // M4Error_ind
+            // E4Running_ind
             // 
-            this.M4Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.E4Running_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M4Error_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M4Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M4Error_ind.Location = new System.Drawing.Point(219, 93);
-            this.M4Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M4Error_ind.Name = "M4Error_ind";
-            this.M4Error_ind.Size = new System.Drawing.Size(49, 62);
-            this.M4Error_ind.TabIndex = 17;
-            this.M4Error_ind.TabStop = false;
+            this.E4Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.E4Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.E4Running_ind.Location = new System.Drawing.Point(219, 93);
+            this.E4Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.E4Running_ind.Name = "E4Running_ind";
+            this.E4Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E4Running_ind.TabIndex = 17;
+            this.E4Running_ind.TabStop = false;
             // 
             // M3Running_ind
             // 
@@ -545,19 +554,19 @@
             this.M3Running_ind.TabIndex = 5;
             this.M3Running_ind.TabStop = false;
             // 
-            // M3Error_ind
+            // E3Running_ind
             // 
-            this.M3Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.E3Running_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M3Error_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M3Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M3Error_ind.Location = new System.Drawing.Point(165, 93);
-            this.M3Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M3Error_ind.Name = "M3Error_ind";
-            this.M3Error_ind.Size = new System.Drawing.Size(49, 62);
-            this.M3Error_ind.TabIndex = 16;
-            this.M3Error_ind.TabStop = false;
+            this.E3Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.E3Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.E3Running_ind.Location = new System.Drawing.Point(165, 93);
+            this.E3Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.E3Running_ind.Name = "E3Running_ind";
+            this.E3Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E3Running_ind.TabIndex = 16;
+            this.E3Running_ind.TabStop = false;
             // 
             // M2Running_ind
             // 
@@ -571,33 +580,33 @@
             this.M2Running_ind.TabIndex = 4;
             this.M2Running_ind.TabStop = false;
             // 
-            // M2Error_ind
+            // E2Running_ind
             // 
-            this.M2Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.E2Running_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M2Error_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M2Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M2Error_ind.Location = new System.Drawing.Point(111, 93);
-            this.M2Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M2Error_ind.Name = "M2Error_ind";
-            this.M2Error_ind.Size = new System.Drawing.Size(49, 62);
-            this.M2Error_ind.TabIndex = 15;
-            this.M2Error_ind.TabStop = false;
+            this.E2Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.E2Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.E2Running_ind.Location = new System.Drawing.Point(111, 93);
+            this.E2Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.E2Running_ind.Name = "E2Running_ind";
+            this.E2Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E2Running_ind.TabIndex = 15;
+            this.E2Running_ind.TabStop = false;
             // 
-            // M1Error_ind
+            // E1Running_ind
             // 
-            this.M1Error_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.E1Running_ind.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.M1Error_ind.BackColor = System.Drawing.Color.IndianRed;
-            this.M1Error_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M1Error_ind.Location = new System.Drawing.Point(57, 93);
-            this.M1Error_ind.Margin = new System.Windows.Forms.Padding(2);
-            this.M1Error_ind.Name = "M1Error_ind";
-            this.M1Error_ind.Size = new System.Drawing.Size(49, 62);
-            this.M1Error_ind.TabIndex = 1;
-            this.M1Error_ind.TabStop = false;
+            this.E1Running_ind.BackColor = System.Drawing.Color.IndianRed;
+            this.E1Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.E1Running_ind.Location = new System.Drawing.Point(57, 93);
+            this.E1Running_ind.Margin = new System.Windows.Forms.Padding(2);
+            this.E1Running_ind.Name = "E1Running_ind";
+            this.E1Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E1Running_ind.TabIndex = 1;
+            this.E1Running_ind.TabStop = false;
             // 
             // M1Running_ind
             // 
@@ -1078,17 +1087,17 @@
             this.feedback_grd.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.M7Running_ind)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.M6Running_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M7Error_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M6Error_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M5Error_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E7Running_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E6Running_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E5Running_ind)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.M5Running_ind)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.M4Running_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M4Error_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E4Running_ind)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.M3Running_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M3Error_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E3Running_ind)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.M2Running_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M2Error_ind)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.M1Error_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E2Running_ind)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.E1Running_ind)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.M1Running_ind)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -1126,7 +1135,7 @@
         private System.Windows.Forms.Button Stop_btn;
         private System.Windows.Forms.Button Start_btn;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.PictureBox M1Error_ind;
+        private System.Windows.Forms.PictureBox E1Running_ind;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label OvrCurpos_lbl;
         private System.Windows.Forms.Label Servo2_lbl;
@@ -1176,17 +1185,18 @@
         private System.Windows.Forms.TableLayoutPanel feedback_grd;
         private System.Windows.Forms.PictureBox M1Running_ind;
         private System.Windows.Forms.Label MotorError_lbl;
-        private System.Windows.Forms.PictureBox M7Error_ind;
-        private System.Windows.Forms.PictureBox M6Error_ind;
-        private System.Windows.Forms.PictureBox M5Error_ind;
-        private System.Windows.Forms.PictureBox M4Error_ind;
-        private System.Windows.Forms.PictureBox M3Error_ind;
-        private System.Windows.Forms.PictureBox M2Error_ind;
+        private System.Windows.Forms.PictureBox E7Running_ind;
+        private System.Windows.Forms.PictureBox E6Running_ind;
+        private System.Windows.Forms.PictureBox E5Running_ind;
+        private System.Windows.Forms.PictureBox E4Running_ind;
+        private System.Windows.Forms.PictureBox E3Running_ind;
+        private System.Windows.Forms.PictureBox E2Running_ind;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label MotorRunning_lbl;
         private System.Windows.Forms.ToolStripMenuItem encoderStatusToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mATLABScriptRunToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearConsoleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DeviceStatusCheckToolStripMenuItem;
     }
 }
 
