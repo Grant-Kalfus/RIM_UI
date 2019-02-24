@@ -26,10 +26,71 @@ namespace R.I.M.UI_Shell
                               RIM_OP_MOTOR_SET_PARAM     = 0x20,
                               RIM_OP_MOTOR_STATUS        = 0x30,
                               RIM_OP_ENCODER_INFO        = 0x40,
+                              RIM_OP_ERROR               = 0x50,
+                              RIM_OP_RESET_DEV           = 0x60,
+
                               RIM_OP_MOTOR_EXTENDED_STEP = 0x80;
 
 
         };
+
+        static class L6470_Params {
+            //Overcurrent Parameters
+            public const byte OCD_TH_375mA  = 0x00,
+                              OCD_TH_750mA  = 0x01,
+                              OCD_TH_1125mA = 0x02,
+                              OCD_TH_1500mA = 0x03,
+                              OCD_TH_1875mA = 0x04,
+                              OCD_TH_2250mA = 0x05,
+                              OCD_TH_2625mA = 0x06,
+                              OCD_TH_3000mA = 0x07,
+                              OCD_TH_3375mA = 0x08,
+                              OCD_TH_3750mA = 0x09,
+                              OCD_TH_4125mA = 0x0A,
+                              OCD_TH_4500mA = 0x0B,
+                              OCD_TH_4875mA = 0x0C,
+                              OCD_TH_5250mA = 0x0D,
+                              OCD_TH_5625mA = 0x0E,
+                              OCD_TH_6000mA = 0x0F;
+
+            //Step Selector
+            public const byte STEP_SEL_1     = 0x00,
+                              STEP_SEL_1_2   = 0x01,
+                              STEP_SEL_1_4   = 0x02,
+                              STEP_SEL_1_8   = 0x03,
+                              STEP_SEL_1_16  = 0x04,
+                              STEP_SEL_1_32  = 0x05,
+                              STEP_SEL_1_64  = 0x06,
+                              STEP_SEL_1_128 = 0x07;
+
+
+            //All the registers within the the L6470
+            public const byte ABS_POS      =       0x01,
+                              EL_POS       =       0x02,
+                              MARK         =       0x03,
+                              SPEED        =       0x04,
+                              ACC          =       0x05,
+                              DECEL        =       0x06,
+                              MAX_SPEED    =       0x07,
+                              MIN_SPEED    =       0x08,
+                              FS_SPD       =       0x15,
+                              KVAL_HOLD    =       0x09,
+                              KVAL_RUN     =       0x0A,
+                              KVAL_ACC     =       0x0B,
+                              KVAL_DEC     =       0x0C,
+                              INT_SPD      =       0x0D,
+                              ST_SLP       =       0x0E,
+                              FN_SLP_ACC   =       0x0F,
+                              FN_SLP_DEC   =       0x10,
+                              K_THERM      =       0x11,
+                              ADC_OUT      =       0x12,
+                              OCD_TH       =       0x13,
+                              STALL_TH     =       0x14,
+                              STEP_MODE    =       0x16,
+                              ALARM_EN     =       0x17,
+                              CONFIG       =       0x18,
+                              STATUS       =       0x19;
+        }
 
         //Make an instance of the window that allows the user to configure UART-related settings
         private ConfigBox Cfg_box = new ConfigBox();
@@ -39,6 +100,14 @@ namespace R.I.M.UI_Shell
 
         //Matlab console instance for DH parameters
         MLApp.MLApp matlab = new MLApp.MLApp();
+
+        //Toggle for telling system whether or not to update the UI on the encoder position
+        bool Encoder_Update_1 = false,
+             Encoder_Update_2 = false,
+             Encoder_Update_3 = false,
+             Encoder_Update_4 = false,
+             Encoder_Update_5 = false;
+
 
         //For storing the stepper motor steps during percise execution mode
         public struct PreciseExecution_steps
@@ -76,6 +145,24 @@ namespace R.I.M.UI_Shell
             UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
             matlab.Visible = 0;
         }
+
+        private bool TryOpenCom() {
+            bool r = true;
+            if (!UART_COM.IsOpen)
+            {
+                try
+                {
+                    UART_COM.Open();  
+                }
+                catch
+                {
+                    MessageBox.Show("Error: COM Port " + UART_COM.PortName + " is in use or doesn't exist!");
+                    r = false;
+                };
+            }
+            return r;
+        }
+
 
         //Debug mode output when transfering packets
         #if (DEBUG_MODE)
@@ -523,10 +610,13 @@ namespace R.I.M.UI_Shell
                 {
                     case 0:
                         M1Running_ind.BackColor = Color.LimeGreen;
-                        
+
                         #if (DEBUG_MODE)
                             Console.WriteLine("Recieved a motor start confirm");
                         #endif
+
+                        Encoder_Update_1 = true;
+
                         break;
                     case 1:
                         M2Running_ind.BackColor = Color.LimeGreen;
@@ -534,6 +624,7 @@ namespace R.I.M.UI_Shell
                         #if (DEBUG_MODE)
                             Console.WriteLine("Recieved a motor start confirm");
                         #endif
+
                         break;
                     default:
 
@@ -551,7 +642,9 @@ namespace R.I.M.UI_Shell
                             Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
                         if (Start_btn.InvokeRequired)
                             Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
-                        
+
+                        Encoder_Update_1 = false;
+
                         #if (DEBUG_MODE)
                             Console.WriteLine("Recieved a motor stop message");
                         #endif
@@ -569,6 +662,7 @@ namespace R.I.M.UI_Shell
                         #if (DEBUG_MODE)
                             Console.WriteLine("Recieved a motor stop message");
                         #endif
+
                         break;
 
                     default:
@@ -580,8 +674,8 @@ namespace R.I.M.UI_Shell
                 switch (info)
                 {
                     case 0:
-                        rx[0] = (byte) UART_COM.ReadChar();
-                        rx[1] = (byte) UART_COM.ReadChar();
+                        rx[0] = (byte)UART_COM.ReadChar();
+                        rx[1] = (byte)UART_COM.ReadChar();
                         response |= rx[0];
                         response |= (ushort)(rx[1] << 8);
 
@@ -608,7 +702,42 @@ namespace R.I.M.UI_Shell
 
                 }
             }
-            else if(opcode == PSoC_OpCodes.RIM_OP_ENCODER_INFO)
+            else if (opcode == PSoC_OpCodes.RIM_OP_RESET_DEV)
+            {
+                switch (info)
+                {
+                    case 0:
+                        rx[0] = (byte)UART_COM.ReadChar();
+                        rx[1] = (byte)UART_COM.ReadChar();
+                        response |= rx[0];
+                        response |= (ushort)(rx[1] << 8);
+
+                        M1Running_ind.BackColor = Color.Gold;
+
+                        #if (DEBUG_MODE)
+                            Console.WriteLine("Motor Driver id 0 Responded with: " + response.ToString("X2"));
+                        #endif
+
+                        break;
+                    case 1:
+                        rx[0] = (byte)UART_COM.ReadChar();
+                        rx[1] = (byte)UART_COM.ReadChar();
+                        response |= rx[0];
+                        response |= (ushort)(rx[1] << 8);
+
+
+                        M2Running_ind.BackColor = Color.Gold;
+
+                        #if (DEBUG_MODE)
+                            Console.WriteLine("Motor Driver id 1 Responded with: " + response.ToString("X2"));
+                        #endif
+
+                        break;
+
+                }
+            }
+
+            else if (opcode == PSoC_OpCodes.RIM_OP_ENCODER_INFO)
             {
                 switch (info)
                 {
@@ -618,9 +747,18 @@ namespace R.I.M.UI_Shell
                         rx[1] = (byte)UART_COM.ReadChar();
                         response |= rx[0];
                         response |= (ushort)(rx[1] << 8);
+                        
+
+
                         #if (DEBUG_MODE)
                             Console.WriteLine("Encoder id 0 is currently at position: " + response.ToString());
                         #endif
+
+
+                        if (Encoder1Val_lbl.InvokeRequired)
+                            Encoder1Val_lbl.Invoke(new MethodInvoker(delegate { Encoder1Val_lbl.Text = response.ToString(); }));
+                        
+
                         break;
                 }
 
@@ -685,6 +823,45 @@ namespace R.I.M.UI_Shell
             //Check incoder 1
             Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+        }
+
+        private void ResetDevicesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //If Com port could not be opened
+            if (!TryOpenCom()) { return; };
+
+            byte[] packet = new byte[3];
+            Format_packet(PSoC_OpCodes.RIM_OP_RESET_DEV, 0, 0, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            Format_packet(PSoC_OpCodes.RIM_OP_RESET_DEV, 0, 1, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+        }
+
+        private void Encoder1Val_lbl_Click(object sender, EventArgs e)
+        {
+            Encoder_Update_1 = !Encoder_Update_1;
+        }
+
+        private void Encoder_FetchTimer_Tick(object sender, EventArgs e)
+        {
+            //TryOpenCom();
+
+            byte[] packet = new byte[3];
+
+            for (int i = 0; i < 2; i++)
+            {
+                if (Encoder_Update_1) {
+                    Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
+                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                }
+                //if (Encoder_Update_2)
+                //{
+                //    Format_packet(PSoC_OpCodes.RIM_OP_RESET_DEV, 0, 0, 0, ref packet, 3);
+                //    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                //}
+
+            }
         }
     }
 }

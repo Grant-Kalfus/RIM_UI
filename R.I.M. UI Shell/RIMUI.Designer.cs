@@ -113,6 +113,16 @@
             this.Servo2_lbl = new System.Windows.Forms.Label();
             this.OvrCurpos_lbl = new System.Windows.Forms.Label();
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
+            this.label11 = new System.Windows.Forms.Label();
+            this.Encoder1Val_lbl = new System.Windows.Forms.Label();
+            this.Encoder2Val_lbl = new System.Windows.Forms.Label();
+            this.Encoder3Val_lbl = new System.Windows.Forms.Label();
+            this.Encoder4Val_lbl = new System.Windows.Forms.Label();
+            this.Encoder5Val_lbl = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.ResetDevicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Encoder_FetchTimer = new System.Windows.Forms.Timer(this.components);
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -150,7 +160,7 @@
             this.CurMode_lbl});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(598, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(594, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -173,7 +183,7 @@
             this.CurUartCom_lbl});
             this.setUARTCOMToolStripMenuItem.Name = "setUARTCOMToolStripMenuItem";
             this.setUARTCOMToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.setUARTCOMToolStripMenuItem.Text = "Set UART COM";
+            this.setUARTCOMToolStripMenuItem.Text = "Config Menu";
             this.setUARTCOMToolStripMenuItem.Click += new System.EventHandler(this.SetUARTCOMToolStripMenuItem_Click);
             // 
             // CurUartCom_lbl
@@ -188,6 +198,7 @@
             this.Test_BTN.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.encoderStatusToolStripMenuItem,
             this.DeviceStatusCheckToolStripMenuItem,
+            this.ResetDevicesToolStripMenuItem,
             this.mATLABScriptRunToolStripMenuItem,
             this.clearConsoleToolStripMenuItem});
             this.Test_BTN.Name = "Test_BTN";
@@ -252,25 +263,25 @@
             // setXToolStripMenuItem
             // 
             this.setXToolStripMenuItem.Name = "setXToolStripMenuItem";
-            this.setXToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.setXToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.setXToolStripMenuItem.Text = "Set X";
             // 
             // setvYToolStripMenuItem
             // 
             this.setvYToolStripMenuItem.Name = "setvYToolStripMenuItem";
-            this.setvYToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.setvYToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.setvYToolStripMenuItem.Text = "Set Y";
             // 
             // setZToolStripMenuItem
             // 
             this.setZToolStripMenuItem.Name = "setZToolStripMenuItem";
-            this.setZToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.setZToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.setZToolStripMenuItem.Text = "Set Z";
             // 
             // setAllToolStripMenuItem
             // 
             this.setAllToolStripMenuItem.Name = "setAllToolStripMenuItem";
-            this.setAllToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.setAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.setAllToolStripMenuItem.Text = "Set All";
             // 
             // toolStripSeparator2
@@ -339,7 +350,7 @@
             this.Common_grp.Margin = new System.Windows.Forms.Padding(2);
             this.Common_grp.Name = "Common_grp";
             this.Common_grp.Padding = new System.Windows.Forms.Padding(2);
-            this.Common_grp.Size = new System.Drawing.Size(124, 179);
+            this.Common_grp.Size = new System.Drawing.Size(124, 193);
             this.Common_grp.TabIndex = 1;
             this.Common_grp.TabStop = false;
             this.Common_grp.Text = "Common Controls";
@@ -347,7 +358,7 @@
             // Stop_btn
             // 
             this.Stop_btn.Enabled = false;
-            this.Stop_btn.Location = new System.Drawing.Point(4, 96);
+            this.Stop_btn.Location = new System.Drawing.Point(4, 110);
             this.Stop_btn.Margin = new System.Windows.Forms.Padding(2);
             this.Stop_btn.Name = "Stop_btn";
             this.Stop_btn.Size = new System.Drawing.Size(112, 75);
@@ -361,7 +372,7 @@
             this.Start_btn.Location = new System.Drawing.Point(4, 17);
             this.Start_btn.Margin = new System.Windows.Forms.Padding(2);
             this.Start_btn.Name = "Start_btn";
-            this.Start_btn.Size = new System.Drawing.Size(112, 75);
+            this.Start_btn.Size = new System.Drawing.Size(112, 73);
             this.Start_btn.TabIndex = 0;
             this.Start_btn.Text = "Start";
             this.Start_btn.UseVisualStyleBackColor = true;
@@ -374,7 +385,7 @@
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Size = new System.Drawing.Size(446, 180);
+            this.groupBox1.Size = new System.Drawing.Size(446, 194);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Common Feedback";
@@ -394,21 +405,29 @@
             this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
             this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
             this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.feedback_grd.Controls.Add(this.MotorError_lbl, 0, 2);
-            this.feedback_grd.Controls.Add(this.M7Running_ind, 7, 1);
-            this.feedback_grd.Controls.Add(this.M6Running_ind, 6, 1);
-            this.feedback_grd.Controls.Add(this.E7Running_ind, 7, 2);
-            this.feedback_grd.Controls.Add(this.E6Running_ind, 6, 2);
-            this.feedback_grd.Controls.Add(this.E5Running_ind, 5, 2);
-            this.feedback_grd.Controls.Add(this.M5Running_ind, 5, 1);
-            this.feedback_grd.Controls.Add(this.M4Running_ind, 4, 1);
-            this.feedback_grd.Controls.Add(this.E4Running_ind, 4, 2);
-            this.feedback_grd.Controls.Add(this.M3Running_ind, 3, 1);
-            this.feedback_grd.Controls.Add(this.E3Running_ind, 3, 2);
-            this.feedback_grd.Controls.Add(this.M2Running_ind, 2, 1);
-            this.feedback_grd.Controls.Add(this.E2Running_ind, 2, 2);
-            this.feedback_grd.Controls.Add(this.E1Running_ind, 1, 2);
-            this.feedback_grd.Controls.Add(this.M1Running_ind, 1, 1);
+            this.feedback_grd.Controls.Add(this.label18, 7, 1);
+            this.feedback_grd.Controls.Add(this.label17, 6, 1);
+            this.feedback_grd.Controls.Add(this.Encoder5Val_lbl, 5, 1);
+            this.feedback_grd.Controls.Add(this.Encoder4Val_lbl, 4, 1);
+            this.feedback_grd.Controls.Add(this.Encoder3Val_lbl, 3, 1);
+            this.feedback_grd.Controls.Add(this.Encoder2Val_lbl, 2, 1);
+            this.feedback_grd.Controls.Add(this.Encoder1Val_lbl, 1, 1);
+            this.feedback_grd.Controls.Add(this.label11, 0, 1);
+            this.feedback_grd.Controls.Add(this.MotorError_lbl, 0, 3);
+            this.feedback_grd.Controls.Add(this.M7Running_ind, 7, 2);
+            this.feedback_grd.Controls.Add(this.M6Running_ind, 6, 2);
+            this.feedback_grd.Controls.Add(this.E7Running_ind, 7, 3);
+            this.feedback_grd.Controls.Add(this.E6Running_ind, 6, 3);
+            this.feedback_grd.Controls.Add(this.E5Running_ind, 5, 3);
+            this.feedback_grd.Controls.Add(this.M5Running_ind, 5, 2);
+            this.feedback_grd.Controls.Add(this.M4Running_ind, 4, 2);
+            this.feedback_grd.Controls.Add(this.E4Running_ind, 4, 3);
+            this.feedback_grd.Controls.Add(this.M3Running_ind, 3, 2);
+            this.feedback_grd.Controls.Add(this.E3Running_ind, 3, 3);
+            this.feedback_grd.Controls.Add(this.M2Running_ind, 2, 2);
+            this.feedback_grd.Controls.Add(this.E2Running_ind, 2, 3);
+            this.feedback_grd.Controls.Add(this.E1Running_ind, 1, 3);
+            this.feedback_grd.Controls.Add(this.M1Running_ind, 1, 2);
             this.feedback_grd.Controls.Add(this.label9, 7, 0);
             this.feedback_grd.Controls.Add(this.label8, 6, 0);
             this.feedback_grd.Controls.Add(this.label7, 5, 0);
@@ -417,14 +436,15 @@
             this.feedback_grd.Controls.Add(this.label4, 2, 0);
             this.feedback_grd.Controls.Add(this.M1_lbl, 1, 0);
             this.feedback_grd.Controls.Add(this.label10, 0, 0);
-            this.feedback_grd.Controls.Add(this.MotorRunning_lbl, 0, 1);
+            this.feedback_grd.Controls.Add(this.MotorRunning_lbl, 0, 2);
             this.feedback_grd.Location = new System.Drawing.Point(5, 17);
             this.feedback_grd.Name = "feedback_grd";
-            this.feedback_grd.RowCount = 3;
+            this.feedback_grd.RowCount = 4;
             this.feedback_grd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            this.feedback_grd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.feedback_grd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42.5F));
             this.feedback_grd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42.5F));
-            this.feedback_grd.Size = new System.Drawing.Size(434, 158);
+            this.feedback_grd.Size = new System.Drawing.Size(434, 172);
             this.feedback_grd.TabIndex = 4;
             // 
             // MotorError_lbl
@@ -433,7 +453,7 @@
             this.MotorError_lbl.AutoSize = true;
             this.MotorError_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.MotorError_lbl.ForeColor = System.Drawing.Color.Black;
-            this.MotorError_lbl.Location = new System.Drawing.Point(4, 111);
+            this.MotorError_lbl.Location = new System.Drawing.Point(4, 128);
             this.MotorError_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.MotorError_lbl.Name = "MotorError_lbl";
             this.MotorError_lbl.Size = new System.Drawing.Size(47, 26);
@@ -445,10 +465,11 @@
             this.M7Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.M7Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M7Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M7Running_ind.Location = new System.Drawing.Point(381, 27);
+            this.M7Running_ind.Enabled = false;
+            this.M7Running_ind.Location = new System.Drawing.Point(381, 55);
             this.M7Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M7Running_ind.Name = "M7Running_ind";
-            this.M7Running_ind.Size = new System.Drawing.Size(50, 61);
+            this.M7Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M7Running_ind.TabIndex = 9;
             this.M7Running_ind.TabStop = false;
             // 
@@ -457,10 +478,11 @@
             this.M6Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.M6Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M6Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M6Running_ind.Location = new System.Drawing.Point(327, 27);
+            this.M6Running_ind.Enabled = false;
+            this.M6Running_ind.Location = new System.Drawing.Point(327, 55);
             this.M6Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M6Running_ind.Name = "M6Running_ind";
-            this.M6Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M6Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M6Running_ind.TabIndex = 8;
             this.M6Running_ind.TabStop = false;
             // 
@@ -469,10 +491,11 @@
             this.E7Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.E7Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E7Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.E7Running_ind.Location = new System.Drawing.Point(381, 93);
+            this.E7Running_ind.Enabled = false;
+            this.E7Running_ind.Location = new System.Drawing.Point(381, 114);
             this.E7Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E7Running_ind.Name = "E7Running_ind";
-            this.E7Running_ind.Size = new System.Drawing.Size(50, 61);
+            this.E7Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E7Running_ind.TabIndex = 20;
             this.E7Running_ind.TabStop = false;
             // 
@@ -483,10 +506,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.E6Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E6Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.E6Running_ind.Location = new System.Drawing.Point(327, 93);
+            this.E6Running_ind.Enabled = false;
+            this.E6Running_ind.Location = new System.Drawing.Point(327, 114);
             this.E6Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E6Running_ind.Name = "E6Running_ind";
-            this.E6Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E6Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E6Running_ind.TabIndex = 19;
             this.E6Running_ind.TabStop = false;
             // 
@@ -497,10 +521,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.E5Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E5Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.E5Running_ind.Location = new System.Drawing.Point(273, 93);
+            this.E5Running_ind.Location = new System.Drawing.Point(273, 114);
             this.E5Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E5Running_ind.Name = "E5Running_ind";
-            this.E5Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E5Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E5Running_ind.TabIndex = 18;
             this.E5Running_ind.TabStop = false;
             // 
@@ -509,10 +533,10 @@
             this.M5Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.M5Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M5Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M5Running_ind.Location = new System.Drawing.Point(273, 27);
+            this.M5Running_ind.Location = new System.Drawing.Point(273, 55);
             this.M5Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M5Running_ind.Name = "M5Running_ind";
-            this.M5Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M5Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M5Running_ind.TabIndex = 7;
             this.M5Running_ind.TabStop = false;
             // 
@@ -521,10 +545,10 @@
             this.M4Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.M4Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M4Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M4Running_ind.Location = new System.Drawing.Point(219, 27);
+            this.M4Running_ind.Location = new System.Drawing.Point(219, 55);
             this.M4Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M4Running_ind.Name = "M4Running_ind";
-            this.M4Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M4Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M4Running_ind.TabIndex = 6;
             this.M4Running_ind.TabStop = false;
             // 
@@ -535,10 +559,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.E4Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E4Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.E4Running_ind.Location = new System.Drawing.Point(219, 93);
+            this.E4Running_ind.Location = new System.Drawing.Point(219, 114);
             this.E4Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E4Running_ind.Name = "E4Running_ind";
-            this.E4Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E4Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E4Running_ind.TabIndex = 17;
             this.E4Running_ind.TabStop = false;
             // 
@@ -547,10 +571,10 @@
             this.M3Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.M3Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M3Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M3Running_ind.Location = new System.Drawing.Point(165, 27);
+            this.M3Running_ind.Location = new System.Drawing.Point(165, 55);
             this.M3Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M3Running_ind.Name = "M3Running_ind";
-            this.M3Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M3Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M3Running_ind.TabIndex = 5;
             this.M3Running_ind.TabStop = false;
             // 
@@ -561,10 +585,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.E3Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E3Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.E3Running_ind.Location = new System.Drawing.Point(165, 93);
+            this.E3Running_ind.Location = new System.Drawing.Point(165, 114);
             this.E3Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E3Running_ind.Name = "E3Running_ind";
-            this.E3Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E3Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E3Running_ind.TabIndex = 16;
             this.E3Running_ind.TabStop = false;
             // 
@@ -573,10 +597,10 @@
             this.M2Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.M2Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M2Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M2Running_ind.Location = new System.Drawing.Point(111, 27);
+            this.M2Running_ind.Location = new System.Drawing.Point(111, 55);
             this.M2Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M2Running_ind.Name = "M2Running_ind";
-            this.M2Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M2Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M2Running_ind.TabIndex = 4;
             this.M2Running_ind.TabStop = false;
             // 
@@ -587,10 +611,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.E2Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E2Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.E2Running_ind.Location = new System.Drawing.Point(111, 93);
+            this.E2Running_ind.Location = new System.Drawing.Point(111, 114);
             this.E2Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E2Running_ind.Name = "E2Running_ind";
-            this.E2Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E2Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E2Running_ind.TabIndex = 15;
             this.E2Running_ind.TabStop = false;
             // 
@@ -601,10 +625,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.E1Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E1Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.E1Running_ind.Location = new System.Drawing.Point(57, 93);
+            this.E1Running_ind.Location = new System.Drawing.Point(57, 114);
             this.E1Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E1Running_ind.Name = "E1Running_ind";
-            this.E1Running_ind.Size = new System.Drawing.Size(49, 62);
+            this.E1Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E1Running_ind.TabIndex = 1;
             this.E1Running_ind.TabStop = false;
             // 
@@ -613,10 +637,10 @@
             this.M1Running_ind.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.M1Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M1Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.M1Running_ind.Location = new System.Drawing.Point(57, 27);
+            this.M1Running_ind.Location = new System.Drawing.Point(57, 55);
             this.M1Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M1Running_ind.Name = "M1Running_ind";
-            this.M1Running_ind.Size = new System.Drawing.Size(49, 61);
+            this.M1Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M1Running_ind.TabIndex = 0;
             this.M1Running_ind.TabStop = false;
             // 
@@ -625,26 +649,28 @@
             this.label9.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label9.AutoSize = true;
             this.label9.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label9.Enabled = false;
             this.label9.ForeColor = System.Drawing.Color.Black;
-            this.label9.Location = new System.Drawing.Point(384, 6);
+            this.label9.Location = new System.Drawing.Point(388, 4);
             this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(43, 13);
+            this.label9.Size = new System.Drawing.Size(36, 13);
             this.label9.TabIndex = 14;
-            this.label9.Text = "Motor 7";
+            this.label9.Text = "Dev 7";
             // 
             // label8
             // 
             this.label8.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label8.Enabled = false;
             this.label8.ForeColor = System.Drawing.Color.Black;
-            this.label8.Location = new System.Drawing.Point(330, 6);
+            this.label8.Location = new System.Drawing.Point(333, 4);
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(43, 13);
+            this.label8.Size = new System.Drawing.Size(36, 13);
             this.label8.TabIndex = 13;
-            this.label8.Text = "Motor 6";
+            this.label8.Text = "Dev 6";
             // 
             // label7
             // 
@@ -652,12 +678,12 @@
             this.label7.AutoSize = true;
             this.label7.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.label7.ForeColor = System.Drawing.Color.Black;
-            this.label7.Location = new System.Drawing.Point(276, 6);
+            this.label7.Location = new System.Drawing.Point(279, 4);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(43, 13);
+            this.label7.Size = new System.Drawing.Size(36, 13);
             this.label7.TabIndex = 12;
-            this.label7.Text = "Motor 5";
+            this.label7.Text = "Dev 5";
             // 
             // label6
             // 
@@ -665,12 +691,12 @@
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.label6.ForeColor = System.Drawing.Color.Black;
-            this.label6.Location = new System.Drawing.Point(222, 6);
+            this.label6.Location = new System.Drawing.Point(225, 4);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(43, 13);
+            this.label6.Size = new System.Drawing.Size(36, 13);
             this.label6.TabIndex = 11;
-            this.label6.Text = "Motor 4";
+            this.label6.Text = "Dev 4";
             // 
             // label5
             // 
@@ -678,12 +704,12 @@
             this.label5.AutoSize = true;
             this.label5.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.label5.ForeColor = System.Drawing.Color.Black;
-            this.label5.Location = new System.Drawing.Point(168, 6);
+            this.label5.Location = new System.Drawing.Point(171, 4);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(43, 13);
+            this.label5.Size = new System.Drawing.Size(36, 13);
             this.label5.TabIndex = 11;
-            this.label5.Text = "Motor 3";
+            this.label5.Text = "Dev 3";
             // 
             // label4
             // 
@@ -691,12 +717,12 @@
             this.label4.AutoSize = true;
             this.label4.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.label4.ForeColor = System.Drawing.Color.Black;
-            this.label4.Location = new System.Drawing.Point(114, 6);
+            this.label4.Location = new System.Drawing.Point(117, 4);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(43, 13);
+            this.label4.Size = new System.Drawing.Size(36, 13);
             this.label4.TabIndex = 10;
-            this.label4.Text = "Motor 2";
+            this.label4.Text = "Dev 2";
             // 
             // M1_lbl
             // 
@@ -704,12 +730,12 @@
             this.M1_lbl.AutoSize = true;
             this.M1_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.M1_lbl.ForeColor = System.Drawing.Color.Black;
-            this.M1_lbl.Location = new System.Drawing.Point(60, 6);
+            this.M1_lbl.Location = new System.Drawing.Point(63, 4);
             this.M1_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.M1_lbl.Name = "M1_lbl";
-            this.M1_lbl.Size = new System.Drawing.Size(43, 13);
+            this.M1_lbl.Size = new System.Drawing.Size(36, 13);
             this.M1_lbl.TabIndex = 2;
-            this.M1_lbl.Text = "Motor 1";
+            this.M1_lbl.Text = "Dev 1";
             // 
             // label10
             // 
@@ -717,7 +743,7 @@
             this.label10.AutoSize = true;
             this.label10.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.label10.ForeColor = System.Drawing.Color.Black;
-            this.label10.Location = new System.Drawing.Point(11, 6);
+            this.label10.Location = new System.Drawing.Point(11, 4);
             this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(32, 13);
@@ -730,7 +756,7 @@
             this.MotorRunning_lbl.AutoSize = true;
             this.MotorRunning_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.MotorRunning_lbl.ForeColor = System.Drawing.Color.Black;
-            this.MotorRunning_lbl.Location = new System.Drawing.Point(9, 44);
+            this.MotorRunning_lbl.Location = new System.Drawing.Point(9, 69);
             this.MotorRunning_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.MotorRunning_lbl.Name = "MotorRunning_lbl";
             this.MotorRunning_lbl.Size = new System.Drawing.Size(37, 26);
@@ -1065,11 +1091,131 @@
             this.UART_COM.PortName = "COM4";
             this.UART_COM.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.UART_COM_DataReceived);
             // 
+            // label11
+            // 
+            this.label11.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label11.AutoSize = true;
+            this.label11.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.ForeColor = System.Drawing.Color.Black;
+            this.label11.Location = new System.Drawing.Point(4, 24);
+            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(47, 26);
+            this.label11.TabIndex = 23;
+            this.label11.Text = "Encoder Value";
+            // 
+            // Encoder1Val_lbl
+            // 
+            this.Encoder1Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder1Val_lbl.AutoSize = true;
+            this.Encoder1Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder1Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder1Val_lbl.Location = new System.Drawing.Point(75, 30);
+            this.Encoder1Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder1Val_lbl.Name = "Encoder1Val_lbl";
+            this.Encoder1Val_lbl.Size = new System.Drawing.Size(13, 13);
+            this.Encoder1Val_lbl.TabIndex = 24;
+            this.Encoder1Val_lbl.Text = "0";
+            this.Encoder1Val_lbl.Click += new System.EventHandler(this.Encoder1Val_lbl_Click);
+            // 
+            // Encoder2Val_lbl
+            // 
+            this.Encoder2Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder2Val_lbl.AutoSize = true;
+            this.Encoder2Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder2Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder2Val_lbl.Location = new System.Drawing.Point(129, 30);
+            this.Encoder2Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder2Val_lbl.Name = "Encoder2Val_lbl";
+            this.Encoder2Val_lbl.Size = new System.Drawing.Size(13, 13);
+            this.Encoder2Val_lbl.TabIndex = 25;
+            this.Encoder2Val_lbl.Text = "0";
+            // 
+            // Encoder3Val_lbl
+            // 
+            this.Encoder3Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder3Val_lbl.AutoSize = true;
+            this.Encoder3Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder3Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder3Val_lbl.Location = new System.Drawing.Point(183, 30);
+            this.Encoder3Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder3Val_lbl.Name = "Encoder3Val_lbl";
+            this.Encoder3Val_lbl.Size = new System.Drawing.Size(13, 13);
+            this.Encoder3Val_lbl.TabIndex = 26;
+            this.Encoder3Val_lbl.Text = "0";
+            // 
+            // Encoder4Val_lbl
+            // 
+            this.Encoder4Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder4Val_lbl.AutoSize = true;
+            this.Encoder4Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder4Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder4Val_lbl.Location = new System.Drawing.Point(237, 30);
+            this.Encoder4Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder4Val_lbl.Name = "Encoder4Val_lbl";
+            this.Encoder4Val_lbl.Size = new System.Drawing.Size(13, 13);
+            this.Encoder4Val_lbl.TabIndex = 27;
+            this.Encoder4Val_lbl.Text = "0";
+            // 
+            // Encoder5Val_lbl
+            // 
+            this.Encoder5Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder5Val_lbl.AutoSize = true;
+            this.Encoder5Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder5Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder5Val_lbl.Location = new System.Drawing.Point(291, 30);
+            this.Encoder5Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder5Val_lbl.Name = "Encoder5Val_lbl";
+            this.Encoder5Val_lbl.Size = new System.Drawing.Size(13, 13);
+            this.Encoder5Val_lbl.TabIndex = 28;
+            this.Encoder5Val_lbl.Text = "0";
+            // 
+            // label17
+            // 
+            this.label17.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label17.AutoSize = true;
+            this.label17.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label17.Enabled = false;
+            this.label17.ForeColor = System.Drawing.Color.Black;
+            this.label17.Location = new System.Drawing.Point(346, 30);
+            this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(10, 13);
+            this.label17.TabIndex = 29;
+            this.label17.Text = "-";
+            // 
+            // label18
+            // 
+            this.label18.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label18.AutoSize = true;
+            this.label18.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label18.Enabled = false;
+            this.label18.ForeColor = System.Drawing.Color.Black;
+            this.label18.Location = new System.Drawing.Point(401, 30);
+            this.label18.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(10, 13);
+            this.label18.TabIndex = 30;
+            this.label18.Text = "-";
+            // 
+            // ResetDevicesToolStripMenuItem
+            // 
+            this.ResetDevicesToolStripMenuItem.Name = "ResetDevicesToolStripMenuItem";
+            this.ResetDevicesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ResetDevicesToolStripMenuItem.Text = "Reset Devices";
+            this.ResetDevicesToolStripMenuItem.Click += new System.EventHandler(this.ResetDevicesToolStripMenuItem_Click);
+            // 
+            // Encoder_FetchTimer
+            // 
+            this.Encoder_FetchTimer.Enabled = true;
+            this.Encoder_FetchTimer.Tick += new System.EventHandler(this.Encoder_FetchTimer_Tick);
+            // 
             // Main_wnd
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(598, 409);
+            this.ClientSize = new System.Drawing.Size(594, 422);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Common_grp);
@@ -1197,6 +1343,16 @@
         private System.Windows.Forms.ToolStripMenuItem mATLABScriptRunToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearConsoleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem DeviceStatusCheckToolStripMenuItem;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label Encoder5Val_lbl;
+        private System.Windows.Forms.Label Encoder4Val_lbl;
+        private System.Windows.Forms.Label Encoder3Val_lbl;
+        private System.Windows.Forms.Label Encoder2Val_lbl;
+        private System.Windows.Forms.Label Encoder1Val_lbl;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.ToolStripMenuItem ResetDevicesToolStripMenuItem;
+        private System.Windows.Forms.Timer Encoder_FetchTimer;
     }
 }
 
