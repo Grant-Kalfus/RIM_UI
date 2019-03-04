@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
 using System.Threading;
+using System.IO;
+using System.Collections;
 
 
 namespace R.I.M.UI_Shell
@@ -33,6 +35,16 @@ namespace R.I.M.UI_Shell
 
 
         };
+
+        class RIM_PExec
+        {
+            RIM_PExec()
+            {
+                Queue[] Motor_Cmds   = new Queue[7];
+                Queue[] Encoder_Cmds = new Queue[7];
+            }
+
+        }
 
         static class L6470_Params {
             //Overcurrent Parameters
@@ -91,6 +103,8 @@ namespace R.I.M.UI_Shell
                               CONFIG       =       0x18,
                               STATUS       =       0x19;
         }
+
+
 
         //Make an instance of the window that allows the user to configure UART-related settings
         private ConfigBox Cfg_box = new ConfigBox();
@@ -791,6 +805,36 @@ namespace R.I.M.UI_Shell
             Console.Clear();
         }
 
+        private void LoadFile_btn_Click(object sender, EventArgs e)
+        {
+            string fpath = string.Empty;
+            string fileContent = string.Empty;
+            string startpath = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+            
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = startpath;
+                openFileDialog.Filter = "RIM Execution Files (*.rime)|*.rime";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    //Get the path of specified file
+                    fpath = openFileDialog.FileName;
+
+                    //Read the contents of the file into a stream
+                    var fileStream = openFileDialog.OpenFile();
+
+                    using (StreamReader reader = new StreamReader(fileStream))
+                    {
+                        fileContent = reader.ReadToEnd();
+                    }
+                }
+            }
+
+        }
+
         private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
             byte[] packet = new byte[3];
@@ -820,9 +864,9 @@ namespace R.I.M.UI_Shell
             Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 1, 0, ref packet, 3);
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
 
-            //Check incoder 1
-            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
-            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+            //Check encoder 1
+            //Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
+            //UART_COM.Write(Byte_array_to_literal_string(packet, 3));
         }
 
         private void ResetDevicesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -852,8 +896,8 @@ namespace R.I.M.UI_Shell
             for (int i = 0; i < 2; i++)
             {
                 if (Encoder_Update_1) {
-                    Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
-                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    //Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
+                    //UART_COM.Write(Byte_array_to_literal_string(packet, 3));
                 }
                 //if (Encoder_Update_2)
                 //{

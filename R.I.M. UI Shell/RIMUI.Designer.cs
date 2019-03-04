@@ -37,6 +37,7 @@
             this.Test_BTN = new System.Windows.Forms.ToolStripMenuItem();
             this.encoderStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeviceStatusCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ResetDevicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mATLABScriptRunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,6 +60,14 @@
             this.Start_btn = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.feedback_grd = new System.Windows.Forms.TableLayoutPanel();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.Encoder5Val_lbl = new System.Windows.Forms.Label();
+            this.Encoder4Val_lbl = new System.Windows.Forms.Label();
+            this.Encoder3Val_lbl = new System.Windows.Forms.Label();
+            this.Encoder2Val_lbl = new System.Windows.Forms.Label();
+            this.Encoder1Val_lbl = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
             this.MotorError_lbl = new System.Windows.Forms.Label();
             this.M7Running_ind = new System.Windows.Forms.PictureBox();
             this.M6Running_ind = new System.Windows.Forms.PictureBox();
@@ -93,7 +102,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.ProgrammedExecutionMode_grp = new System.Windows.Forms.GroupBox();
             this.PassFail_lbl = new System.Windows.Forms.Label();
-            this.NewFile_btn = new System.Windows.Forms.Button();
             this.EditFile_btn = new System.Windows.Forms.Button();
             this.LoadFile_btn = new System.Windows.Forms.Button();
             this.PreciseExecutionMode_grp = new System.Windows.Forms.GroupBox();
@@ -113,16 +121,8 @@
             this.Servo2_lbl = new System.Windows.Forms.Label();
             this.OvrCurpos_lbl = new System.Windows.Forms.Label();
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
-            this.label11 = new System.Windows.Forms.Label();
-            this.Encoder1Val_lbl = new System.Windows.Forms.Label();
-            this.Encoder2Val_lbl = new System.Windows.Forms.Label();
-            this.Encoder3Val_lbl = new System.Windows.Forms.Label();
-            this.Encoder4Val_lbl = new System.Windows.Forms.Label();
-            this.Encoder5Val_lbl = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.ResetDevicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Encoder_FetchTimer = new System.Windows.Forms.Timer(this.components);
+            this.NewFile_btn = new System.Windows.Forms.Button();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -182,7 +182,7 @@
             this.setUARTCOMToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CurUartCom_lbl});
             this.setUARTCOMToolStripMenuItem.Name = "setUARTCOMToolStripMenuItem";
-            this.setUARTCOMToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setUARTCOMToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.setUARTCOMToolStripMenuItem.Text = "Config Menu";
             this.setUARTCOMToolStripMenuItem.Click += new System.EventHandler(this.SetUARTCOMToolStripMenuItem_Click);
             // 
@@ -202,7 +202,7 @@
             this.mATLABScriptRunToolStripMenuItem,
             this.clearConsoleToolStripMenuItem});
             this.Test_BTN.Name = "Test_BTN";
-            this.Test_BTN.Size = new System.Drawing.Size(180, 22);
+            this.Test_BTN.Size = new System.Drawing.Size(144, 22);
             this.Test_BTN.Text = "TEST";
             this.Test_BTN.Click += new System.EventHandler(this.Test_BTN_Click);
             // 
@@ -219,6 +219,13 @@
             this.DeviceStatusCheckToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.DeviceStatusCheckToolStripMenuItem.Text = "Device Status Check";
             this.DeviceStatusCheckToolStripMenuItem.Click += new System.EventHandler(this.DeviceStatusCheckToolStripMenuItem_Click);
+            // 
+            // ResetDevicesToolStripMenuItem
+            // 
+            this.ResetDevicesToolStripMenuItem.Name = "ResetDevicesToolStripMenuItem";
+            this.ResetDevicesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ResetDevicesToolStripMenuItem.Text = "Reset Devices";
+            this.ResetDevicesToolStripMenuItem.Click += new System.EventHandler(this.ResetDevicesToolStripMenuItem_Click);
             // 
             // mATLABScriptRunToolStripMenuItem
             // 
@@ -237,7 +244,7 @@
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.QuitToolStripMenuItem_Click);
             // 
@@ -263,25 +270,25 @@
             // setXToolStripMenuItem
             // 
             this.setXToolStripMenuItem.Name = "setXToolStripMenuItem";
-            this.setXToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setXToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.setXToolStripMenuItem.Text = "Set X";
             // 
             // setvYToolStripMenuItem
             // 
             this.setvYToolStripMenuItem.Name = "setvYToolStripMenuItem";
-            this.setvYToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setvYToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.setvYToolStripMenuItem.Text = "Set Y";
             // 
             // setZToolStripMenuItem
             // 
             this.setZToolStripMenuItem.Name = "setZToolStripMenuItem";
-            this.setZToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setZToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.setZToolStripMenuItem.Text = "Set Z";
             // 
             // setAllToolStripMenuItem
             // 
             this.setAllToolStripMenuItem.Name = "setAllToolStripMenuItem";
-            this.setAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.setAllToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.setAllToolStripMenuItem.Text = "Set All";
             // 
             // toolStripSeparator2
@@ -446,6 +453,114 @@
             this.feedback_grd.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42.5F));
             this.feedback_grd.Size = new System.Drawing.Size(434, 172);
             this.feedback_grd.TabIndex = 4;
+            // 
+            // label18
+            // 
+            this.label18.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label18.AutoSize = true;
+            this.label18.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label18.Enabled = false;
+            this.label18.ForeColor = System.Drawing.Color.Black;
+            this.label18.Location = new System.Drawing.Point(401, 30);
+            this.label18.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(10, 13);
+            this.label18.TabIndex = 30;
+            this.label18.Text = "-";
+            // 
+            // label17
+            // 
+            this.label17.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label17.AutoSize = true;
+            this.label17.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label17.Enabled = false;
+            this.label17.ForeColor = System.Drawing.Color.Black;
+            this.label17.Location = new System.Drawing.Point(346, 30);
+            this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(10, 13);
+            this.label17.TabIndex = 29;
+            this.label17.Text = "-";
+            // 
+            // Encoder5Val_lbl
+            // 
+            this.Encoder5Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder5Val_lbl.AutoSize = true;
+            this.Encoder5Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder5Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder5Val_lbl.Location = new System.Drawing.Point(291, 30);
+            this.Encoder5Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder5Val_lbl.Name = "Encoder5Val_lbl";
+            this.Encoder5Val_lbl.Size = new System.Drawing.Size(13, 13);
+            this.Encoder5Val_lbl.TabIndex = 28;
+            this.Encoder5Val_lbl.Text = "0";
+            // 
+            // Encoder4Val_lbl
+            // 
+            this.Encoder4Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder4Val_lbl.AutoSize = true;
+            this.Encoder4Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder4Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder4Val_lbl.Location = new System.Drawing.Point(237, 30);
+            this.Encoder4Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder4Val_lbl.Name = "Encoder4Val_lbl";
+            this.Encoder4Val_lbl.Size = new System.Drawing.Size(13, 13);
+            this.Encoder4Val_lbl.TabIndex = 27;
+            this.Encoder4Val_lbl.Text = "0";
+            // 
+            // Encoder3Val_lbl
+            // 
+            this.Encoder3Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder3Val_lbl.AutoSize = true;
+            this.Encoder3Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder3Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder3Val_lbl.Location = new System.Drawing.Point(183, 30);
+            this.Encoder3Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder3Val_lbl.Name = "Encoder3Val_lbl";
+            this.Encoder3Val_lbl.Size = new System.Drawing.Size(13, 13);
+            this.Encoder3Val_lbl.TabIndex = 26;
+            this.Encoder3Val_lbl.Text = "0";
+            // 
+            // Encoder2Val_lbl
+            // 
+            this.Encoder2Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder2Val_lbl.AutoSize = true;
+            this.Encoder2Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder2Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder2Val_lbl.Location = new System.Drawing.Point(129, 30);
+            this.Encoder2Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder2Val_lbl.Name = "Encoder2Val_lbl";
+            this.Encoder2Val_lbl.Size = new System.Drawing.Size(13, 13);
+            this.Encoder2Val_lbl.TabIndex = 25;
+            this.Encoder2Val_lbl.Text = "0";
+            // 
+            // Encoder1Val_lbl
+            // 
+            this.Encoder1Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder1Val_lbl.AutoSize = true;
+            this.Encoder1Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder1Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder1Val_lbl.Location = new System.Drawing.Point(75, 30);
+            this.Encoder1Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder1Val_lbl.Name = "Encoder1Val_lbl";
+            this.Encoder1Val_lbl.Size = new System.Drawing.Size(13, 13);
+            this.Encoder1Val_lbl.TabIndex = 24;
+            this.Encoder1Val_lbl.Text = "0";
+            this.Encoder1Val_lbl.Click += new System.EventHandler(this.Encoder1Val_lbl_Click);
+            // 
+            // label11
+            // 
+            this.label11.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label11.AutoSize = true;
+            this.label11.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.ForeColor = System.Drawing.Color.Black;
+            this.label11.Location = new System.Drawing.Point(4, 24);
+            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(47, 26);
+            this.label11.TabIndex = 23;
+            this.label11.Text = "Encoder Value";
             // 
             // MotorError_lbl
             // 
@@ -878,16 +993,6 @@
             this.PassFail_lbl.TabIndex = 5;
             this.PassFail_lbl.Text = "File Load: [Success | Fail]";
             // 
-            // NewFile_btn
-            // 
-            this.NewFile_btn.Location = new System.Drawing.Point(4, 94);
-            this.NewFile_btn.Margin = new System.Windows.Forms.Padding(2);
-            this.NewFile_btn.Name = "NewFile_btn";
-            this.NewFile_btn.Size = new System.Drawing.Size(152, 32);
-            this.NewFile_btn.TabIndex = 4;
-            this.NewFile_btn.Text = "New File";
-            this.NewFile_btn.UseVisualStyleBackColor = true;
-            // 
             // EditFile_btn
             // 
             this.EditFile_btn.Location = new System.Drawing.Point(4, 58);
@@ -907,6 +1012,7 @@
             this.LoadFile_btn.TabIndex = 2;
             this.LoadFile_btn.Text = "Load File";
             this.LoadFile_btn.UseVisualStyleBackColor = true;
+            this.LoadFile_btn.Click += new System.EventHandler(this.LoadFile_btn_Click);
             // 
             // PreciseExecutionMode_grp
             // 
@@ -1091,125 +1197,20 @@
             this.UART_COM.PortName = "COM4";
             this.UART_COM.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.UART_COM_DataReceived);
             // 
-            // label11
-            // 
-            this.label11.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label11.AutoSize = true;
-            this.label11.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.ForeColor = System.Drawing.Color.Black;
-            this.label11.Location = new System.Drawing.Point(4, 24);
-            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(47, 26);
-            this.label11.TabIndex = 23;
-            this.label11.Text = "Encoder Value";
-            // 
-            // Encoder1Val_lbl
-            // 
-            this.Encoder1Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Encoder1Val_lbl.AutoSize = true;
-            this.Encoder1Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.Encoder1Val_lbl.ForeColor = System.Drawing.Color.Black;
-            this.Encoder1Val_lbl.Location = new System.Drawing.Point(75, 30);
-            this.Encoder1Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Encoder1Val_lbl.Name = "Encoder1Val_lbl";
-            this.Encoder1Val_lbl.Size = new System.Drawing.Size(13, 13);
-            this.Encoder1Val_lbl.TabIndex = 24;
-            this.Encoder1Val_lbl.Text = "0";
-            this.Encoder1Val_lbl.Click += new System.EventHandler(this.Encoder1Val_lbl_Click);
-            // 
-            // Encoder2Val_lbl
-            // 
-            this.Encoder2Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Encoder2Val_lbl.AutoSize = true;
-            this.Encoder2Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.Encoder2Val_lbl.ForeColor = System.Drawing.Color.Black;
-            this.Encoder2Val_lbl.Location = new System.Drawing.Point(129, 30);
-            this.Encoder2Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Encoder2Val_lbl.Name = "Encoder2Val_lbl";
-            this.Encoder2Val_lbl.Size = new System.Drawing.Size(13, 13);
-            this.Encoder2Val_lbl.TabIndex = 25;
-            this.Encoder2Val_lbl.Text = "0";
-            // 
-            // Encoder3Val_lbl
-            // 
-            this.Encoder3Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Encoder3Val_lbl.AutoSize = true;
-            this.Encoder3Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.Encoder3Val_lbl.ForeColor = System.Drawing.Color.Black;
-            this.Encoder3Val_lbl.Location = new System.Drawing.Point(183, 30);
-            this.Encoder3Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Encoder3Val_lbl.Name = "Encoder3Val_lbl";
-            this.Encoder3Val_lbl.Size = new System.Drawing.Size(13, 13);
-            this.Encoder3Val_lbl.TabIndex = 26;
-            this.Encoder3Val_lbl.Text = "0";
-            // 
-            // Encoder4Val_lbl
-            // 
-            this.Encoder4Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Encoder4Val_lbl.AutoSize = true;
-            this.Encoder4Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.Encoder4Val_lbl.ForeColor = System.Drawing.Color.Black;
-            this.Encoder4Val_lbl.Location = new System.Drawing.Point(237, 30);
-            this.Encoder4Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Encoder4Val_lbl.Name = "Encoder4Val_lbl";
-            this.Encoder4Val_lbl.Size = new System.Drawing.Size(13, 13);
-            this.Encoder4Val_lbl.TabIndex = 27;
-            this.Encoder4Val_lbl.Text = "0";
-            // 
-            // Encoder5Val_lbl
-            // 
-            this.Encoder5Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Encoder5Val_lbl.AutoSize = true;
-            this.Encoder5Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.Encoder5Val_lbl.ForeColor = System.Drawing.Color.Black;
-            this.Encoder5Val_lbl.Location = new System.Drawing.Point(291, 30);
-            this.Encoder5Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Encoder5Val_lbl.Name = "Encoder5Val_lbl";
-            this.Encoder5Val_lbl.Size = new System.Drawing.Size(13, 13);
-            this.Encoder5Val_lbl.TabIndex = 28;
-            this.Encoder5Val_lbl.Text = "0";
-            // 
-            // label17
-            // 
-            this.label17.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label17.AutoSize = true;
-            this.label17.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label17.Enabled = false;
-            this.label17.ForeColor = System.Drawing.Color.Black;
-            this.label17.Location = new System.Drawing.Point(346, 30);
-            this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(10, 13);
-            this.label17.TabIndex = 29;
-            this.label17.Text = "-";
-            // 
-            // label18
-            // 
-            this.label18.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label18.AutoSize = true;
-            this.label18.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label18.Enabled = false;
-            this.label18.ForeColor = System.Drawing.Color.Black;
-            this.label18.Location = new System.Drawing.Point(401, 30);
-            this.label18.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(10, 13);
-            this.label18.TabIndex = 30;
-            this.label18.Text = "-";
-            // 
-            // ResetDevicesToolStripMenuItem
-            // 
-            this.ResetDevicesToolStripMenuItem.Name = "ResetDevicesToolStripMenuItem";
-            this.ResetDevicesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.ResetDevicesToolStripMenuItem.Text = "Reset Devices";
-            this.ResetDevicesToolStripMenuItem.Click += new System.EventHandler(this.ResetDevicesToolStripMenuItem_Click);
-            // 
             // Encoder_FetchTimer
             // 
             this.Encoder_FetchTimer.Enabled = true;
             this.Encoder_FetchTimer.Tick += new System.EventHandler(this.Encoder_FetchTimer_Tick);
+            // 
+            // NewFile_btn
+            // 
+            this.NewFile_btn.Location = new System.Drawing.Point(4, 94);
+            this.NewFile_btn.Margin = new System.Windows.Forms.Padding(2);
+            this.NewFile_btn.Name = "NewFile_btn";
+            this.NewFile_btn.Size = new System.Drawing.Size(152, 32);
+            this.NewFile_btn.TabIndex = 4;
+            this.NewFile_btn.Text = "New File";
+            this.NewFile_btn.UseVisualStyleBackColor = true;
             // 
             // Main_wnd
             // 
@@ -1294,7 +1295,6 @@
         private System.Windows.Forms.GroupBox PreciseExecutionMode_grp;
         private System.Windows.Forms.GroupBox ProgrammedExecutionMode_grp;
         private System.Windows.Forms.Label PassFail_lbl;
-        private System.Windows.Forms.Button NewFile_btn;
         private System.Windows.Forms.Button EditFile_btn;
         private System.Windows.Forms.Button LoadFile_btn;
         private System.Windows.Forms.GroupBox TraverseLineMode_grp;
@@ -1353,6 +1353,7 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.ToolStripMenuItem ResetDevicesToolStripMenuItem;
         private System.Windows.Forms.Timer Encoder_FetchTimer;
+        private System.Windows.Forms.Button NewFile_btn;
     }
 }
 
