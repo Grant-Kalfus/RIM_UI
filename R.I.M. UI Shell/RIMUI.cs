@@ -1,17 +1,11 @@
 ﻿#define DEBUG_MODE
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
 using System.Threading;
-
+using System.Collections;
 
 namespace R.I.M.UI_Shell
 {
@@ -63,6 +57,7 @@ namespace R.I.M.UI_Shell
                               STEP_SEL_1_64  = 0x06,
                               STEP_SEL_1_128 = 0x07;
 
+            
 
             //All the registers within the the L6470
             public const byte ABS_POS      =       0x01,
@@ -108,6 +103,8 @@ namespace R.I.M.UI_Shell
              Encoder_Update_4 = false,
              Encoder_Update_5 = false;
 
+        Queue[] PCommands;
+        string pfpath;
 
         //For storing the stepper motor steps during percise execution mode
         public struct PreciseExecution_steps
@@ -304,6 +301,49 @@ namespace R.I.M.UI_Shell
 #endif
         }
 
+        //Programmed Execution Mode supports
+        void PMode_parse_and_load(ref Queue[] cmds, string[] finfo)
+        {
+            int index = 0;
+            bool error = false;
+            Queue errlist;
+
+            foreach (string line in finfo) {
+
+                if (line[0] == '#')
+                {
+                    index++;
+                    continue;
+                }
+
+                string[] temp = line.Split(',');
+                if (temp[0] == "move")
+                {
+                    if (!int.TryParse(temp[1], out int x))
+                    {
+                        //Console.WriteLine("Syntax error with line: " + index.ToString() + " ");
+                        //errlist.Enqueue(index.ToString() + );
+                        error = true;
+                        continue;
+                    }
+                    else
+                    {
+
+                    }
+
+                }
+
+
+                index++;
+            }
+        }
+
+
+
+        
+
+
+
         //Turn byte array into the literal ASCII values and puts it into a string
         string Byte_array_to_literal_string(byte[] packet, int sz) {
             var temp = Encoding.GetEncoding("iso-8859-1");
@@ -472,6 +512,7 @@ namespace R.I.M.UI_Shell
             #endif
 
             PreciseExecution_steps commands = new PreciseExecution_steps(7);
+            PCommands = new Queue[7];
 
             switch (Check_enable())
             {
@@ -490,7 +531,7 @@ namespace R.I.M.UI_Shell
             }
 
 
-            //Stop_btn.Enabled = true;
+            Stop_btn.Enabled = true;
             //Start_btn.Enabled = false;
 
             //M1Running_ind.BackColor = Color.LimeGreen;
@@ -502,9 +543,16 @@ namespace R.I.M.UI_Shell
         private void Stop_btn_Click(object sender, EventArgs e)
         {
             //Do Stop Stuff
-            //UART_COM.Close();
+            try
+            {
+                UART_COM.Close();
+            }
+            catch
+            {
+                return;
+            }
 
-            //Stop_btn.Enabled = false;
+            Stop_btn.Enabled = false;
             //Start_btn.Enabled = true;
 
             //M1Running_ind.BackColor = Color.IndianRed;
@@ -791,6 +839,11 @@ namespace R.I.M.UI_Shell
             Console.Clear();
         }
 
+        private void LoadFile_btn_Click(object sender, EventArgs e)
+        {
+            //Insert file dialog code here and set the file path
+        }
+
         private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
             byte[] packet = new byte[3];
@@ -852,8 +905,8 @@ namespace R.I.M.UI_Shell
             for (int i = 0; i < 2; i++)
             {
                 if (Encoder_Update_1) {
-                    Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
-                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    //Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
+                    //UART_COM.Write(Byte_array_to_literal_string(packet, 3));
                 }
                 //if (Encoder_Update_2)
                 //{
