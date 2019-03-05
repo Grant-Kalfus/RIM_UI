@@ -120,7 +120,7 @@ namespace R.I.M.UI_Shell
         string file_content = string.Empty;
 
         //Matlab console instance for DH parameters
-        MLApp.MLApp matlab = new MLApp.MLApp();
+        //MLApp.MLApp matlab = new MLApp.MLApp();
 
         //Toggle for telling system whether or not to update the UI on the encoder position
         bool Encoder_Update_1 = false,
@@ -196,7 +196,7 @@ namespace R.I.M.UI_Shell
 
             //Change UART encoding to ASCII-Extended for charicter code transfers > 127
             UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
-            matlab.Visible = 0;
+            //matlab.Visible = 0;
             FileCheck_btn.Enabled = false;
             FileReload_btn.Enabled = false;
         }
@@ -344,7 +344,7 @@ namespace R.I.M.UI_Shell
         //Programmed Execution Mode support
         bool ProgExec_parse_and_load(ref RIM_PExec commands, string finfo)
         {
-            int index = 0;
+            int line_num = 1;
 
             byte id = 0;
                  
@@ -369,82 +369,92 @@ namespace R.I.M.UI_Shell
 
             foreach (string line in split_info)
             {
-                if (line.Length == 0)
+                //Ignore a line if it has one of the following
+                if (line.Length == 0 || line[0] == '#')
                 {
-                    index++;
-                    continue;
-                }
-
-                if (line[0] == '#')
-                {
-                    index++;
+                    line_num++;
                     continue;
                 }
                 
                 //Remove all extra spaces and split by commas
                 string[] temp = line.Replace(" ", "").Split(',');
-                
+                if (temp[0] == "-")
+                {
+                    //Fill out the rest of the queue with motor pass commands
+                    for (int i = 0; i < 7; i++)
+                    {
+                        if (!cmd_written[i])
+                            commands.Motor_cmds[i].Enqueue("PASS");
+                        else
+                            cmd_written[i] = false;
+                    }
+
+                    line_num++;
+                    continue;
+                }
+
                 if (temp[0] == "MOVE")
                 {
-                    index++;
+                    line_num++;
                     //Check for valid motor ID (bounds and user entry)
                     if (!byte.TryParse(temp[1], out byte x))
                     {
-                        errlist.Enqueue("Error with line " + index.ToString() + ": Invalid motor ID!");
+                        errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid motor ID " + temp[1]);
                         error = true;
-                        continue;
                     }
                     else
                     {
                         if ((x - 1) < 0 || (x - 1) > 6)
                         {
-                            errlist.Enqueue("Error with line " + index.ToString() + ": Motor ID out of bounds!");
+                            errlist.Enqueue("Error with line " + line_num.ToString() + ": Motor ID " + x + " is out of bounds!");
                             error = true;
-                            continue;
                         }
                     }
 
                     //Set the motor ID
                     id = (byte)(x - 1);
-                    
+
                     //Set CCW or CW
                     if (temp[2] == "CCW")
                         dir = Direction.COUNTERCLOCKWISE;
-                    else
+                    else if (temp[2] == "CW")
                         dir = Direction.CLOCKWISE;
+                    else
+                    {
+                        errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid entered direction " + temp[2]);
+                        error = true;
+                    }
 
                     //Check for amount of steps
                     if (!ushort.TryParse(temp[3], out ushort y))
                     {
-                        errlist.Enqueue("Error with line " + index.ToString() + ": Invalid amount of steps!");
+                        errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid amount of steps: " + temp[3]);
                         error = true;
-                        continue;
                     }
                     else
                         steps = y;
+
+                    if (error)
+                        continue;
 
                     Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, id, steps, ref packet, 3);
                     commands.Motor_cmds[id].Enqueue(Byte_array_to_literal_string(packet, 3));
                     cmd_written[id] = true;
                 }
-
-                if (temp[0] == "-")
+                else
                 {
-
-                    for (int i = 0; i < 7; i++)
-                    {
-                        if(!cmd_written[i])
-                            commands.Motor_cmds[i].Enqueue("PASS");
-                    }
+                    errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid/unimplemented command: " + temp[0]);
+                    error = true;
                 }
+                
 
             }
             if (error)
             {
                 ProgExecFLoad_lbl.Text = "File load Failed";
-
+                int max = errlist.Count;
                 #if (DEBUG_MODE)
-                    for (int i = 0; i < errlist.Count; i++)
+                    for (int i = 0; i < max; i++)
                     {
                         Console.WriteLine(errlist.Dequeue());
                     }
@@ -1008,11 +1018,11 @@ namespace R.I.M.UI_Shell
 
         private void MATLABScriptRunToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            matlab.Execute(@"cd C:\MATLAB_Script");
-            matlab.Feval("myfunc", 2, out object result, 3.14, 42.0, "world");
-            object[] res = result as object[];
-            Console.WriteLine(res[0]);
-            Console.WriteLine(res[1]);
+            //matlab.Execute(@"cd C:\MATLAB_Script");
+            //matlab.Feval("myfunc", 2, out object result, 3.14, 42.0, "world");
+            //object[] res = result as object[];
+            //Console.WriteLine(res[0]);
+            //Console.WriteLine(res[1]);
         }
 
         private void ClearConsoleToolStripMenuItem_Click(object sender, EventArgs e)
