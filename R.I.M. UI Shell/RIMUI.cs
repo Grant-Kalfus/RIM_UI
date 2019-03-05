@@ -131,6 +131,7 @@ namespace R.I.M.UI_Shell
 
         volatile public bool[] Motor_Active = new bool[5];
 
+        bool data_event_enabled = true;
 
 
         //For storing the stepper motor steps during percise execution mode
@@ -811,6 +812,9 @@ namespace R.I.M.UI_Shell
         //Event handler for PSoC data recieved
         private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
+            if (!data_event_enabled)
+                return;
+
             int msg;
             byte opcode = 0,
                    info = 0;
