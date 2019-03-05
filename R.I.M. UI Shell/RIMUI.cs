@@ -68,7 +68,6 @@ namespace R.I.M.UI_Shell
                               STEP_SEL_1_64  = 0x06,
                               STEP_SEL_1_128 = 0x07;
 
-            
 
             //All the registers within the the L6470
             public const byte ABS_POS      =       0x01,
@@ -97,8 +96,6 @@ namespace R.I.M.UI_Shell
                               CONFIG       =       0x18,
                               STATUS       =       0x19;
         }
-
-
 
         //Make an instance of the window that allows the user to configure UART-related settings
         private ConfigBox Cfg_box = new ConfigBox();
