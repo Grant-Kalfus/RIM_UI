@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace R.I.M.UI_Shell
 {
@@ -29,12 +30,25 @@ namespace R.I.M.UI_Shell
 
         };
 
-        class RIM_PExec
+        public class RIM_PExec
         {
-            RIM_PExec()
+            public Queue<string>[] Motor_cmds;
+            public Queue<string>[] Encoder_cmds;
+
+            public RIM_PExec()
             {
-                Queue[] Motor_Cmds   = new Queue[7];
-                Queue[] Encoder_Cmds = new Queue[7];
+                Motor_cmds = new Queue<string>[7];
+                Encoder_cmds = new Queue<string>[7];
+
+                for (int i = 0; i < 7; i++)
+                {
+                    Motor_cmds[i] = new Queue<string>();
+                }
+
+                for (int i = 0; i < 7; i++)
+                {
+                    Encoder_cmds[i] = new Queue<string>();
+                }
             }
 
         }
@@ -103,6 +117,8 @@ namespace R.I.M.UI_Shell
         //Enum to keep track of
         public enum Direction {CLOCKWISE, COUNTERCLOCKWISE};
 
+        string file_content = string.Empty;
+
         //Matlab console instance for DH parameters
         MLApp.MLApp matlab = new MLApp.MLApp();
 
@@ -112,6 +128,9 @@ namespace R.I.M.UI_Shell
              Encoder_Update_3 = false,
              Encoder_Update_4 = false,
              Encoder_Update_5 = false;
+
+        volatile public bool[] Motor_Active = new bool[5];
+
 
 
         //For storing the stepper motor steps during percise execution mode
@@ -145,10 +164,6 @@ namespace R.I.M.UI_Shell
         public Main_wnd()
         {
             InitializeComponent();
-            Disable_all();
-            //Change UART encoding to ASCII-Extended for charicter code transfers > 127
-            UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
-            matlab.Visible = 0;
         }
 
         private bool TryOpenCom() {
@@ -168,10 +183,26 @@ namespace R.I.M.UI_Shell
             return r;
         }
 
+        private void Main_wnd_Load(object sender, EventArgs e)
+        {
+            Disable_all();
+
+            for (int i = 0; i < 5; i++)
+            {
+                Motor_Active[i] = false;
+            }
+
+
+            //Change UART encoding to ASCII-Extended for charicter code transfers > 127
+            UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
+            matlab.Visible = 0;
+            FileCheck_btn.Enabled = false;
+            FileReload_btn.Enabled = false;
+        }
 
         //Debug mode output when transfering packets
-        #if (DEBUG_MODE)
-            private void Debug_Output(byte[] packet, int sz)
+#if (DEBUG_MODE)
+        private void Debug_Output(byte[] packet, int sz)
         {
             Console.WriteLine("Sending UART packet: " + Byte_array_to_string(packet, 3));
             Console.WriteLine("Sending physical UART packet: " + Byte_array_to_literal_string(packet, 3));
@@ -309,48 +340,177 @@ namespace R.I.M.UI_Shell
 #endif
         }
 
-        //Programmed Execution Mode supports
-        void PMode_parse_and_load(ref Queue[] cmds, string[] finfo)
+        //Programmed Execution Mode support
+        bool ProgExec_parse_and_load(ref RIM_PExec commands, string finfo)
         {
             int index = 0;
-            bool error = false;
-            Queue errlist;
 
-            foreach (string line in finfo) {
+            byte id = 0;
+                 
+            Direction dir = 0;
+
+            ushort steps = 0;
+
+            byte[] packet = new byte[3];
+
+
+            bool error = false;
+            Queue<string> errlist = new Queue<string>();
+
+            bool[] cmd_written = new bool[7];
+            for (int i = 0; i < 7; i++)
+            {
+                cmd_written[i] = false;
+            }
+
+
+            string []split_info = finfo.Split('\n');
+
+            foreach (string line in split_info)
+            {
+                if (line.Length == 0)
+                {
+                    index++;
+                    continue;
+                }
 
                 if (line[0] == '#')
                 {
                     index++;
                     continue;
                 }
-
-                string[] temp = line.Split(',');
-                if (temp[0] == "move")
+                
+                //Remove all extra spaces and split by commas
+                string[] temp = line.Replace(" ", "").Split(',');
+                
+                if (temp[0] == "MOVE")
                 {
-                    if (!int.TryParse(temp[1], out int x))
+                    index++;
+                    //Check for valid motor ID (bounds and user entry)
+                    if (!byte.TryParse(temp[1], out byte x))
                     {
-                        //Console.WriteLine("Syntax error with line: " + index.ToString() + " ");
-                        //errlist.Enqueue(index.ToString() + );
+                        errlist.Enqueue("Error with line " + index.ToString() + ": Invalid motor ID!");
                         error = true;
                         continue;
                     }
                     else
                     {
-
+                        if ((x - 1) < 0 || (x - 1) > 6)
+                        {
+                            errlist.Enqueue("Error with line " + index.ToString() + ": Motor ID out of bounds!");
+                            error = true;
+                            continue;
+                        }
                     }
 
+                    //Set the motor ID
+                    id = (byte)(x - 1);
+                    
+                    //Set CCW or CW
+                    if (temp[2] == "CCW")
+                        dir = Direction.COUNTERCLOCKWISE;
+                    else
+                        dir = Direction.CLOCKWISE;
+
+                    //Check for amount of steps
+                    if (!ushort.TryParse(temp[3], out ushort y))
+                    {
+                        errlist.Enqueue("Error with line " + index.ToString() + ": Invalid amount of steps!");
+                        error = true;
+                        continue;
+                    }
+                    else
+                        steps = y;
+
+                    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, id, steps, ref packet, 3);
+                    commands.Motor_cmds[id].Enqueue(Byte_array_to_literal_string(packet, 3));
+                    cmd_written[id] = true;
                 }
 
+                if (temp[0] == "-")
+                {
 
-                index++;
+                    for (int i = 0; i < 7; i++)
+                    {
+                        if(!cmd_written[i])
+                            commands.Motor_cmds[i].Enqueue("PASS");
+                    }
+                }
+
             }
+            if (error)
+            {
+                ProgExecFLoad_lbl.Text = "File load Failed";
+
+                #if (DEBUG_MODE)
+                    for (int i = 0; i < errlist.Count; i++)
+                    {
+                        Console.WriteLine(errlist.Dequeue());
+                    }
+                #endif
+
+                for(int i = 0; i < 7; i++)
+                    commands.Motor_cmds[i].Clear();
+            }
+            return !error;
         }
 
+        bool Motors_Active(int motor_id)
+        {
+            bool r = false;
+            switch (motor_id) {
+                case 0:
+                    M1Running_ind.Update();
+                    if (M1Running_ind.BackColor == Color.LimeGreen)
+                        r = true;
+                    break;
+                case 1:
+                    M2Running_ind.Update();
+                    if (M2Running_ind.BackColor == Color.LimeGreen)
+                        r = true;
+                    break;
+                case 2:
+                    M3Running_ind.Update();
+                    if (M3Running_ind.BackColor == Color.LimeGreen)
+                        r = true;
+                    break;
+                case 3:
+                    M4Running_ind.Update();
+                    if (M4Running_ind.BackColor == Color.LimeGreen)
+                        r = true;
+                    break;
+            }
+            return r;
+        }
 
+        void ProgExec_start(RIM_PExec commands)
+        {
+            string temp = string.Empty;
+            int total_cmds = commands.Motor_cmds[0].Count;
 
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 2; j++)
+                {
+                    temp = commands.Motor_cmds[j].Dequeue();
+                    //if (temp == "PASS")
+                    //{
+                    //    temp = string.Empty;
+                    //    continue;
+                    //}
+
+                    UART_COM.Write(temp);
+                    //while (!Motor_Active[i]);
+                    //Thread.Sleep(2000);
+
+                }
+                //Wait until motors stop moving
+                //while (Motors_Active());
+                //Thread.Sleep(5000);
+
+            }
+        }
         
-
-
 
         //Turn byte array into the literal ASCII values and puts it into a string
         string Byte_array_to_literal_string(byte[] packet, int sz) {
@@ -520,6 +680,9 @@ namespace R.I.M.UI_Shell
             #endif
 
             PreciseExecution_steps commands = new PreciseExecution_steps(7);
+            RIM_PExec prog_commands = new RIM_PExec();
+            
+
 
             switch (Check_enable())
             {
@@ -530,6 +693,9 @@ namespace R.I.M.UI_Shell
                     UART_prep_send_command(commands);
                     break;
                 case 'a':
+                    ProgExec_parse_and_load(ref prog_commands, file_content);
+                    ProgExecFLoad_lbl.Text = "File loaded Succesfully";
+                    ProgExec_start(prog_commands);
                     break;
                 case 't':
                     break;
@@ -641,6 +807,7 @@ namespace R.I.M.UI_Shell
                 Thread.Sleep(100);
             }
         }
+
         //Event handler for PSoC data recieved
         private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
@@ -665,7 +832,7 @@ namespace R.I.M.UI_Shell
                 {
                     case 0:
                         M1Running_ind.BackColor = Color.LimeGreen;
-
+                        Motor_Active[0] = true;
                         #if (DEBUG_MODE)
                             Console.WriteLine("Recieved a motor start confirm");
                         #endif
@@ -674,6 +841,7 @@ namespace R.I.M.UI_Shell
 
                         break;
                     case 1:
+                        Motor_Active[1] = true;
                         M2Running_ind.BackColor = Color.LimeGreen;
 
                         #if (DEBUG_MODE)
@@ -693,6 +861,8 @@ namespace R.I.M.UI_Shell
                     case 0:
                         M1Running_ind.BackColor = Color.Gold;
 
+                        Motor_Active[0] = false;
+
                         if (Stop_btn.InvokeRequired)
                             Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
                         if (Start_btn.InvokeRequired)
@@ -707,6 +877,7 @@ namespace R.I.M.UI_Shell
                         break;
 
                     case 1:
+                        Motor_Active[1] = false;
                         M2Running_ind.BackColor = Color.Gold;
 
                         if (Stop_btn.InvokeRequired)
@@ -825,7 +996,6 @@ namespace R.I.M.UI_Shell
 
         }
 
-
         //Closes the port on form close
         private void Main_wnd_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -849,12 +1019,11 @@ namespace R.I.M.UI_Shell
         private void LoadFile_btn_Click(object sender, EventArgs e)
         {
             string fpath = string.Empty;
-            string fileContent = string.Empty;
-            string startpath = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+            //string startpath = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
             
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.InitialDirectory = startpath;
+                //openFileDialog.InitialDirectory = startpath;
                 openFileDialog.Filter = "RIM Execution Files (*.rime)|*.rime";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
@@ -869,12 +1038,34 @@ namespace R.I.M.UI_Shell
 
                     using (StreamReader reader = new StreamReader(fileStream))
                     {
-                        fileContent = reader.ReadToEnd();
+                        file_content = reader.ReadToEnd();
+                        
                     }
+                    //Remove cariage return
+                    file_content = file_content.Replace("\r", "");
+                    ProgExecFLoad_lbl.Text = "File Loaded";
+
+                    FileCheck_btn.Enabled = true;
+                    FileReload_btn.Enabled = true;
                 }
             }
-
+            
         }
+
+        private void FileCheck_btn_Click(object sender, EventArgs e)
+        {
+            RIM_PExec temp = new RIM_PExec();
+            if (ProgExec_parse_and_load(ref temp, file_content))
+            {
+                ProgExecFLoad_lbl.Text = "File passed check";
+            }
+            else
+            {
+                ProgExecFLoad_lbl.Text = "File failed check";
+            }
+        }
+
+
 
         private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {

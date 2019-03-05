@@ -1,0 +1,10 @@
+#RIM Program File
+#Command Structure: 
+#MOVE, MOTOR_ID, DIRECTION, STEPNUMBER
+MOVE, 1, CW, 1000
+MOVE, 2, CCW, 1000
+-
+#once they are done move backward
+MOVE, 1, CCW, 1000
+MOVE, 2, CW, 1000
+-
