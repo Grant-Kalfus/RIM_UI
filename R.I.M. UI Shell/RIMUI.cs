@@ -496,32 +496,95 @@ namespace R.I.M.UI_Shell
 
         void ProgExec_start(RIM_PExec commands)
         {
+            data_event_enabled = false;
+
             string temp = string.Empty;
             int total_cmds = commands.Motor_cmds[0].Count;
 
-            for (int i = 0; i < 2; i++)
+            bool[] motor_running = new bool[7],
+                      motor_idle = new bool[7];
+
+            for (int i = 0; i < 7; i++)
             {
-                for (int j = 0; j < 2; j++)
+                motor_running[i] = false;
+                motor_idle[i] = true;
+            }
+
+            //Total number of commands to send is the ammount times  
+            int sent_commands = 0;
+
+            for (int i = 0; i < total_cmds; i++)
+            {
+
+                for (int j = 0; j < 7; j++)
                 {
                     temp = commands.Motor_cmds[j].Dequeue();
-                    //if (temp == "PASS")
-                    //{
-                    //    temp = string.Empty;
-                    //    continue;
-                    //}
+                    if (temp == "PASS")
+                    {
+                        temp = string.Empty;
+                    }
+                    else
+                    {
+                        UART_COM.Write(temp);
+                        sent_commands++;
+                        Thread.Sleep(2500);
 
-                    UART_COM.Write(temp);
-                    //while (!Motor_Active[i]);
-                    //Thread.Sleep(2000);
+                        do
+                        {
+                            int ch = UART_COM.ReadByte();
+                            Console.Write("1 Byte Recieved\n");
+                            int OPCODE = (0xF0 & ch) >> 4;
+                            int M_ID = ch & 0x07;
+                            if (OPCODE == 0x00)
+                            {
+                                motor_idle[M_ID] = false;
+                                motor_running[M_ID] = true;
+                            }
+                            else
+                            {
+                                motor_running[M_ID] = false;
+                                motor_idle[M_ID] = true;
+                            }
 
+                        } while (motor_idle[j] == true);
+
+                    }
                 }
-                //Wait until motors stop moving
-                //while (Motors_Active());
-                //Thread.Sleep(5000);
 
+                //Wait for motors to be done
+                while (!All_idle(motor_idle, 7))
+                {
+                    int ch = UART_COM.ReadByte();
+                    Console.Write("1 Byte Recieved\n");
+                    int OPCODE = (0xF0 & ch) >> 4;
+                    int M_ID = ch & 0x07;
+                    if (OPCODE == 0x00)
+                    {
+                        motor_idle[M_ID] = false;
+                        motor_running[M_ID] = true;
+                    }
+                    else
+                    {
+                        motor_running[M_ID] = false;
+                        motor_idle[M_ID] = true;
+                    }
+                }
+
+                Thread.Sleep(1000);
             }
+            data_event_enabled = true;
         }
-        
+
+        private bool All_idle(bool[] arr, int sz)
+        {
+            bool ret = true;
+
+            for (int i = 0; i < sz; i++)
+                ret &= arr[i];
+
+            return ret;
+        }
+
 
         //Turn byte array into the literal ASCII values and puts it into a string
         string Byte_array_to_literal_string(byte[] packet, int sz) {
