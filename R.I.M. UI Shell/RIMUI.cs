@@ -8,6 +8,7 @@ using System.Threading;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace R.I.M.UI_Shell
 {
@@ -160,6 +161,92 @@ namespace R.I.M.UI_Shell
 
 
         };
+        public class Ind_Label_Ctrl
+        {
+            public enum Ind_status {RUNNING, IDLE, DISCONNECT};
+
+            private Ind_status[] Ind_labels;
+
+            public Ind_Label_Ctrl()
+            {
+                //0-6 for motor status'
+                //7-13 for encoder status'
+                Ind_labels = new Ind_status[14];
+                for(int i = 0; i < 14; i++)
+                {
+                    Ind_labels[i] = Ind_status.DISCONNECT;
+
+                }
+            }
+            
+            public Ind_status this[int key]
+            {
+                get
+                {
+                    return Ind_labels[key];
+                }
+                set
+                {
+                    //Set_window_element(key, Check_status(value));
+                }
+            }
+
+            private Color Check_status(Ind_status status)
+            {
+                Color c = Color.Gold;
+                if (status == Ind_status.DISCONNECT)
+                    c = Color.IndianRed;
+                else if (status == Ind_status.RUNNING)
+                    c = Color.LimeGreen;
+                return c;
+            }
+
+
+        } 
+        
+        public void Set_ind_backcolor(int id, Color c)
+        {
+            switch (id)
+            {
+                case 0:
+                    M1Running_ind.BackColor = c;
+                    break;
+                case 1:
+                    M2Running_ind.BackColor = c;
+                    break;
+                case 2:
+                    M3Running_ind.BackColor = c;
+                    break;
+                case 3:
+                    M4Running_ind.BackColor = c;
+                    break;
+                case 4:
+                    M5Running_ind.BackColor = c;
+                    break;
+                case 5:
+                    M6Running_ind.BackColor = c;
+                    break;
+                case 6:
+                    M7Running_ind.BackColor = c;
+                    break;
+                case 7:
+                    E1Running_ind.BackColor = c;
+                    break;
+                case 8:
+                    E2Running_ind.BackColor = c;
+                    break;
+                case 9:
+                    E3Running_ind.BackColor = c;
+                    break;
+                case 10:
+                    E4Running_ind.BackColor = c;
+                    break;
+                case 11:
+                    E5Running_ind.BackColor = c;
+                    break;
+            }
+                
+        }
 
 
         public Main_wnd()
@@ -395,6 +482,14 @@ namespace R.I.M.UI_Shell
 
                 if (temp[0] == "MOVE")
                 {
+                    if(temp.Length < 4)
+                    {
+                        errlist.Enqueue("Error with line " + line_num.ToString() + ": Not enough parameters. Expected 4, given " + temp.Length.ToString());
+                        error = true;
+                        continue;
+                    }
+
+
                     line_num++;
                     //Check for valid motor ID (bounds and user entry)
                     if (!byte.TryParse(temp[1], out byte x))
@@ -494,6 +589,7 @@ namespace R.I.M.UI_Shell
             return r;
         }
 
+        //Start sequence for programmed exeuction mode
         void ProgExec_start(RIM_PExec commands)
         {
             data_event_enabled = false;
@@ -513,6 +609,11 @@ namespace R.I.M.UI_Shell
             //Total number of commands to send is the ammount times  
             int sent_commands = 0;
 
+            Stopwatch[] MRunTime = new Stopwatch[7];
+
+            for (int i = 0; i < 7; i++)
+                MRunTime[i] = new Stopwatch();
+
             for (int i = 0; i < total_cmds; i++)
             {
 
@@ -527,8 +628,6 @@ namespace R.I.M.UI_Shell
                     {
                         UART_COM.Write(temp);
                         sent_commands++;
-                        Thread.Sleep(2500);
-
                         do
                         {
                             int ch = UART_COM.ReadByte();
@@ -537,13 +636,21 @@ namespace R.I.M.UI_Shell
                             int M_ID = ch & 0x07;
                             if (OPCODE == 0x00)
                             {
+                                Set_ind_backcolor(M_ID, Color.LimeGreen);
                                 motor_idle[M_ID] = false;
                                 motor_running[M_ID] = true;
+                                MRunTime[M_ID].Start();
                             }
                             else
                             {
+                                Set_ind_backcolor(M_ID, Color.Gold);
                                 motor_running[M_ID] = false;
                                 motor_idle[M_ID] = true;
+                                MRunTime[M_ID].Stop();
+                                TimeSpan ts = MRunTime[M_ID].Elapsed;
+                                Change_Encoder_Val_lbl(M_ID, String.Format("{2:00}.{3:00}",
+                                    ts.Hours, ts.Minutes, ts.Seconds,
+                                    ts.Milliseconds / 10));
                             }
 
                         } while (motor_idle[j] == true);
@@ -560,19 +667,54 @@ namespace R.I.M.UI_Shell
                     int M_ID = ch & 0x07;
                     if (OPCODE == 0x00)
                     {
+                        Set_ind_backcolor(M_ID, Color.LimeGreen);
                         motor_idle[M_ID] = false;
                         motor_running[M_ID] = true;
+                        MRunTime[M_ID].Start();
                     }
                     else
                     {
+                        Set_ind_backcolor(M_ID, Color.Gold);
                         motor_running[M_ID] = false;
                         motor_idle[M_ID] = true;
+                        MRunTime[M_ID].Stop();
+                        TimeSpan ts = MRunTime[M_ID].Elapsed;
+                        Change_Encoder_Val_lbl(M_ID, String.Format("{2:00}.{3:00}",
+                            ts.Hours, ts.Minutes, ts.Seconds,
+                            ts.Milliseconds / 10));
                     }
                 }
 
-                Thread.Sleep(1000);
             }
             data_event_enabled = true;
+            for (int i = 0; i < 7; i++)
+                MRunTime[i].Reset();
+
+        }
+
+        private void Change_Encoder_Val_lbl(int id, string val)
+        {
+            switch (id)
+            {
+                case 0:
+                    Encoder1Val_lbl.Text = val;
+                    break;
+                case 1:
+                    Encoder2Val_lbl.Text = val;
+                    break;
+                case 2:
+                    Encoder3Val_lbl.Text = val;
+                    break;
+                case 3:
+                    Encoder4Val_lbl.Text = val;
+                    break;
+                case 4:
+                    Encoder5Val_lbl.Text = val;
+                    break;
+                default:
+                    break;
+            }
+            return;
         }
 
         private bool All_idle(bool[] arr, int sz)
@@ -767,8 +909,13 @@ namespace R.I.M.UI_Shell
                     UART_prep_send_command(commands);
                     break;
                 case 'a':
-                    ProgExec_parse_and_load(ref prog_commands, file_content);
-                    ProgExecFLoad_lbl.Text = "File loaded Succesfully";
+                    if (ProgExec_parse_and_load(ref prog_commands, file_content))
+                        ProgExecFLoad_lbl.Text = "File loaded succesfully";
+                    else
+                    {
+                        ProgExecFLoad_lbl.Text = "File load failed!";
+                        return;
+                    }
                     ProgExec_start(prog_commands);
                     break;
                 case 't':
@@ -928,13 +1075,23 @@ namespace R.I.M.UI_Shell
                         break;
 
                     case 2:
-                        Motor_Active[1] = true;
+                        Motor_Active[2] = true;
                         M3Running_ind.BackColor = Color.LimeGreen;
 
                         #if (DEBUG_MODE)
                             Console.WriteLine("Recieved a motor start confirm");
                         #endif
                         break;
+
+                    case 3:
+                        Motor_Active[3] = true;
+                        M4Running_ind.BackColor = Color.LimeGreen;
+
+                        #if (DEBUG_MODE)
+                        Console.WriteLine("Recieved a motor start confirm");
+                        #endif
+                        break;
+
                     default:
 
                         break;
@@ -992,6 +1149,21 @@ namespace R.I.M.UI_Shell
 
                         break;
 
+                    case 3:
+                        Motor_Active[3] = false;
+                        M4Running_ind.BackColor = Color.Gold;
+
+                        if (Stop_btn.InvokeRequired)
+                            Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
+                        if (Start_btn.InvokeRequired)
+                            Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
+
+                        #if (DEBUG_MODE)
+                            Console.WriteLine("Recieved a motor stop message");
+                        #endif
+
+                        break;
+
                     default:
                         break;
                 }
@@ -1037,6 +1209,19 @@ namespace R.I.M.UI_Shell
 
                         #if (DEBUG_MODE)
                             Console.WriteLine("Motor Driver id 2 Responded with: " + response.ToString("X2"));
+                        #endif
+
+                        break;
+                    case 3:
+                        rx[0] = (byte)UART_COM.ReadChar();
+                        rx[1] = (byte)UART_COM.ReadChar();
+                        response |= rx[0];
+                        response |= (ushort)(rx[1] << 8);
+
+                        M4Running_ind.BackColor = Color.Gold;
+
+                        #if (DEBUG_MODE)
+                            Console.WriteLine("Motor Driver id 3 Responded with: " + response.ToString("X2"));
                         #endif
 
                         break;
@@ -1181,7 +1366,11 @@ namespace R.I.M.UI_Shell
             }
         }
 
-
+        private void IndStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Ind_Label_Ctrl status = new Ind_Label_Ctrl();
+            //status.i status[0];
+        }
 
         private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1214,6 +1403,10 @@ namespace R.I.M.UI_Shell
 
             //Check Motor 3
             Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 2, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            //Check Motor 4
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 3, 0, ref packet, 3);
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
 
             //Check encoder 1

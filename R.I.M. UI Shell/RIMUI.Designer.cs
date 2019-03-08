@@ -123,6 +123,7 @@
             this.OvrCurpos_lbl = new System.Windows.Forms.Label();
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
             this.Encoder_FetchTimer = new System.Windows.Forms.Timer(this.components);
+            this.indStatusCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -182,7 +183,7 @@
             this.setUARTCOMToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CurUartCom_lbl});
             this.setUARTCOMToolStripMenuItem.Name = "setUARTCOMToolStripMenuItem";
-            this.setUARTCOMToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.setUARTCOMToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.setUARTCOMToolStripMenuItem.Text = "Config Menu";
             this.setUARTCOMToolStripMenuItem.Click += new System.EventHandler(this.SetUARTCOMToolStripMenuItem_Click);
             // 
@@ -200,9 +201,10 @@
             this.DeviceStatusCheckToolStripMenuItem,
             this.ResetDevicesToolStripMenuItem,
             this.mATLABScriptRunToolStripMenuItem,
-            this.clearConsoleToolStripMenuItem});
+            this.clearConsoleToolStripMenuItem,
+            this.indStatusCheckToolStripMenuItem});
             this.Test_BTN.Name = "Test_BTN";
-            this.Test_BTN.Size = new System.Drawing.Size(144, 22);
+            this.Test_BTN.Size = new System.Drawing.Size(180, 22);
             this.Test_BTN.Text = "TEST";
             this.Test_BTN.Click += new System.EventHandler(this.Test_BTN_Click);
             // 
@@ -244,7 +246,7 @@
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.QuitToolStripMenuItem_Click);
             // 
@@ -1213,6 +1215,13 @@
             this.Encoder_FetchTimer.Enabled = true;
             this.Encoder_FetchTimer.Tick += new System.EventHandler(this.Encoder_FetchTimer_Tick);
             // 
+            // indStatusCheckToolStripMenuItem
+            // 
+            this.indStatusCheckToolStripMenuItem.Name = "indStatusCheckToolStripMenuItem";
+            this.indStatusCheckToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.indStatusCheckToolStripMenuItem.Text = "Ind_Status_Check";
+            this.indStatusCheckToolStripMenuItem.Click += new System.EventHandler(this.IndStatusCheckToolStripMenuItem_Click);
+            // 
             // Main_wnd
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1356,6 +1365,7 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.ToolStripMenuItem ResetDevicesToolStripMenuItem;
         private System.Windows.Forms.Timer Encoder_FetchTimer;
+        private System.Windows.Forms.ToolStripMenuItem indStatusCheckToolStripMenuItem;
     }
 }
 
