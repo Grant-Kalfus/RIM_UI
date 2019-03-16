@@ -40,6 +40,7 @@
             this.ResetDevicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mATLABScriptRunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.indStatusCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.SetO_btn = new System.Windows.Forms.ToolStripDropDownButton();
@@ -123,7 +124,6 @@
             this.OvrCurpos_lbl = new System.Windows.Forms.Label();
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
             this.Encoder_FetchTimer = new System.Windows.Forms.Timer(this.components);
-            this.indStatusCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -242,6 +242,13 @@
             this.clearConsoleToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.clearConsoleToolStripMenuItem.Text = "Clear Console";
             this.clearConsoleToolStripMenuItem.Click += new System.EventHandler(this.ClearConsoleToolStripMenuItem_Click);
+            // 
+            // indStatusCheckToolStripMenuItem
+            // 
+            this.indStatusCheckToolStripMenuItem.Name = "indStatusCheckToolStripMenuItem";
+            this.indStatusCheckToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.indStatusCheckToolStripMenuItem.Text = "Ind_Status_Check";
+            this.indStatusCheckToolStripMenuItem.Click += new System.EventHandler(this.IndStatusCheckToolStripMenuItem_Click);
             // 
             // quitToolStripMenuItem
             // 
@@ -1214,13 +1221,6 @@
             // 
             this.Encoder_FetchTimer.Enabled = true;
             this.Encoder_FetchTimer.Tick += new System.EventHandler(this.Encoder_FetchTimer_Tick);
-            // 
-            // indStatusCheckToolStripMenuItem
-            // 
-            this.indStatusCheckToolStripMenuItem.Name = "indStatusCheckToolStripMenuItem";
-            this.indStatusCheckToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.indStatusCheckToolStripMenuItem.Text = "Ind_Status_Check";
-            this.indStatusCheckToolStripMenuItem.Click += new System.EventHandler(this.IndStatusCheckToolStripMenuItem_Click);
             // 
             // Main_wnd
             // 

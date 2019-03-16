@@ -161,6 +161,7 @@ namespace R.I.M.UI_Shell
 
 
         };
+
         public class Ind_Label_Ctrl
         {
             public enum Ind_status {RUNNING, IDLE, DISCONNECT};
@@ -873,22 +874,10 @@ namespace R.I.M.UI_Shell
         //When the start button is clicked
         private void Start_btn_Click(object sender, EventArgs e)
         {
-            //Do Start Stuff
-            if (!UART_COM.IsOpen)
-            { 
-                try
-                {
-                    UART_COM.Open();
-                }
-                catch
-                {
-                    MessageBox.Show("Error: COM Port " + UART_COM.PortName + " is in use or doesn't exist!");
-                    return;
-                };
-            }
+            TryOpenCom();
 
             #if (DEBUG_MODE)
-                Console.WriteLine("COM port " + UART_COM.PortName + " opened");
+            Console.WriteLine("COM port " + UART_COM.PortName + " opened");
             #endif
 
             #if (DEBUG_MODE)
@@ -959,8 +948,13 @@ namespace R.I.M.UI_Shell
             Cfg_box.StartPosition = this.StartPosition;
             Cfg_box.ShowDialog();
 
+            if (UART_COM.IsOpen == true)
+                UART_COM.Close();
+
             CurUartCom_lbl.Text = "Current COM" + Cfg_box.COMNumber.ToString();
             UART_COM.PortName = "COM" + Cfg_box.COMNumber.ToString();
+
+            TryOpenCom();
         }
 
         private void Test_BTN_Click(object sender, EventArgs e)
@@ -1378,21 +1372,10 @@ namespace R.I.M.UI_Shell
 
             Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 0, 0, ref packet, 3);
 
-            if (!UART_COM.IsOpen)
-            {
-                try
-                {
-                    UART_COM.Open();
-                }
-                catch
-                {
-                    MessageBox.Show("Error: COM Port " + UART_COM.PortName + " is in use or doesn't exist!");
-                    return;
-                };
-            }
+            TryOpenCom();
 
             #if (DEBUG_MODE)
-                Debug_Output(packet, 3);
+            Debug_Output(packet, 3);
             #endif
 
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
