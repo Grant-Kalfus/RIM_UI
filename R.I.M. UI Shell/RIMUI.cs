@@ -31,6 +31,31 @@ namespace R.I.M.UI_Shell
 
         };
 
+
+        static class RIM_MotorConstants
+        {
+            public const decimal M1_ratio = 8,
+                           M1_StepAngle = 0.9M,
+                           M1_StepDiv = 2,
+
+                           M2_ratio = 50, //Maybe 100?
+                           M2_StepAngle = 0.018M,
+                           M2_StepDiv = 4,
+
+                           M3_ratio = 100,
+                           M3_StepAngle = 0.09M,
+                           M3_StepDiv = 2,
+
+                           M4_ratio = 13.79M,
+                           M4_StepAngle = 0.131M,
+                           M4_StepDiv = 2,
+
+                           M5_ratio = 50,
+                           M5_StepAngle = 0.018M;
+
+        };
+
+
         public class RIM_PExec
         {
             public Queue<string>[] Motor_cmds;
@@ -133,6 +158,9 @@ namespace R.I.M.UI_Shell
         volatile public bool[] Motor_Active = new bool[5];
 
         bool data_event_enabled = true;
+        
+        //Degree mode bool
+        bool degree_mode = true;
 
 
         //For storing the stepper motor steps during percise execution mode
@@ -349,13 +377,20 @@ namespace R.I.M.UI_Shell
             Console.WriteLine("Started input validation for Precise Execution Mode");
 #endif
 
+            //Toggle for degree mode
+            ushort max_steps = 0xFFFF;
+            if (degree_mode)
+            {
+                max_steps = 360;
+            }
+
             if (Int32.TryParse(Stepper1_entry.Text, out int x))
             {
                 if (x < 0)
                     commands.motor_dirs[0] = Direction.COUNTERCLOCKWISE;
 
-                if (Math.Abs(x) > 0xFFFF)
-                    commands.motors[0] = 0xFFFF;
+                if (Math.Abs(x) > max_steps)
+                    commands.motors[0] = max_steps;
                 else
                     commands.motors[0] = (ushort)Math.Abs(x);
             }
@@ -365,8 +400,8 @@ namespace R.I.M.UI_Shell
                 if (x < 0)
                     commands.motor_dirs[1] = Direction.COUNTERCLOCKWISE;
 
-                if (Math.Abs(x) > 0xFFFF)
-                    commands.motors[1] = 0xFFFF;
+                if (Math.Abs(x) > max_steps)
+                    commands.motors[1] = max_steps;
                 else
                     commands.motors[1] = (ushort)Math.Abs(x);
             }
@@ -375,8 +410,8 @@ namespace R.I.M.UI_Shell
             {
                 if (x < 0)
                     commands.motor_dirs[2] = Direction.COUNTERCLOCKWISE;
-                if (Math.Abs(x) > 0xFFFF)
-                    commands.motors[2] = 0xFFFF;
+                if (Math.Abs(x) > max_steps)
+                    commands.motors[2] = max_steps;
                 else
                     commands.motors[2] = (ushort)Math.Abs(x);
             }
@@ -385,8 +420,8 @@ namespace R.I.M.UI_Shell
             {
                 if (x < 0)
                     commands.motor_dirs[3] = Direction.COUNTERCLOCKWISE;
-                if (Math.Abs(x) > 0xFFFF)
-                    commands.motors[3] = 0xFFFF;
+                if (Math.Abs(x) > max_steps)
+                    commands.motors[3] = max_steps;
                 else
                     commands.motors[3] = (ushort)Math.Abs(x);
             }
@@ -396,8 +431,8 @@ namespace R.I.M.UI_Shell
                 if (x < 0)
                     commands.motor_dirs[4] = Direction.COUNTERCLOCKWISE;
 
-                if (Math.Abs(x) > 0xFFFF)
-                    commands.motors[4] = 0xFFFF;
+                if (Math.Abs(x) > max_steps)
+                    commands.motors[4] = max_steps;
                 else
                     commands.motors[4] = (ushort)Math.Abs(x);
             }
@@ -407,8 +442,8 @@ namespace R.I.M.UI_Shell
                 if (x < 0)
                     commands.motor_dirs[5] = Direction.COUNTERCLOCKWISE;
 
-                if (Math.Abs(x) > 0xFFFF)
-                    commands.motors[5] = 0xFFFF;
+                if (Math.Abs(x) > max_steps)
+                    commands.motors[5] = max_steps;
                 else
                     commands.motors[5] = (ushort)Math.Abs(x);
             }
@@ -418,16 +453,26 @@ namespace R.I.M.UI_Shell
                 if (x < 0)
                     commands.motor_dirs[6] = Direction.COUNTERCLOCKWISE;
 
-                if (Math.Abs(x) > 0xFFFF)
-                    commands.motors[6] = 0xFFFF;
+                if (Math.Abs(x) > max_steps)
+                    commands.motors[6] = max_steps;
                 else
                     commands.motors[6] = (ushort)Math.Abs(x);
             }
+            
+            
+
 
 #if (DEBUG_MODE)
             Console.WriteLine("Done!");
 #endif
         }
+
+        void Degrees_to_steps(ref PreciseExecution_steps commands)
+        {
+            
+        }
+
+
 
         //Programmed Execution Mode support
         bool ProgExec_parse_and_load(ref RIM_PExec commands, string finfo)
@@ -1364,6 +1409,44 @@ namespace R.I.M.UI_Shell
         {
             Ind_Label_Ctrl status = new Ind_Label_Ctrl();
             //status.i status[0];
+        }
+
+        private void StepMode_btn_Click(object sender, EventArgs e)
+        {
+            //Clear all text from controls
+            Stepper1_entry.Clear();
+            Stepper2_entry.Clear();
+            Stepper3_entry.Clear();
+            Stepper4_entry.Clear();
+            Stepper5_entry.Clear();
+            Servo1_entry.Clear();
+            Servo2_entry.Clear();
+            //Reset control masks
+            if (degree_mode)
+            {
+                Stepper1_entry.Mask = "#00000000000";
+                Stepper2_entry.Mask = "#00000000000";
+                Stepper3_entry.Mask = "#00000000000";
+                Stepper4_entry.Mask = "#00000000000";
+                Stepper5_entry.Mask = "#00000000000";
+                Servo1_entry.Mask = "#00000000000";
+                Servo1_entry.Mask = "#00000000000";
+                degree_mode = false;
+                StepMode_lbl.Text = "Step Mode";
+            }
+            else
+            {
+                Stepper1_entry.Mask = @"#000\°";
+                Stepper2_entry.Mask = @"#000\°";
+                Stepper3_entry.Mask = @"#000\°";
+                Stepper4_entry.Mask = @"#000\°";
+                Stepper5_entry.Mask = @"#000\°";
+                Servo1_entry.Mask = @"#000\°";
+                Servo2_entry.Mask = @"#000\°";
+                degree_mode = true;
+                StepMode_lbl.Text = "Degree Mode";
+            }
+            
         }
 
         private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)

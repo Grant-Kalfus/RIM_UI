@@ -124,6 +124,8 @@
             this.OvrCurpos_lbl = new System.Windows.Forms.Label();
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
             this.Encoder_FetchTimer = new System.Windows.Forms.Timer(this.components);
+            this.StepMode_btn = new System.Windows.Forms.ToolStripMenuItem();
+            this.StepMode_lbl = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -197,12 +199,13 @@
             // Test_BTN
             // 
             this.Test_BTN.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearConsoleToolStripMenuItem,
             this.encoderStatusToolStripMenuItem,
             this.DeviceStatusCheckToolStripMenuItem,
             this.ResetDevicesToolStripMenuItem,
             this.mATLABScriptRunToolStripMenuItem,
-            this.clearConsoleToolStripMenuItem,
-            this.indStatusCheckToolStripMenuItem});
+            this.indStatusCheckToolStripMenuItem,
+            this.StepMode_btn});
             this.Test_BTN.Name = "Test_BTN";
             this.Test_BTN.Size = new System.Drawing.Size(180, 22);
             this.Test_BTN.Text = "TEST";
@@ -1222,6 +1225,21 @@
             this.Encoder_FetchTimer.Enabled = true;
             this.Encoder_FetchTimer.Tick += new System.EventHandler(this.Encoder_FetchTimer_Tick);
             // 
+            // StepMode_btn
+            // 
+            this.StepMode_btn.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StepMode_lbl});
+            this.StepMode_btn.Name = "StepMode_btn";
+            this.StepMode_btn.Size = new System.Drawing.Size(180, 22);
+            this.StepMode_btn.Text = "Switch Input Modes";
+            this.StepMode_btn.Click += new System.EventHandler(this.StepMode_btn_Click);
+            // 
+            // StepMode_lbl
+            // 
+            this.StepMode_lbl.Name = "StepMode_lbl";
+            this.StepMode_lbl.Size = new System.Drawing.Size(180, 22);
+            this.StepMode_lbl.Text = "Step Mode";
+            // 
             // Main_wnd
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1366,6 +1384,8 @@
         private System.Windows.Forms.ToolStripMenuItem ResetDevicesToolStripMenuItem;
         private System.Windows.Forms.Timer Encoder_FetchTimer;
         private System.Windows.Forms.ToolStripMenuItem indStatusCheckToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem StepMode_btn;
+        private System.Windows.Forms.ToolStripMenuItem StepMode_lbl;
     }
 }
 
