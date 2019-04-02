@@ -238,40 +238,76 @@ namespace R.I.M.UI_Shell
             switch (id)
             {
                 case 0:
-                    M1Running_ind.BackColor = c;
+                    if (M1Running_ind.InvokeRequired)
+                        M1Running_ind.Invoke(new MethodInvoker(delegate { M1Running_ind.BackColor = c; }));
+                    else
+                        M1Running_ind.BackColor = c;
                     break;
                 case 1:
-                    M2Running_ind.BackColor = c;
+                    if (M2Running_ind.InvokeRequired)
+                        M2Running_ind.Invoke(new MethodInvoker(delegate { M2Running_ind.BackColor = c; }));
+                    else
+                        M2Running_ind.BackColor = c;
                     break;
                 case 2:
-                    M3Running_ind.BackColor = c;
+                    if (M3Running_ind.InvokeRequired)
+                        M3Running_ind.Invoke(new MethodInvoker(delegate { M3Running_ind.BackColor = c; }));
+                    else
+                        M3Running_ind.BackColor = c;
                     break;
                 case 3:
-                    M4Running_ind.BackColor = c;
+                    if (M4Running_ind.InvokeRequired)
+                        M4Running_ind.Invoke(new MethodInvoker(delegate { M4Running_ind.BackColor = c; }));
+                    else
+                        M4Running_ind.BackColor = c;
                     break;
                 case 4:
-                    M5Running_ind.BackColor = c;
+                    if (M5Running_ind.InvokeRequired)
+                        M5Running_ind.Invoke(new MethodInvoker(delegate { M5Running_ind.BackColor = c; }));
+                    else
+                        M5Running_ind.BackColor = c;
                     break;
                 case 5:
-                    M6Running_ind.BackColor = c;
+                    if (M6Running_ind.InvokeRequired)
+                        M6Running_ind.Invoke(new MethodInvoker(delegate { M6Running_ind.BackColor = c; }));
+                    else
+                        M6Running_ind.BackColor = c;
                     break;
                 case 6:
-                    M7Running_ind.BackColor = c;
+                    if (M7Running_ind.InvokeRequired)
+                        M7Running_ind.Invoke(new MethodInvoker(delegate { M7Running_ind.BackColor = c; }));
+                    else
+                        M7Running_ind.BackColor = c;
                     break;
                 case 7:
-                    E1Running_ind.BackColor = c;
+                    if (E1Running_ind.InvokeRequired)
+                        E1Running_ind.Invoke(new MethodInvoker(delegate { E1Running_ind.BackColor = c; }));
+                    else
+                        E1Running_ind.BackColor = c;
                     break;
                 case 8:
-                    E2Running_ind.BackColor = c;
+                    if (E2Running_ind.InvokeRequired)
+                        E2Running_ind.Invoke(new MethodInvoker(delegate { E2Running_ind.BackColor = c; }));
+                    else
+                        E2Running_ind.BackColor = c;
                     break;
                 case 9:
-                    E3Running_ind.BackColor = c;
+                    if (E3Running_ind.InvokeRequired)
+                        E3Running_ind.Invoke(new MethodInvoker(delegate { E3Running_ind.BackColor = c; }));
+                    else
+                        E3Running_ind.BackColor = c;
                     break;
                 case 10:
-                    E4Running_ind.BackColor = c;
+                    if (E4Running_ind.InvokeRequired)
+                        E4Running_ind.Invoke(new MethodInvoker(delegate { E4Running_ind.BackColor = c; }));
+                    else
+                        E4Running_ind.BackColor = c;
                     break;
                 case 11:
-                    E5Running_ind.BackColor = c;
+                    if (E5Running_ind.InvokeRequired)
+                        E5Running_ind.Invoke(new MethodInvoker(delegate { E5Running_ind.BackColor = c; }));
+                    else
+                        E5Running_ind.BackColor = c;
                     break;
             }
                 
@@ -1091,182 +1127,38 @@ namespace R.I.M.UI_Shell
 
             if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_RUN)
             {
-                switch (info)
-                {
-                    case 0:
-                        M1Running_ind.BackColor = Color.LimeGreen;
-                        Motor_Active[0] = true;
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Recieved a motor start confirm");
-                        #endif
+                Motor_Active[info] = true;
+                Set_ind_backcolor(info, Color.LimeGreen);
 
-                        Encoder_Update_1 = true;
+                #if (DEBUG_MODE)
+                    Console.WriteLine("Recieved a motor start confirm");
+                #endif
 
-                        break;
-                    case 1:
-                        Motor_Active[1] = true;
-                        M2Running_ind.BackColor = Color.LimeGreen;
-
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Recieved a motor start confirm");
-                        #endif
-
-                        break;
-
-                    case 2:
-                        Motor_Active[2] = true;
-                        M3Running_ind.BackColor = Color.LimeGreen;
-
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Recieved a motor start confirm");
-                        #endif
-                        break;
-
-                    case 3:
-                        Motor_Active[3] = true;
-                        M4Running_ind.BackColor = Color.LimeGreen;
-
-                        #if (DEBUG_MODE)
-                        Console.WriteLine("Recieved a motor start confirm");
-                        #endif
-                        break;
-
-                    default:
-
-                        break;
-                }
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_STOP)
             {
-                switch (info)
-                {
-                    case 0:
-                        M1Running_ind.BackColor = Color.Gold;
+                Set_ind_backcolor(info, Color.Gold);
+                Motor_Active[info] = false;
 
-                        Motor_Active[0] = false;
+                #if (DEBUG_MODE)
+                    Console.WriteLine("Recieved a motor stop message");
+                #endif
 
-                        if (Stop_btn.InvokeRequired)
-                            Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
-                        if (Start_btn.InvokeRequired)
-                            Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
-
-                        Encoder_Update_1 = false;
-
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Recieved a motor stop message");
-                        #endif
-
-                        break;
-
-                    case 1:
-                        Motor_Active[1] = false;
-                        M2Running_ind.BackColor = Color.Gold;
-
-                        if (Stop_btn.InvokeRequired)
-                            Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
-                        if (Start_btn.InvokeRequired)
-                            Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
-
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Recieved a motor stop message");
-                        #endif
-
-                        break;
-
-                    case 2:
-                        Motor_Active[2] = false;
-                        M3Running_ind.BackColor = Color.Gold;
-
-                        if (Stop_btn.InvokeRequired)
-                            Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
-                        if (Start_btn.InvokeRequired)
-                            Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
-
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Recieved a motor stop message");
-                        #endif
-
-                        break;
-
-                    case 3:
-                        Motor_Active[3] = false;
-                        M4Running_ind.BackColor = Color.Gold;
-
-                        if (Stop_btn.InvokeRequired)
-                            Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
-                        if (Start_btn.InvokeRequired)
-                            Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
-
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Recieved a motor stop message");
-                        #endif
-
-                        break;
-
-                    default:
-                        break;
-                }
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_STATUS)
             {
-                switch (info)
-                {
-                    case 0:
-                        rx[0] = (byte)UART_COM.ReadChar();
-                        rx[1] = (byte)UART_COM.ReadChar();
-                        response |= rx[0];
-                        response |= (ushort)(rx[1] << 8);
+                
+                rx[0] = (byte)UART_COM.ReadChar();
+                rx[1] = (byte)UART_COM.ReadChar();
+                response |= rx[0];
+                response |= (ushort)(rx[1] << 8);
 
-                        M1Running_ind.BackColor = Color.Gold;
+                Set_ind_backcolor(info, Color.Gold);
 
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Motor Driver id 0 Responded with: " + response.ToString("X2"));
-                        #endif
-
-                        break;
-                    case 1:
-                        rx[0] = (byte)UART_COM.ReadChar();
-                        rx[1] = (byte)UART_COM.ReadChar();
-                        response |= rx[0];
-                        response |= (ushort)(rx[1] << 8);
-
-                        M2Running_ind.BackColor = Color.Gold;
-
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Motor Driver id 1 Responded with: " + response.ToString("X2"));
-                        #endif
-
-                        break;
-
-                    case 2:
-                        rx[0] = (byte)UART_COM.ReadChar();
-                        rx[1] = (byte)UART_COM.ReadChar();
-                        response |= rx[0];
-                        response |= (ushort)(rx[1] << 8);
-
-                        M3Running_ind.BackColor = Color.Gold;
-
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Motor Driver id 2 Responded with: " + response.ToString("X2"));
-                        #endif
-
-                        break;
-                    case 3:
-                        rx[0] = (byte)UART_COM.ReadChar();
-                        rx[1] = (byte)UART_COM.ReadChar();
-                        response |= rx[0];
-                        response |= (ushort)(rx[1] << 8);
-
-                        M4Running_ind.BackColor = Color.Gold;
-
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Motor Driver id 3 Responded with: " + response.ToString("X2"));
-                        #endif
-
-                        break;
-
-
-                }
+                #if (DEBUG_MODE)
+                    Console.WriteLine("Motor Driver id" + info.ToString() + "Responded with: " + response.ToString("X2"));
+                #endif
+                
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_RESET_DEV)
             {
