@@ -190,6 +190,7 @@ namespace R.I.M.UI_Shell
 
         };
 
+        /*
         public class Ind_Label_Ctrl
         {
             public enum Ind_status {RUNNING, IDLE, DISCONNECT};
@@ -232,7 +233,8 @@ namespace R.I.M.UI_Shell
 
 
         } 
-        
+        */
+
         public void Set_ind_backcolor(int id, Color c)
         {
             switch (id)
@@ -503,12 +505,17 @@ namespace R.I.M.UI_Shell
 #endif
         }
 
+        //Overload for handling queue handling
         void Degrees_to_steps(ref PreciseExecution_steps commands)
         {
             
         }
 
+        //Overload for handling queue handling
+        void Degrees_to_steps(ref RIM_PExec commands)
+        {
 
+        }
 
         //Programmed Execution Mode support
         bool ProgExec_parse_and_load(ref RIM_PExec commands, string finfo)
@@ -1162,63 +1169,38 @@ namespace R.I.M.UI_Shell
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_RESET_DEV)
             {
-                switch (info)
-                {
-                    case 0:
-                        rx[0] = (byte)UART_COM.ReadChar();
-                        rx[1] = (byte)UART_COM.ReadChar();
-                        response |= rx[0];
-                        response |= (ushort)(rx[1] << 8);
 
-                        M1Running_ind.BackColor = Color.Gold;
+                rx[0] = (byte)UART_COM.ReadChar();
+                rx[1] = (byte)UART_COM.ReadChar();
+                response |= rx[0];
+                response |= (ushort)(rx[1] << 8);
 
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Motor Driver id 0 Responded with: " + response.ToString("X2"));
-                        #endif
+                Set_ind_backcolor(info, Color.Gold);
 
-                        break;
-                    case 1:
-                        rx[0] = (byte)UART_COM.ReadChar();
-                        rx[1] = (byte)UART_COM.ReadChar();
-                        response |= rx[0];
-                        response |= (ushort)(rx[1] << 8);
-
-
-                        M2Running_ind.BackColor = Color.Gold;
-
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Motor Driver id 1 Responded with: " + response.ToString("X2"));
-                        #endif
-
-                        break;
-
-                }
+                #if (DEBUG_MODE)
+                    Console.WriteLine("Motor Driver id" + info.ToString() + "Responded with: " + response.ToString("X2"));
+                #endif
             }
 
             else if (opcode == PSoC_OpCodes.RIM_OP_ENCODER_INFO)
             {
-                switch (info)
-                {
-                    case 0:
-                        E1Running_ind.BackColor = Color.Gold;
-                        rx[0] = (byte)UART_COM.ReadChar();
-                        rx[1] = (byte)UART_COM.ReadChar();
-                        response |= rx[0];
-                        response |= (ushort)(rx[1] << 8);
-                        
+                    
+                rx[0] = (byte)UART_COM.ReadChar();
+                rx[1] = (byte)UART_COM.ReadChar();
+                response |= rx[0];
+                response |= (ushort)(rx[1] << 8);
+
+                Set_ind_backcolor(info + 7, Color.Gold);
+
+                #if (DEBUG_MODE)
+                    Console.WriteLine("Encoder id " + info.ToString() + " is currently at position: " + response.ToString());
+                #endif
 
 
-                        #if (DEBUG_MODE)
-                            Console.WriteLine("Encoder id 0 is currently at position: " + response.ToString());
-                        #endif
-
-
-                        if (Encoder1Val_lbl.InvokeRequired)
-                            Encoder1Val_lbl.Invoke(new MethodInvoker(delegate { Encoder1Val_lbl.Text = response.ToString(); }));
-                        
-
-                        break;
-                }
+                //if (Encoder1Val_lbl.InvokeRequired)
+                //    Encoder1Val_lbl.Invoke(new MethodInvoker(delegate { Encoder1Val_lbl.Text = response.ToString(); }));
+                   
+            
 
             }
 
@@ -1297,11 +1279,13 @@ namespace R.I.M.UI_Shell
             }
         }
 
+        /*
         private void IndStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Ind_Label_Ctrl status = new Ind_Label_Ctrl();
             //status.i status[0];
         }
+        */
 
         private void StepMode_btn_Click(object sender, EventArgs e)
         {
