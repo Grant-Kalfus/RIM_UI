@@ -15,9 +15,11 @@ namespace R.I.M.UI_Shell
 
     public partial class Main_wnd : Form
     {
+        //This class is the RIM 
+        //See packet format function for details on packet structure
         static class PSoC_OpCodes
         {
-            //RIM Operation codes 
+            //RIM Operation codes
             public const byte RIM_OP_MOTOR_RUN           = 0x00,
                               RIM_OP_MOTOR_STOP          = 0x10,
                               RIM_OP_MOTOR_SET_PARAM     = 0x20,
@@ -31,7 +33,7 @@ namespace R.I.M.UI_Shell
 
         };
 
-
+        //Class for defining gearing ratios constants on RIM
         static class RIM_MotorConstants
         {
             public const decimal M1_ratio = 8,
@@ -56,6 +58,7 @@ namespace R.I.M.UI_Shell
         };
 
 
+        //Class to keep track of the command list for programmed execution mode
         public class RIM_PExec
         {
             public Queue<string>[] Motor_cmds;
@@ -79,6 +82,8 @@ namespace R.I.M.UI_Shell
 
         }
 
+
+        //Stores hex paramters for the L6470 motor driver chip
         static class L6470_Params {
             //Overcurrent Parameters
             public const byte OCD_TH_375mA  = 0x00,
@@ -98,7 +103,7 @@ namespace R.I.M.UI_Shell
                               OCD_TH_5625mA = 0x0E,
                               OCD_TH_6000mA = 0x0F;
 
-            //Step Selector
+            //Step select constants
             public const byte STEP_SEL_1     = 0x00,
                               STEP_SEL_1_2   = 0x01,
                               STEP_SEL_1_4   = 0x02,
@@ -140,9 +145,10 @@ namespace R.I.M.UI_Shell
         //Make an instance of the window that allows the user to configure UART-related settings
         private ConfigBox Cfg_box = new ConfigBox();
 
-        //Enum to keep track of
+        //Enum to keep track of motor direction
         public enum Direction {CLOCKWISE, COUNTERCLOCKWISE};
 
+        //Global variable for keeping track of input file for programmed execution mode
         string file_content = string.Empty;
 
         //Matlab console instance for DH parameters
@@ -155,8 +161,10 @@ namespace R.I.M.UI_Shell
              Encoder_Update_4 = false,
              Encoder_Update_5 = false;
 
+        //Keep track of what motors are active--currently not in use
         volatile public bool[] Motor_Active = new bool[5];
 
+        //Boolean that enables the data recieved event handler for the UART_COM object
         bool data_event_enabled = true;
         
         //Degree mode bool
@@ -235,6 +243,8 @@ namespace R.I.M.UI_Shell
         } 
         */
 
+        //Function that sets an indicator that corrisponds to ID to a color C
+        //Motors have an id of 0-6, encoders have ids of 7-11
         public void Set_ind_backcolor(int id, Color c)
         {
             switch (id)
@@ -315,12 +325,14 @@ namespace R.I.M.UI_Shell
                 
         }
 
-
+        //Init window
         public Main_wnd()
         {
             InitializeComponent();
         }
 
+        //Attempts to open up the com port
+        //If it fails to open, notify the user
         private bool TryOpenCom() {
             bool r = true;
             if (!UART_COM.IsOpen)
@@ -337,6 +349,7 @@ namespace R.I.M.UI_Shell
             }
             return r;
         }
+
 
         private void Main_wnd_Load(object sender, EventArgs e)
         {
@@ -518,8 +531,11 @@ namespace R.I.M.UI_Shell
         }
 
         //Programmed Execution Mode support
+        //Parses an input files and converts it to commands that can be sent to RIM
+        //Commands are stored in queues corrisponding to the motor and encoder
         bool ProgExec_parse_and_load(ref RIM_PExec commands, string finfo)
         {
+            //Start at line 1
             int line_num = 1;
 
             byte id = 0;
@@ -530,7 +546,7 @@ namespace R.I.M.UI_Shell
 
             byte[] packet = new byte[3];
 
-
+            //Keep track of syntax errors
             bool error = false;
             Queue<string> errlist = new Queue<string>();
 
@@ -540,12 +556,12 @@ namespace R.I.M.UI_Shell
                 cmd_written[i] = false;
             }
 
-
+            //Split the file by line
             string []split_info = finfo.Split('\n');
 
             foreach (string line in split_info)
             {
-                //Ignore a line if it has one of the following
+                //Ignore a line if it has one of the following leading chars
                 if (line.Length == 0 || line[0] == '#')
                 {
                     line_num++;
@@ -554,6 +570,7 @@ namespace R.I.M.UI_Shell
                 
                 //Remove all extra spaces and split by commas
                 string[] temp = line.Replace(" ", "").Split(',');
+
                 if (temp[0] == "-")
                 {
                     //Fill out the rest of the queue with motor pass commands
@@ -650,6 +667,8 @@ namespace R.I.M.UI_Shell
             return !error;
         }
 
+        //Checks to see if motor is active based on the color its indicator
+        //This function is a really bad way to check for this, and will be changed in the future
         bool Motors_Active(int motor_id)
         {
             bool r = false;
@@ -686,6 +705,7 @@ namespace R.I.M.UI_Shell
             string temp = string.Empty;
             int total_cmds = commands.Motor_cmds[0].Count;
 
+            //I think that one bool is needef for this, but I won't touch it until I have access to the system again
             bool[] motor_running = new bool[7],
                       motor_idle = new bool[7];
 
@@ -705,7 +725,7 @@ namespace R.I.M.UI_Shell
 
             for (int i = 0; i < total_cmds; i++)
             {
-
+                //j represents the motor ids
                 for (int j = 0; j < 7; j++)
                 {
                     temp = commands.Motor_cmds[j].Dequeue();
@@ -780,6 +800,7 @@ namespace R.I.M.UI_Shell
                 MRunTime[i].Reset();
 
         }
+
 
         private void Change_Encoder_Val_lbl(int id, string val)
         {
@@ -1279,13 +1300,13 @@ namespace R.I.M.UI_Shell
             }
         }
 
-        /*
+
         private void IndStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Ind_Label_Ctrl status = new Ind_Label_Ctrl();
+            //Ind_Label_Ctrl status = new Ind_Label_Ctrl();
             //status.i status[0];
         }
-        */
+
 
         private void StepMode_btn_Click(object sender, EventArgs e)
         {
