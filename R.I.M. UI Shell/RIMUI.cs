@@ -983,7 +983,8 @@ namespace R.I.M.UI_Shell
         //When the start button is clicked
         private void Start_btn_Click(object sender, EventArgs e)
         {
-            TryOpenCom();
+            if (!TryOpenCom())
+                return;
 
             #if (DEBUG_MODE)
             Console.WriteLine("COM port " + UART_COM.PortName + " opened");
