@@ -1,7 +1,7 @@
 ﻿################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
-
-/.vs/R.I.M. UI Shell/v15/Server/sqlite3
-/R.I.M. UI Shell/obj/Debug
-/.vs/R.I.M. UI Shell/v15
+R.I.M. UI Shell/v15/Server/sqlite3
+R.I.M. UI Shell/obj/Debug
+R.I.M. UI Shell/bin/Debug
+.vs/R.I.M. UI Shell/v15

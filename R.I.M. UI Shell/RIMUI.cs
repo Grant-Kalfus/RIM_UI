@@ -30,6 +30,12 @@ namespace R.I.M.UI_Shell
 
                               RIM_OP_MOTOR_EXTENDED_STEP = 0x80;
 
+            //For RIM_OP_MOTOR_STOP
+            public const byte ONE_SSTOP  = 0x00,
+                              ONEHSTOP   = 0x01,
+                              ALL_SSTOP  = 0x02,
+                              ALL_HSTOPP = 0x03;
+
 
         };
 
@@ -907,6 +913,12 @@ namespace R.I.M.UI_Shell
 
 
         //Formats into UART packet to be sent
+        //Packet structure is as follows:
+        // | _ _ _ _ | _ _ _ _ | _ _ _ _ _ _ _ _ | _ _ _ _ _ _ _ _ |
+        // | OPCODE  |  INFO   |   LOWER BYTE    |    UPPER BYTE   |
+        //Example move packet:
+        //| _ _ _ _  |    _    |   _ _ _  | _ _ _ _ _ _ _ _ | _ _ _ _ _ _ _ _ |
+        //|  OPCODE  |Direction| Motor Id | Lower step byte | upper step byte |
         private bool Format_packet(byte OPCODE, Direction dir, int motor_id, ushort command, ref byte[] packet, int sz) {
 
             #if (DEBUG_MODE)
