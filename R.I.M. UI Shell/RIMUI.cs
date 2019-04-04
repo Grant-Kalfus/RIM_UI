@@ -36,11 +36,16 @@ namespace R.I.M.UI_Shell
         //Class for defining gearing ratios constants on RIM
         static class RIM_MotorConstants
         {
+            public static readonly decimal[] Motor_Ratios = {8, 50, 100, 13.79M, 50};
+            public static readonly decimal[] Motor_StepAngle = {0.9M, 0.018M, 0.131M, 0.018M};
+            public static readonly decimal[] Motor_StepDiv = { 2, 4, 2, 2};
+
+            /*
             public const decimal M1_ratio = 8,
                            M1_StepAngle = 0.9M,
                            //M1_StepDiv = 2,
 
-                           M2_ratio = 50, //Maybe 100?
+                           M2_ratio = 50, 
                            M2_StepAngle = 0.018M,
                            //M2_StepDiv = 4,
 
@@ -54,6 +59,7 @@ namespace R.I.M.UI_Shell
 
                            M5_ratio = 50,
                            M5_StepAngle = 0.018M;
+            */
 
         };
 
@@ -170,17 +176,20 @@ namespace R.I.M.UI_Shell
         //Degree mode bool
         bool degree_mode = false;
 
+        const int CONNECTED_MOTORS = 4;
+
 
         //For storing the stepper motor steps during percise execution mode
         public struct PreciseExecution_steps
         {
             public int motor_num; 
 
+            //For motor steps
             public ushort[] motors;
 
             public Direction[] motor_dirs;
 
-            public PreciseExecution_steps(int motor_amount = 7)
+            public PreciseExecution_steps(int motor_amount = CONNECTED_MOTORS)
             {
                 motor_num = motor_amount;
 
@@ -519,28 +528,27 @@ namespace R.I.M.UI_Shell
         }
 
         //Degrees to steps for percise execution mode
-        void Degrees_to_steps(ref PreciseExecution_steps commands)
+        void Degrees_to_steps_PExecMode(ref PreciseExecution_steps commands)
         {
-            if(commands.motors[0] != 0)
-                commands.motors[0] = (ushort) Math.Round(commands.motors[0] * RIM_MotorConstants.M1_ratio * 2 / (RIM_MotorConstants.M1_StepAngle));
-
-            if (commands.motors[1] != 0)
-                commands.motors[1] = (ushort) Math.Round(commands.motors[1] * RIM_MotorConstants.M2_ratio * 4 / (RIM_MotorConstants.M2_StepAngle));
-
-            if (commands.motors[2] != 0)
-                commands.motors[2] = (ushort) Math.Round(commands.motors[2] * RIM_MotorConstants.M3_ratio * 2 / (RIM_MotorConstants.M3_StepAngle));
-
-            if (commands.motors[3] != 0)
-                commands.motors[3] = (ushort) Math.Round(commands.motors[3] * RIM_MotorConstants.M4_ratio * 2 / (RIM_MotorConstants.M4_StepAngle));
-
-            if (commands.motors[4] != 0)
-                commands.motors[4] = (ushort) Math.Round(commands.motors[4] * RIM_MotorConstants.M5_ratio * 2 / (RIM_MotorConstants.M5_StepAngle));
+            for(int i = 0; i < CONNECTED_MOTORS; i++)
+            {
+                if (commands.motors[i] != 0)
+                    commands.motors[i] = Degrees_to_steps((uint)i, commands.motors[i]);
+            }
         }
 
-        //Overload for handling queue handling
-        void Degrees_to_steps(ref RIM_PExec commands)
+        //Converts from degrees to steps
+        ushort Degrees_to_steps(uint motor_id, uint degrees)
         {
 
+            if (motor_id >= CONNECTED_MOTORS)
+                motor_id = CONNECTED_MOTORS - 1;
+
+            if (degrees > 360)
+                degrees = 360;
+
+            return (ushort)Math.Round(degrees * RIM_MotorConstants.Motor_Ratios[motor_id] * RIM_MotorConstants.Motor_StepDiv[motor_id] /
+                                                RIM_MotorConstants.Motor_StepAngle[motor_id]); 
         }
 
         //Programmed Execution Mode support
@@ -563,13 +571,14 @@ namespace R.I.M.UI_Shell
             //Degree mode flag
             bool deg_mode = false;
 
+            //Queue for keeping track of syntax errors
             Queue<string> errlist = new Queue<string>();
 
+            //Keep track of what motors are give a commmand to execute
             bool[] cmd_written = new bool[7];
+
             for (int i = 0; i < 7; i++)
-            {
                 cmd_written[i] = false;
-            }
 
             //Split the file by line
             string []split_info = finfo.Split('\n');
@@ -662,7 +671,10 @@ namespace R.I.M.UI_Shell
                     //Check for amount of steps
                     if (!ushort.TryParse(temp[3], out ushort y))
                     {
-                        errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid amount of steps: " + temp[3]);
+                        if(deg_mode)
+                            errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid amount of degrees: " + temp[3]);
+                        else
+                            errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid amount of steps: " + temp[3]);
                         error = true;
                     }
                     else
@@ -671,7 +683,11 @@ namespace R.I.M.UI_Shell
                     if (error)
                         continue;
 
+                    if (deg_mode)
+                        steps = Degrees_to_steps(id, steps);
+
                     Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, id, steps, ref packet, 3);
+
                     commands.Motor_cmds[id].Enqueue(Byte_array_to_literal_string(packet, 3));
                     cmd_written[id] = true;
                 }
@@ -697,10 +713,6 @@ namespace R.I.M.UI_Shell
                 for(int i = 0; i < 7; i++)
                     commands.Motor_cmds[i].Clear();
             }
-
-            //If the degree flag has been tripped
-            if(deg_mode)
-                Degrees_to_steps(ref commands);
 
             return !error;
         }
