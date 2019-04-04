@@ -38,19 +38,19 @@ namespace R.I.M.UI_Shell
         {
             public const decimal M1_ratio = 8,
                            M1_StepAngle = 0.9M,
-                           M1_StepDiv = 2,
+                           //M1_StepDiv = 2,
 
                            M2_ratio = 50, //Maybe 100?
                            M2_StepAngle = 0.018M,
-                           M2_StepDiv = 4,
+                           //M2_StepDiv = 4,
 
                            M3_ratio = 100,
                            M3_StepAngle = 0.09M,
-                           M3_StepDiv = 2,
+                           //M3_StepDiv = 2,
 
                            M4_ratio = 13.79M,
                            M4_StepAngle = 0.131M,
-                           M4_StepDiv = 2,
+                           //M4_StepDiv = 2,
 
                            M5_ratio = 50,
                            M5_StepAngle = 0.018M;
@@ -168,7 +168,7 @@ namespace R.I.M.UI_Shell
         bool data_event_enabled = true;
         
         //Degree mode bool
-        bool degree_mode = true;
+        bool degree_mode = false;
 
 
         //For storing the stepper motor steps during percise execution mode
@@ -518,10 +518,23 @@ namespace R.I.M.UI_Shell
 #endif
         }
 
-        //Overload for handling queue handling
+        //Degrees to steps for percise execution mode
         void Degrees_to_steps(ref PreciseExecution_steps commands)
         {
-            
+            if(commands.motors[0] != 0)
+                commands.motors[0] = (ushort) Math.Round(commands.motors[0] * RIM_MotorConstants.M1_ratio * 2 / (RIM_MotorConstants.M1_StepAngle));
+
+            if (commands.motors[1] != 0)
+                commands.motors[1] = (ushort) Math.Round(commands.motors[1] * RIM_MotorConstants.M2_ratio * 4 / (RIM_MotorConstants.M2_StepAngle));
+
+            if (commands.motors[2] != 0)
+                commands.motors[2] = (ushort) Math.Round(commands.motors[2] * RIM_MotorConstants.M3_ratio * 2 / (RIM_MotorConstants.M3_StepAngle));
+
+            if (commands.motors[3] != 0)
+                commands.motors[3] = (ushort) Math.Round(commands.motors[3] * RIM_MotorConstants.M4_ratio * 2 / (RIM_MotorConstants.M4_StepAngle));
+
+            if (commands.motors[4] != 0)
+                commands.motors[4] = (ushort) Math.Round(commands.motors[4] * RIM_MotorConstants.M5_ratio * 2 / (RIM_MotorConstants.M5_StepAngle));
         }
 
         //Overload for handling queue handling
@@ -538,16 +551,18 @@ namespace R.I.M.UI_Shell
             //Start at line 1
             int line_num = 1;
 
-            byte id = 0;
-                 
+            byte id = 0; 
             Direction dir = 0;
-
             ushort steps = 0;
 
             byte[] packet = new byte[3];
 
             //Keep track of syntax errors
             bool error = false;
+
+            //Degree mode flag
+            bool deg_mode = false;
+
             Queue<string> errlist = new Queue<string>();
 
             bool[] cmd_written = new bool[7];
@@ -586,6 +601,24 @@ namespace R.I.M.UI_Shell
                     continue;
                 }
 
+                //Mode selecter
+                if(temp[0] == "MODE")
+                {
+                    if (temp.Length < 2)
+                    {
+                        errlist.Enqueue("Error with line " + line_num.ToString() + ": Not enough parameters. Expected 2, given " + temp.Length.ToString());
+                        error = true;
+                        continue;
+                    }
+                    if(temp[1] == "DEGREE" || temp[1] == "DEG")
+                        deg_mode = true;
+                    if (temp[1] == "STEP")
+                        deg_mode = false;
+                    continue;
+                }
+
+
+                //Command for move
                 if (temp[0] == "MOVE")
                 {
                     if(temp.Length < 4)
@@ -664,6 +697,11 @@ namespace R.I.M.UI_Shell
                 for(int i = 0; i < 7; i++)
                     commands.Motor_cmds[i].Clear();
             }
+
+            //If the degree flag has been tripped
+            if(deg_mode)
+                Degrees_to_steps(ref commands);
+
             return !error;
         }
 
