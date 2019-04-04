@@ -42,9 +42,10 @@ namespace R.I.M.UI_Shell
         //Class for defining gearing ratios constants on RIM
         static class RIM_MotorConstants
         {
-            public static readonly decimal[] Motor_Ratios = {8, 50, 100, 13.79M, 50};
-            public static readonly decimal[] Motor_StepAngle = {0.9M, 0.018M, 0.131M, 0.018M};
-            public static readonly decimal[] Motor_StepDiv = { 2, 4, 2, 2};
+            public static readonly decimal[] Motor_Ratios =    {8   , 50    , 100   , 13.79M, 50};
+            public static readonly decimal[] Motor_StepAngle = {0.1125M, 0.036M, 0.018M, 0.131M};
+            //Actual motor one step angle is 0.9, but factoring gearing it is different
+            public static readonly decimal[] Motor_StepDiv = {2, 4, 2, 2};
 
             /*
             public const decimal M1_ratio = 8,
@@ -448,9 +449,10 @@ namespace R.I.M.UI_Shell
             if (degree_mode)
             {
                 max_steps = 360;
+                
             }
 
-            if (Int32.TryParse(Stepper1_entry.Text, out int x))
+            if (Int32.TryParse(Stepper1_entry.Text.Replace('°', ' '), out int x))
             {
                 if (x < 0)
                     commands.motor_dirs[0] = Direction.COUNTERCLOCKWISE;
@@ -461,7 +463,7 @@ namespace R.I.M.UI_Shell
                     commands.motors[0] = (ushort)Math.Abs(x);
             }
 
-            if (Int32.TryParse(Stepper2_entry.Text, out x))
+            if (Int32.TryParse(Stepper2_entry.Text.Replace('°', ' '), out x))
             {
                 if (x < 0)
                     commands.motor_dirs[1] = Direction.COUNTERCLOCKWISE;
@@ -472,7 +474,7 @@ namespace R.I.M.UI_Shell
                     commands.motors[1] = (ushort)Math.Abs(x);
             }
 
-            if (Int32.TryParse(Stepper3_entry.Text, out x))
+            if (Int32.TryParse(Stepper3_entry.Text.Replace('°', ' '), out x))
             {
                 if (x < 0)
                     commands.motor_dirs[2] = Direction.COUNTERCLOCKWISE;
@@ -482,7 +484,7 @@ namespace R.I.M.UI_Shell
                     commands.motors[2] = (ushort)Math.Abs(x);
             }
 
-            if (Int32.TryParse(Stepper4_entry.Text, out x))
+            if (Int32.TryParse(Stepper4_entry.Text.Replace('°', ' '), out x))
             {
                 if (x < 0)
                     commands.motor_dirs[3] = Direction.COUNTERCLOCKWISE;
@@ -492,7 +494,7 @@ namespace R.I.M.UI_Shell
                     commands.motors[3] = (ushort)Math.Abs(x);
             }
 
-            if (Int32.TryParse(Stepper5_entry.Text, out x))
+            if (Int32.TryParse(Stepper5_entry.Text.Replace('°', ' '), out x))
             {
                 if (x < 0)
                     commands.motor_dirs[4] = Direction.COUNTERCLOCKWISE;
@@ -503,7 +505,7 @@ namespace R.I.M.UI_Shell
                     commands.motors[4] = (ushort)Math.Abs(x);
             }
 
-            if (Int32.TryParse(Servo1_entry.Text, out x))
+            if (Int32.TryParse(Servo1_entry.Text.Replace('°', ' '), out x))
             {
                 if (x < 0)
                     commands.motor_dirs[5] = Direction.COUNTERCLOCKWISE;
@@ -514,7 +516,7 @@ namespace R.I.M.UI_Shell
                     commands.motors[5] = (ushort)Math.Abs(x);
             }
 
-            if (Int32.TryParse(Servo2_entry.Text, out x))
+            if (Int32.TryParse(Servo2_entry.Text.Replace('°', ' '), out x))
             {
                 if (x < 0)
                     commands.motor_dirs[6] = Direction.COUNTERCLOCKWISE;
@@ -524,9 +526,10 @@ namespace R.I.M.UI_Shell
                 else
                     commands.motors[6] = (ushort)Math.Abs(x);
             }
-            
-            
 
+            if (degree_mode)
+                Degrees_to_steps_PExecMode(ref commands);
+            
 
 #if (DEBUG_MODE)
             Console.WriteLine("Done!");
@@ -553,7 +556,7 @@ namespace R.I.M.UI_Shell
             if (degrees > 360)
                 degrees = 360;
 
-            return (ushort)Math.Round(degrees * RIM_MotorConstants.Motor_Ratios[motor_id] * RIM_MotorConstants.Motor_StepDiv[motor_id] /
+            return (ushort)Math.Round(degrees * RIM_MotorConstants.Motor_StepDiv[motor_id] /
                                                 RIM_MotorConstants.Motor_StepAngle[motor_id]); 
         }
 
@@ -855,6 +858,8 @@ namespace R.I.M.UI_Shell
             for (int i = 0; i < 7; i++)
                 MRunTime[i].Reset();
 
+            Stop_btn.Enabled = false;
+            Start_btn.Enabled = true;
         }
 
 
@@ -1068,6 +1073,8 @@ namespace R.I.M.UI_Shell
                 case 'p':
                     PreciseExecutionMode_CheckValid(ref commands);
                     UART_prep_send_command(commands);
+                    Stop_btn.Enabled = true;
+                    Start_btn.Enabled = false;
                     break;
                 case 'a':
                     if (ProgExec_parse_and_load(ref prog_commands, file_content))
@@ -1077,8 +1084,11 @@ namespace R.I.M.UI_Shell
                         ProgExecFLoad_lbl.Text = "File load failed!";
                         return;
                     }
+                    Stop_btn.Enabled = true;
+                    Start_btn.Enabled = false;
                     ProgExec_start(prog_commands);
                     break;
+
                 case 't':
                     break;
                 default:
@@ -1086,8 +1096,6 @@ namespace R.I.M.UI_Shell
             }
 
 
-            Stop_btn.Enabled = true;
-            //Start_btn.Enabled = false;
 
             //M1Running_ind.BackColor = Color.LimeGreen;
             //M1_lbl.BackColor = Color.LimeGreen;
@@ -1098,6 +1106,7 @@ namespace R.I.M.UI_Shell
         private void Stop_btn_Click(object sender, EventArgs e)
         {
             //Do Stop Stuff
+            /*
             try
             {
                 UART_COM.Close();
@@ -1106,10 +1115,11 @@ namespace R.I.M.UI_Shell
             {
                 return;
             }
+            */
 
             Stop_btn.Enabled = false;
-            //Start_btn.Enabled = true;
-
+            Start_btn.Enabled = true;
+            
             //M1Running_ind.BackColor = Color.IndianRed;
             //M1_lbl.BackColor = Color.IndianRed;
             //M1_lbl.Text = "Not Running";
@@ -1230,6 +1240,24 @@ namespace R.I.M.UI_Shell
             {
                 Set_ind_backcolor(info, Color.Gold);
                 Motor_Active[info] = false;
+                
+                //Checker for if at least one motor is active
+                bool motor_on = false;
+
+                for (int i = 0; i < CONNECTED_MOTORS; i++)
+                {
+                    if (Motor_Active[i] == true)
+                        motor_on = true;
+                }
+
+                //If all motors are off, reenable the start button
+                if (!motor_on)
+                {
+                    if (Start_btn.InvokeRequired)
+                        Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
+                    if (Stop_btn.InvokeRequired)
+                        Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
+                }     
 
                 #if (DEBUG_MODE)
                     Console.WriteLine("Recieved a motor stop message");
@@ -1415,7 +1443,9 @@ namespace R.I.M.UI_Shell
 
             Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 0, 0, ref packet, 3);
 
-            TryOpenCom();
+
+            if (!TryOpenCom())
+                return;
 
             #if (DEBUG_MODE)
             Debug_Output(packet, 3);
