@@ -547,7 +547,7 @@ namespace R.I.M.UI_Shell
         }
 
         //Converts from degrees to steps
-        ushort Degrees_to_steps(uint motor_id, uint degrees)
+        ushort Degrees_to_steps(uint motor_id, decimal degrees)
         {
 
             if (motor_id >= CONNECTED_MOTORS)
@@ -571,6 +571,7 @@ namespace R.I.M.UI_Shell
             byte id = 0; 
             Direction dir = 0;
             ushort steps = 0;
+            decimal deg_steps = 0;
 
             byte[] packet = new byte[3];
 
@@ -677,23 +678,35 @@ namespace R.I.M.UI_Shell
                         error = true;
                     }
 
-                    //Check for amount of steps
-                    if (!ushort.TryParse(temp[3], out ushort y))
+                    if(deg_mode)
                     {
-                        if(deg_mode)
+                        if (!decimal.TryParse(temp[3], out decimal y))
+                        {
                             errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid amount of degrees: " + temp[3]);
+                            error = true;
+                        }
                         else
-                            errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid amount of steps: " + temp[3]);
-                        error = true;
+                            deg_steps = y;
                     }
+
                     else
-                        steps = y;
+                    {
+                        if (!ushort.TryParse(temp[3], out ushort y))
+                        {
+                            errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid amount of steps: " + temp[3]);
+                            error = true;
+                        }
+                        else
+                            steps = y;
+
+                    }
+
 
                     if (error)
                         continue;
 
                     if (deg_mode)
-                        steps = Degrees_to_steps(id, steps);
+                        steps = Degrees_to_steps(id, deg_steps);
 
                     Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, id, steps, ref packet, 3);
 
