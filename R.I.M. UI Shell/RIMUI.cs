@@ -178,6 +178,22 @@ namespace R.I.M.UI_Shell
             }
             public mParam[] All_Motor_Settings = new mParam[CONNECTED_MOTORS];
 
+            public void Set_acc(int index, int value)
+            {
+                All_Motor_Settings[index].accel = (int)Math.Round(value / 0.137438 / 2.0);
+            }
+
+            public void Set_decel(int index, int value)
+            {
+                All_Motor_Settings[index].decel = (int)Math.Round(value / 0.137438 / 2.0);
+            }
+
+            public void Set_max_speed(int index, int value)
+            {
+                All_Motor_Settings[index].max_speed = (int)Math.Round(value / 0.065536 / 2.0);
+            }
+
+
             public Motor_Settings()
             {
                 for(int i = 0; i < CONNECTED_MOTORS; i++)
@@ -1197,6 +1213,7 @@ namespace R.I.M.UI_Shell
             
 
             Cfg_box.StartPosition = StartPosition;
+            Cfg_box.CfgBox_Motor_Settings = All_MSettings;
             Cfg_box.ShowDialog();
 
             if (UART_COM.IsOpen == true)
@@ -1207,7 +1224,7 @@ namespace R.I.M.UI_Shell
             if (!TryOpenCom())
                 return;
 
-            Status_Check();
+            //Status_Check();
 
             if (Cfg_box.First_time_load == true)
             {
@@ -1215,20 +1232,17 @@ namespace R.I.M.UI_Shell
                 Cfg_box.Param_Enables = true;
                 byte[] packet = new byte[3];
 
-                Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, 0, 0 | L6470_Params.ACC, ref packet, 3);
-                UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                for (int i = 0; i < CONNECTED_MOTORS; i++)
+                {
+                    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.ACC, ref packet, 3);
+                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                }
 
-                //for (int i = 0; i < CONNECTED_MOTORS; i++)
-                //{
-                //    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.ACC, ref packet, 3);
-                //    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
-                //}
-                /*
-                //for (int i = 0; i < CONNECTED_MOTORS; i++)
-                //{
-                //    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.DECEL, ref packet, 3);
-                //    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
-                //}
+                for (int i = 0; i < CONNECTED_MOTORS; i++)
+                {
+                    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.DECEL, ref packet, 3);
+                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                }
 
                 for (int i = 0; i < CONNECTED_MOTORS; i++)
                 {
@@ -1241,11 +1255,9 @@ namespace R.I.M.UI_Shell
                     Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.MAX_SPEED, ref packet, 3);
                     UART_COM.Write(Byte_array_to_literal_string(packet, 3));
                 }
-                */
+
                 //Send a ton of parameter data
-
-
-
+                
                 Cfg_box.CfgBox_Motor_Settings = All_MSettings;
                 Cfg_box.ShowDialog();
 
@@ -1419,24 +1431,26 @@ namespace R.I.M.UI_Shell
 
                 byte         m_id = (byte)(info & 0x07);
                 byte   param_type = (byte)(response & PSoC_OpCodes.GETSET_RECIEVED_PARAM_TYPE);
-                ushort param_info = (ushort)(response & PSoC_OpCodes.GETSET_RECIEVED_PARAM_DATA >> 5);
+                ushort param_info = (ushort)((response & PSoC_OpCodes.GETSET_RECIEVED_PARAM_DATA) >> 5);
                 switch (param_type)
                 {
                     case L6470_Params.ACC:
-                        All_MSettings.All_Motor_Settings[m_id].accel = param_info;
+                        All_MSettings.Set_acc(m_id, param_info);
                         break;
                     case L6470_Params.STEP_MODE:
                         All_MSettings.All_Motor_Settings[m_id].step_div = param_info;
                         break;
                     case L6470_Params.DECEL:
-                        All_MSettings.All_Motor_Settings[m_id].decel = param_info;
+                        All_MSettings.Set_decel(m_id, param_info);
                         break;
                     case L6470_Params.MAX_SPEED:
-                        All_MSettings.All_Motor_Settings[m_id].max_speed = param_info;
+                        All_MSettings.Set_max_speed(m_id, param_info);
                         break;
                 }
-                
 
+                #if (DEBUG_MODE)
+                    Console.WriteLine("Motor Driver id: " + m_id.ToString() + " With PARAM TYPE: " + param_type.ToString("X2") + " Responded with: " + param_info.ToString("X2"));
+                #endif
 
 
 

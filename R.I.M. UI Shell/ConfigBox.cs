@@ -18,6 +18,9 @@ namespace R.I.M.UI_Shell
             InitializeComponent();
             First_time_load = true;
             Param_Enables = false;
+
+            PortList_lst.Items.Clear();
+            PortList_lst.Items.AddRange(SerialPort.GetPortNames());
         }
 
         public bool First_time_load { get; set; }
@@ -50,8 +53,9 @@ namespace R.I.M.UI_Shell
 
         private void ConfigBox_Load(object sender, EventArgs e)
         {
-            PortList_lst.Items.Clear();
-            PortList_lst.Items.AddRange(SerialPort.GetPortNames());
+            M1MaxSpeed_entry.Value = CfgBox_Motor_Settings.All_Motor_Settings[0].max_speed;
+            M1MaxDecel_entry.Value = CfgBox_Motor_Settings.All_Motor_Settings[0].decel;
+            M1MaxAccel_entry.Value = CfgBox_Motor_Settings.All_Motor_Settings[0].accel;
         }
 
         private void Fetch_btn_Click(object sender, EventArgs e)

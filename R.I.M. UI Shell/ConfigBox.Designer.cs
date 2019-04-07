@@ -142,6 +142,11 @@
             // M1MaxDecel_entry
             // 
             this.M1MaxDecel_entry.Location = new System.Drawing.Point(132, 111);
+            this.M1MaxDecel_entry.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.M1MaxDecel_entry.Name = "M1MaxDecel_entry";
             this.M1MaxDecel_entry.Size = new System.Drawing.Size(56, 20);
             this.M1MaxDecel_entry.TabIndex = 8;
@@ -149,6 +154,11 @@
             // M1MaxAccel_entry
             // 
             this.M1MaxAccel_entry.Location = new System.Drawing.Point(132, 76);
+            this.M1MaxAccel_entry.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.M1MaxAccel_entry.Name = "M1MaxAccel_entry";
             this.M1MaxAccel_entry.Size = new System.Drawing.Size(56, 20);
             this.M1MaxAccel_entry.TabIndex = 7;
@@ -156,6 +166,11 @@
             // M1MaxSpeed_entry
             // 
             this.M1MaxSpeed_entry.Location = new System.Drawing.Point(132, 41);
+            this.M1MaxSpeed_entry.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.M1MaxSpeed_entry.Name = "M1MaxSpeed_entry";
             this.M1MaxSpeed_entry.Size = new System.Drawing.Size(56, 20);
             this.M1MaxSpeed_entry.TabIndex = 6;
