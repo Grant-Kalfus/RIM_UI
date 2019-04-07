@@ -15,6 +15,10 @@ namespace R.I.M.UI_Shell
 
     public partial class Main_wnd : Form
     {
+        //Accessors
+        
+
+
         //This class is the RIM 
         //See packet format function for details on packet structure
         static class PSoC_OpCodes
@@ -22,7 +26,7 @@ namespace R.I.M.UI_Shell
             //RIM Operation codes
             public const byte RIM_OP_MOTOR_RUN           = 0x00,
                               RIM_OP_MOTOR_STOP          = 0x10,
-                              RIM_OP_MOTOR_SET_PARAM     = 0x20,
+                              RIM_OP_MOTOR_GETSET_PARAM  = 0x20,
                               RIM_OP_MOTOR_STATUS        = 0x30,
                               RIM_OP_ENCODER_INFO        = 0x40,
                               RIM_OP_ERROR               = 0x50,
@@ -35,6 +39,14 @@ namespace R.I.M.UI_Shell
                               ONEHSTOP   = 0x01,
                               ALL_SSTOP  = 0x02,
                               ALL_HSTOPP = 0x03;
+
+            public const byte GETSET_GET_PARAM         = 0x00,
+                              GETSET_SET_PARAM         = 0x01,
+                              GETSET_RECIEVED_ACCESSOR = 0x08;
+            
+            public const ushort GETSET_RECIEVED_PARAM_DATA = 0xFFE0,
+                                GETSET_RECIEVED_PARAM_TYPE = 0x001F;
+
 
 
         };
@@ -155,8 +167,35 @@ namespace R.I.M.UI_Shell
                               STATUS       =       0x19;
         }
 
-        //Make an instance of the window that allows the user to configure UART-related settings
-        private ConfigBox Cfg_box = new ConfigBox();
+        public class Motor_Settings
+        {
+            public struct mParam
+            {
+                public int step_div,
+                              accel,
+                              decel,
+                          max_speed;
+            }
+            public mParam[] All_Motor_Settings = new mParam[CONNECTED_MOTORS];
+
+            public Motor_Settings()
+            {
+                for(int i = 0; i < CONNECTED_MOTORS; i++)
+                {
+                    All_Motor_Settings[i] = new mParam();
+                    All_Motor_Settings[i].accel     = 0;
+                    All_Motor_Settings[i].decel     = 0;
+                    All_Motor_Settings[i].step_div  = 0;
+                    All_Motor_Settings[i].max_speed = 0;
+
+                }
+            }
+
+        };
+
+        public volatile Motor_Settings All_MSettings = new Motor_Settings();
+
+        
 
         //Enum to keep track of motor direction
         public enum Direction {CLOCKWISE, COUNTERCLOCKWISE};
@@ -186,6 +225,10 @@ namespace R.I.M.UI_Shell
         const int CONNECTED_MOTORS = 4;
 
 
+
+
+
+
         //For storing the stepper motor steps during percise execution mode
         public struct PreciseExecution_steps
         {
@@ -210,9 +253,26 @@ namespace R.I.M.UI_Shell
                     motor_dirs[i] = Direction.CLOCKWISE;
 
             }
-
-
         };
+
+        private void Main_wnd_Load(object sender, EventArgs e)
+        {
+            Disable_all();
+
+            for (int i = 0; i < 5; i++)
+            {
+                Motor_Active[i] = false;
+            }
+
+            UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
+
+
+            //Change UART encoding to ASCII-Extended for charicter code transfers > 127
+
+            //matlab.Visible = 0;
+            FileCheck_btn.Enabled = false;
+            FileReload_btn.Enabled = false;
+        }
 
         /*
         public class Ind_Label_Ctrl
@@ -367,22 +427,7 @@ namespace R.I.M.UI_Shell
         }
 
 
-        private void Main_wnd_Load(object sender, EventArgs e)
-        {
-            Disable_all();
 
-            for (int i = 0; i < 5; i++)
-            {
-                Motor_Active[i] = false;
-            }
-
-
-            //Change UART encoding to ASCII-Extended for charicter code transfers > 127
-            UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
-            //matlab.Visible = 0;
-            FileCheck_btn.Enabled = false;
-            FileReload_btn.Enabled = false;
-        }
 
         //Debug mode output when transfering packets
 #if (DEBUG_MODE)
@@ -972,6 +1017,13 @@ namespace R.I.M.UI_Shell
                     packet[0] |= PSoC_OpCodes.RIM_OP_ENCODER_INFO;
                     packet[0] |= (byte)motor_id;
                     break;
+
+                case PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM:
+                    packet[0] |= PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM;
+                    packet[0] |= (byte)motor_id;
+                    packet[1] |= (byte)command;
+                    packet[2] |= (byte)(command >> 8);
+                    break;
             }
 
 
@@ -1138,9 +1190,13 @@ namespace R.I.M.UI_Shell
             //M1_lbl.Text = "Not Running";
         }
 
+        ConfigBox Cfg_box = new ConfigBox();
+
         private void SetUARTCOMToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Cfg_box.StartPosition = this.StartPosition;
+            
+
+            Cfg_box.StartPosition = StartPosition;
             Cfg_box.ShowDialog();
 
             if (UART_COM.IsOpen == true)
@@ -1148,8 +1204,56 @@ namespace R.I.M.UI_Shell
 
             CurUartCom_lbl.Text = "Current COM" + Cfg_box.COMNumber.ToString();
             UART_COM.PortName = "COM" + Cfg_box.COMNumber.ToString();
+            if (!TryOpenCom())
+                return;
 
-            TryOpenCom();
+            Status_Check();
+
+            if (Cfg_box.First_time_load == true)
+            {
+                Cfg_box.First_time_load = false;
+                Cfg_box.Param_Enables = true;
+                byte[] packet = new byte[3];
+
+                Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, 0, 0 | L6470_Params.ACC, ref packet, 3);
+                UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+                //for (int i = 0; i < CONNECTED_MOTORS; i++)
+                //{
+                //    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.ACC, ref packet, 3);
+                //    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                //}
+                /*
+                //for (int i = 0; i < CONNECTED_MOTORS; i++)
+                //{
+                //    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.DECEL, ref packet, 3);
+                //    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                //}
+
+                for (int i = 0; i < CONNECTED_MOTORS; i++)
+                {
+                    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.STEP_MODE, ref packet, 3);
+                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                }
+
+                for (int i = 0; i < CONNECTED_MOTORS; i++)
+                {
+                    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.MAX_SPEED, ref packet, 3);
+                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                }
+                */
+                //Send a ton of parameter data
+
+
+
+                Cfg_box.CfgBox_Motor_Settings = All_MSettings;
+                Cfg_box.ShowDialog();
+
+            }
+
+
+
+
         }
 
         private void Test_BTN_Click(object sender, EventArgs e)
@@ -1306,7 +1410,37 @@ namespace R.I.M.UI_Shell
                     Console.WriteLine("Motor Driver id" + info.ToString() + "Responded with: " + response.ToString("X2"));
                 #endif
             }
+            else if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM)
+            {
+                rx[0] = (byte)UART_COM.ReadChar();
+                rx[1] = (byte)UART_COM.ReadChar();
+                response |= rx[0];
+                response |= (ushort)(rx[1] << 8);
 
+                byte         m_id = (byte)(info & 0x07);
+                byte   param_type = (byte)(response & PSoC_OpCodes.GETSET_RECIEVED_PARAM_TYPE);
+                ushort param_info = (ushort)(response & PSoC_OpCodes.GETSET_RECIEVED_PARAM_DATA >> 5);
+                switch (param_type)
+                {
+                    case L6470_Params.ACC:
+                        All_MSettings.All_Motor_Settings[m_id].accel = param_info;
+                        break;
+                    case L6470_Params.STEP_MODE:
+                        All_MSettings.All_Motor_Settings[m_id].step_div = param_info;
+                        break;
+                    case L6470_Params.DECEL:
+                        All_MSettings.All_Motor_Settings[m_id].decel = param_info;
+                        break;
+                    case L6470_Params.MAX_SPEED:
+                        All_MSettings.All_Motor_Settings[m_id].max_speed = param_info;
+                        break;
+                }
+                
+
+
+
+
+            }
             else if (opcode == PSoC_OpCodes.RIM_OP_ENCODER_INFO)
             {
                     
@@ -1324,9 +1458,7 @@ namespace R.I.M.UI_Shell
 
                 //if (Encoder1Val_lbl.InvokeRequired)
                 //    Encoder1Val_lbl.Invoke(new MethodInvoker(delegate { Encoder1Val_lbl.Text = response.ToString(); }));
-                   
-            
-
+                  
             }
 
             #if (DEBUG_MODE)
@@ -1450,7 +1582,7 @@ namespace R.I.M.UI_Shell
             
         }
 
-        private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
+        private void Status_Check()
         {
             byte[] packet = new byte[3];
 
@@ -1461,7 +1593,7 @@ namespace R.I.M.UI_Shell
                 return;
 
             #if (DEBUG_MODE)
-            Debug_Output(packet, 3);
+                Debug_Output(packet, 3);
             #endif
 
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
@@ -1477,7 +1609,12 @@ namespace R.I.M.UI_Shell
             //Check Motor 4
             Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 3, 0, ref packet, 3);
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+        }
 
+
+        private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Status_Check();
             //Check encoder 1
             //Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
             //UART_COM.Write(Byte_array_to_literal_string(packet, 3));
