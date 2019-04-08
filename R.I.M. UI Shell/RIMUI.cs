@@ -169,14 +169,25 @@ namespace R.I.M.UI_Shell
 
         public class Motor_Settings
         {
-            public struct mParam
+            public enum Step_types {Step_1   = 1,
+                                    Step_2   = 2,
+                                    Step_4   = 4,
+                                    Step_8   = 8,
+                                    Step_16  = 16,
+                                    Step_32  = 32,
+                                    Step_64  = 64,
+                                    Step_128 = 128
+            };
+
+            public struct MParam
             {
-                public int step_div,
-                              accel,
-                              decel,
+                public int accel,
+                           decel,
                           max_speed;
+                public Step_types step_div;
             }
-            public mParam[] All_Motor_Settings = new mParam[CONNECTED_MOTORS];
+
+            public MParam[] All_Motor_Settings = new MParam[CONNECTED_MOTORS];
 
             public void Set_acc(int index, int value)
             {
@@ -193,18 +204,79 @@ namespace R.I.M.UI_Shell
                 All_Motor_Settings[index].max_speed = (int)Math.Round(value / 0.065536 / 2.0);
             }
 
+            public void Set_step_div(int index, int value)
+            {
+                value = value & 0x07;
+                switch(value)
+                {
+                    case L6470_Params.STEP_SEL_1:
+                        All_Motor_Settings[index].step_div = Step_types.Step_1;
+                        break;
+                    case L6470_Params.STEP_SEL_1_2:
+                        All_Motor_Settings[index].step_div = Step_types.Step_2;
+                        break;
+                    case L6470_Params.STEP_SEL_1_4:
+                        All_Motor_Settings[index].step_div = Step_types.Step_4;
+                        break;
+                    case L6470_Params.STEP_SEL_1_8:
+                        All_Motor_Settings[index].step_div = Step_types.Step_8;
+                        break;
+                    case L6470_Params.STEP_SEL_1_16:
+                        All_Motor_Settings[index].step_div = Step_types.Step_16;
+                        break;
+                    case L6470_Params.STEP_SEL_1_32:
+                        All_Motor_Settings[index].step_div = Step_types.Step_32;
+                        break;
+                    case L6470_Params.STEP_SEL_1_64:
+                        All_Motor_Settings[index].step_div = Step_types.Step_64;
+                        break;
+                    case L6470_Params.STEP_SEL_1_128:
+                        All_Motor_Settings[index].step_div = Step_types.Step_128;
+                        break;
+                }
+            }
+
 
             public Motor_Settings()
             {
                 for(int i = 0; i < CONNECTED_MOTORS; i++)
                 {
-                    All_Motor_Settings[i] = new mParam();
-                    All_Motor_Settings[i].accel     = 0;
-                    All_Motor_Settings[i].decel     = 0;
-                    All_Motor_Settings[i].step_div  = 0;
-                    All_Motor_Settings[i].max_speed = 0;
+                    All_Motor_Settings[i] = new MParam
+                    {
+                        accel = 0,
+                        decel = 0,
+                        step_div = Step_types.Step_1,
+                        max_speed = 0
+                    };
 
                 }
+            }
+
+            //is_changed needs to have a size of 4
+            //is changed is orginized like this:
+            //0 - Step_div
+            //1 - max_speed
+            //2 - accel
+            //3 - decel
+            public bool Compare(MParam compare_val, int index, ref bool[] is_changed)
+            {
+                bool r = false;
+
+                if (is_changed.Length != 4)
+                    return r;
+
+                for (int i = 0; i < 4; i++)
+                    r = false;
+
+                is_changed[0] = compare_val.step_div == All_Motor_Settings[index].step_div;
+                is_changed[1] = compare_val.max_speed == All_Motor_Settings[index].max_speed;
+                is_changed[2] = compare_val.accel == All_Motor_Settings[index].accel;
+                is_changed[3] = compare_val.decel == All_Motor_Settings[index].decel;
+
+                for (int i = 0; i < 4; i++)
+                    r = !is_changed[i];
+
+                return r;
             }
 
         };
@@ -617,7 +689,7 @@ namespace R.I.M.UI_Shell
             if (degrees > 360)
                 degrees = 360;
 
-            return (ushort)Math.Round(degrees * RIM_MotorConstants.Motor_StepDiv[motor_id] /
+            return (ushort)Math.Round(degrees * (decimal)All_MSettings.All_Motor_Settings[motor_id].step_div /
                                                 RIM_MotorConstants.Motor_StepAngle[motor_id]); 
         }
 
@@ -1210,7 +1282,10 @@ namespace R.I.M.UI_Shell
 
         private void SetUARTCOMToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+            bool[] is_changed = new bool[4];
+            for (int i = 0; i < 4; i++)
+                is_changed[i] = false;
+
 
             Cfg_box.StartPosition = StartPosition;
             Cfg_box.CfgBox_Motor_Settings = All_MSettings;
@@ -1225,42 +1300,64 @@ namespace R.I.M.UI_Shell
                 return;
 
             //Status_Check();
-
-            if (Cfg_box.First_time_load == true)
+            while (true)
             {
-                Cfg_box.First_time_load = false;
-                Cfg_box.Param_Enables = true;
-                byte[] packet = new byte[3];
 
-                for (int i = 0; i < CONNECTED_MOTORS; i++)
+                if (Cfg_box.Fetch_btn_pressed == true)
                 {
-                    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.ACC, ref packet, 3);
-                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    Cfg_box.Param_Enables = true;
+                    Cfg_box.Fetch_btn_pressed = false;
+
+                    byte[] packet = new byte[3];
+                    //Send a ton of parameter data
+                    for (int i = 0; i < CONNECTED_MOTORS; i++)
+                    {
+                        Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.ACC, ref packet, 3);
+                        UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    }
+
+                    for (int i = 0; i < CONNECTED_MOTORS; i++)
+                    {
+                        Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.DECEL, ref packet, 3);
+                        UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    }
+
+                    for (int i = 0; i < CONNECTED_MOTORS; i++)
+                    {
+                        Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.STEP_MODE, ref packet, 3);
+                        UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    }
+
+                    for (int i = 0; i < CONNECTED_MOTORS; i++)
+                    {
+                        Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.MAX_SPEED, ref packet, 3);
+                        UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    }
+                    
                 }
 
-                for (int i = 0; i < CONNECTED_MOTORS; i++)
+                if (Cfg_box.Set_btn_pressed == true)
                 {
-                    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.DECEL, ref packet, 3);
-                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    Cfg_box.Set_btn_pressed = false;
+                    for (int i = 0; i < CONNECTED_MOTORS; i++)
+                    {
+                        if (!All_MSettings.Compare(Cfg_box.CfgBox_Motor_Settings.All_Motor_Settings[i], i, ref is_changed))
+                        {
+                            //Find which parameter has been changed, and for those send a parameter change command
+                        }
+                    }
                 }
 
-                for (int i = 0; i < CONNECTED_MOTORS; i++)
+                if(Cfg_box.Ok_btn_pressed == true)
                 {
-                    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.STEP_MODE, ref packet, 3);
-                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    Cfg_box.Ok_btn_pressed = false;
+                    break;
                 }
-
-                for (int i = 0; i < CONNECTED_MOTORS; i++)
-                {
-                    Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.MAX_SPEED, ref packet, 3);
-                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
-                }
-
-                //Send a ton of parameter data
                 
+                //Update config box information
+
                 Cfg_box.CfgBox_Motor_Settings = All_MSettings;
                 Cfg_box.ShowDialog();
-
             }
 
 
@@ -1438,7 +1535,7 @@ namespace R.I.M.UI_Shell
                         All_MSettings.Set_acc(m_id, param_info);
                         break;
                     case L6470_Params.STEP_MODE:
-                        All_MSettings.All_Motor_Settings[m_id].step_div = param_info;
+                        All_MSettings.Set_step_div(m_id, param_info);
                         break;
                     case L6470_Params.DECEL:
                         All_MSettings.Set_decel(m_id, param_info);
