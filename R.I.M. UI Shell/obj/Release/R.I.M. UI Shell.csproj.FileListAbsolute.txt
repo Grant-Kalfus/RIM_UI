@@ -22,3 +22,16 @@ C:\Users\kalfusg\Source\Repos\RIM_UI\R.I.M. UI Shell\obj\Release\R.I.M. UI Shell
 C:\Users\kalfusg\Source\Repos\RIM_UI\R.I.M. UI Shell\obj\Release\R.I.M. UI Shell.csproj.CoreCompileInputs.cache
 C:\Users\kalfusg\Source\Repos\RIM_UI\R.I.M. UI Shell\obj\Release\R.I.M.UI_Shell.exe
 C:\Users\kalfusg\Source\Repos\RIM_UI\R.I.M. UI Shell\obj\Release\R.I.M.UI_Shell.pdb
+A:\Github\RIM UI\R.I.M. UI Shell\bin\Release\R.I.M.UI_Shell.exe.config
+A:\Github\RIM UI\R.I.M. UI Shell\bin\Release\R.I.M.UI_Shell.exe
+A:\Github\RIM UI\R.I.M. UI Shell\bin\Release\R.I.M.UI_Shell.pdb
+A:\Github\RIM UI\R.I.M. UI Shell\obj\Release\R.I.M. UI Shell.csprojAssemblyReference.cache
+A:\Github\RIM UI\R.I.M. UI Shell\obj\Release\Interop.MLApp.dll
+A:\Github\RIM UI\R.I.M. UI Shell\obj\Release\R.I.M. UI Shell.csproj.ResolveComReference.cache
+A:\Github\RIM UI\R.I.M. UI Shell\obj\Release\R.I.M.UI_Shell.ConfigBox.resources
+A:\Github\RIM UI\R.I.M. UI Shell\obj\Release\R.I.M.UI_Shell.Main_wnd.resources
+A:\Github\RIM UI\R.I.M. UI Shell\obj\Release\R.I.M.UI_Shell.Properties.Resources.resources
+A:\Github\RIM UI\R.I.M. UI Shell\obj\Release\R.I.M. UI Shell.csproj.GenerateResource.cache
+A:\Github\RIM UI\R.I.M. UI Shell\obj\Release\R.I.M. UI Shell.csproj.CoreCompileInputs.cache
+A:\Github\RIM UI\R.I.M. UI Shell\obj\Release\R.I.M.UI_Shell.exe
+A:\Github\RIM UI\R.I.M. UI Shell\obj\Release\R.I.M.UI_Shell.pdb
