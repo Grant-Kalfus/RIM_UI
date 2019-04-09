@@ -27,7 +27,7 @@ namespace R.I.M.UI_Shell
         public bool Fetch_btn_pressed { get; set; }
         public bool Ok_btn_pressed    { get; set; }
 
-        public Main_wnd.Motor_Settings CfgBox_Motor_Settings { get; set; }
+        public Main_wnd.Motor_Settings CfgBox_Motor_Settings{ get; set; } = new Main_wnd.Motor_Settings(); 
 
         public bool Param_Enables
         {
@@ -100,18 +100,8 @@ namespace R.I.M.UI_Shell
         }
 
 
-        private void Ok_btn_Click(object sender, EventArgs e)
-        {
-            if (Checkport())
-            {
-                Ok_btn_pressed = true;
-                Close();
-            }
-                
-        }
 
-
-        private void ConfigBox_Load(object sender, EventArgs e)
+        private void Pull_from_settings_var()
         {
             M1MaxSpeed_entry.Value = CfgBox_Motor_Settings.All_Motor_Settings[0].max_speed;
             M1MaxDecel_entry.Value = CfgBox_Motor_Settings.All_Motor_Settings[0].decel;
@@ -134,6 +124,32 @@ namespace R.I.M.UI_Shell
             Select_step_type(3);
         }
 
+        private void Push_to_settings_var()
+        {
+            CfgBox_Motor_Settings.All_Motor_Settings[0].max_speed = (int) M1MaxSpeed_entry.Value; 
+            CfgBox_Motor_Settings.All_Motor_Settings[0].decel     = (int) M1MaxDecel_entry.Value; 
+            CfgBox_Motor_Settings.All_Motor_Settings[0].accel     = (int) M1MaxAccel_entry.Value; 
+                    
+            CfgBox_Motor_Settings.All_Motor_Settings[1].max_speed = (int) M2MaxSpeed_entry.Value; 
+            CfgBox_Motor_Settings.All_Motor_Settings[1].decel     = (int) M2MaxDecel_entry.Value; 
+            CfgBox_Motor_Settings.All_Motor_Settings[1].accel     = (int) M2MaxAccel_entry.Value; 
+
+            CfgBox_Motor_Settings.All_Motor_Settings[2].max_speed = (int) M3MaxSpeed_entry.Value; 
+            CfgBox_Motor_Settings.All_Motor_Settings[2].decel     = (int) M3MaxDecel_entry.Value; 
+            CfgBox_Motor_Settings.All_Motor_Settings[2].accel     = (int) M3MaxAccel_entry.Value; 
+
+            CfgBox_Motor_Settings.All_Motor_Settings[3].max_speed = (int) M4MaxSpeed_entry.Value; 
+            CfgBox_Motor_Settings.All_Motor_Settings[3].decel     = (int) M4MaxDecel_entry.Value;
+            CfgBox_Motor_Settings.All_Motor_Settings[3].accel     = (int) M4MaxAccel_entry.Value;
+
+        }
+
+
+        private void ConfigBox_Load(object sender, EventArgs e)
+        {
+            Pull_from_settings_var();
+        }
+
         private bool Checkport()
         {
             bool r = true;
@@ -141,6 +157,7 @@ namespace R.I.M.UI_Shell
             {
                 string curport = PortList_lst.Text;
                 COMNumber = int.Parse(curport.TrimStart('C', 'O', 'M'));
+                
             }
             catch
             {
@@ -157,6 +174,7 @@ namespace R.I.M.UI_Shell
             if (Checkport())
             {
                 Fetch_btn_pressed = true;
+                Push_to_settings_var();
                 Close();
             }
                 
@@ -168,6 +186,18 @@ namespace R.I.M.UI_Shell
             if (Checkport())
             {
                 Set_btn_pressed = true;
+                Push_to_settings_var();
+                Close();
+            }
+
+        }
+
+        private void Ok_btn_Click(object sender, EventArgs e)
+        {
+            if (Checkport())
+            {
+                Ok_btn_pressed = true;
+                Push_to_settings_var();
                 Close();
             }
 
