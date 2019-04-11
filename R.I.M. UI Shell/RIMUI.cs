@@ -54,10 +54,10 @@ namespace R.I.M.UI_Shell
         //Class for defining gearing ratios constants on RIM
         static class RIM_MotorConstants
         {
-            public static readonly decimal[] Motor_Ratios =    {8   , 50    , 100   , 13.79M, 50};
-            public static readonly decimal[] Motor_StepAngle = {0.1125M, 0.036M, 0.018M, 0.131M};
+            public static readonly decimal[] Motor_Ratios =    {8   , 50    , 100   , 13.79M, 50, 19.19M};
+            public static readonly decimal[] Motor_StepAngle = {0.1125M, 0.036M, 0.018M, 0.131M, 0.094M};
             //Actual motor one step angle is 0.9, but factoring gearing it is different
-            public static readonly decimal[] Motor_StepDiv = {2, 4, 2, 2};
+            public static readonly decimal[] Motor_StepDiv = {2, 4, 2, 2, 2};
 
             /*
             public const decimal M1_ratio = 8,
@@ -352,7 +352,9 @@ namespace R.I.M.UI_Shell
              Encoder_Update_5 = false;
 
         //Keep track of what motors are active--currently not in use
-        volatile public bool[] Motor_Active = new bool[5];
+        const int CONNECTED_MOTORS = 5;
+
+        volatile public bool[] Motor_Active = new bool[CONNECTED_MOTORS];
 
         //Boolean that enables the data recieved event handler for the UART_COM object
         bool data_event_enabled = true;
@@ -360,7 +362,7 @@ namespace R.I.M.UI_Shell
         //Degree mode bool
         bool degree_mode = false;
 
-        const int CONNECTED_MOTORS = 4;
+        
 
 
 
@@ -946,6 +948,11 @@ namespace R.I.M.UI_Shell
                 case 3:
                     M4Running_ind.Update();
                     if (M4Running_ind.BackColor == Color.LimeGreen)
+                        r = true;
+                    break;
+                case 4:
+                    M5Running_ind.Update();
+                    if (M5Running_ind.BackColor == Color.LimeGreen)
                         r = true;
                     break;
             }
@@ -1767,7 +1774,7 @@ namespace R.I.M.UI_Shell
                 Stepper4_entry.Mask = "#00000000000";
                 Stepper5_entry.Mask = "#00000000000";
                 Servo1_entry.Mask = "#00000000000";
-                Servo1_entry.Mask = "#00000000000";
+                Servo2_entry.Mask = "#00000000000";
                 degree_mode = false;
                 StepMode_lbl.Text = "Step Mode";
             }
@@ -1790,8 +1797,6 @@ namespace R.I.M.UI_Shell
         {
             byte[] packet = new byte[3];
 
-            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 0, 0, ref packet, 3);
-
 
             if (!TryOpenCom())
                 return;
@@ -1800,19 +1805,12 @@ namespace R.I.M.UI_Shell
                 Debug_Output(packet, 3);
             #endif
 
-            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
-
-            //Check Motor 2
-            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 1, 0, ref packet, 3);
-            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
-
-            //Check Motor 3
-            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 2, 0, ref packet, 3);
-            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
-
-            //Check Motor 4
-            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 3, 0, ref packet, 3);
-            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+            //Fetch the motor status from all connected motors
+            for(int i = 0; i < CONNECTED_MOTORS; i++)
+            {
+                Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, i, 0, ref packet, 3);
+                UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+            }
         }
 
 

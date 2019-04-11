@@ -122,6 +122,11 @@ namespace R.I.M.UI_Shell
             M4MaxDecel_entry.Value = CfgBox_Motor_Settings.All_Motor_Settings[3].decel;
             M4MaxAccel_entry.Value = CfgBox_Motor_Settings.All_Motor_Settings[3].accel;
             Select_step_type(3);
+
+            M5MaxSpeed_entry.Value = CfgBox_Motor_Settings.All_Motor_Settings[4].max_speed;
+            M5MaxDecel_entry.Value = CfgBox_Motor_Settings.All_Motor_Settings[4].decel;
+            M5MaxAccel_entry.Value = CfgBox_Motor_Settings.All_Motor_Settings[4].accel;
+            Select_step_type(4);
         }
 
         private void Push_to_settings_var()
@@ -141,6 +146,10 @@ namespace R.I.M.UI_Shell
             CfgBox_Motor_Settings.All_Motor_Settings[3].max_speed = (int) M4MaxSpeed_entry.Value; 
             CfgBox_Motor_Settings.All_Motor_Settings[3].decel     = (int) M4MaxDecel_entry.Value;
             CfgBox_Motor_Settings.All_Motor_Settings[3].accel     = (int) M4MaxAccel_entry.Value;
+
+            CfgBox_Motor_Settings.All_Motor_Settings[4].max_speed = (int) M5MaxSpeed_entry.Value;
+            CfgBox_Motor_Settings.All_Motor_Settings[4].decel     = (int) M5MaxDecel_entry.Value;
+            CfgBox_Motor_Settings.All_Motor_Settings[4].accel     = (int) M5MaxAccel_entry.Value;
 
         }
 
