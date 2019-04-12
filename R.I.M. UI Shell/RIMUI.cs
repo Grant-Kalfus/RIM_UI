@@ -414,51 +414,6 @@ namespace R.I.M.UI_Shell
             FileReload_btn.Enabled = false;
         }
 
-        /*
-        public class Ind_Label_Ctrl
-        {
-            public enum Ind_status {RUNNING, IDLE, DISCONNECT};
-
-            private Ind_status[] Ind_labels;
-
-            public Ind_Label_Ctrl()
-            {
-                //0-6 for motor status'
-                //7-13 for encoder status'
-                Ind_labels = new Ind_status[14];
-                for(int i = 0; i < 14; i++)
-                {
-                    Ind_labels[i] = Ind_status.DISCONNECT;
-
-                }
-            }
-            
-            public Ind_status this[int key]
-            {
-                get
-                {
-                    return Ind_labels[key];
-                }
-                set
-                {
-                    //Set_window_element(key, Check_status(value));
-                }
-            }
-
-            private Color Check_status(Ind_status status)
-            {
-                Color c = Color.Gold;
-                if (status == Ind_status.DISCONNECT)
-                    c = Color.IndianRed;
-                else if (status == Ind_status.RUNNING)
-                    c = Color.LimeGreen;
-                return c;
-            }
-
-
-        } 
-        */
-
         //Function that sets an indicator that corrisponds to ID to a color C
         //Motors have an id of 0-6, encoders have ids of 7-11
         public void Set_ind_backcolor(int id, Color c)
@@ -962,9 +917,12 @@ namespace R.I.M.UI_Shell
         //Start sequence for programmed exeuction mode
         void ProgExec_start(RIM_PExec commands)
         {
+            //Disable event based UART handling
             data_event_enabled = false;
 
             string temp = string.Empty;
+
+            //Since all the command queues are the same length, taking the length of any of them yields the maximum ammount of commands
             int total_cmds = commands.Motor_cmds[0].Count;
 
             //I think that one bool is needef for this, but I won't touch it until I have access to the system again
@@ -980,33 +938,47 @@ namespace R.I.M.UI_Shell
             //Total number of commands to send is the ammount times  
             int sent_commands = 0;
 
+            //Create stopwatch object for timing how long a joint takes to move 
             Stopwatch[] MRunTime = new Stopwatch[7];
 
             for (int i = 0; i < 7; i++)
                 MRunTime[i] = new Stopwatch();
 
+            //Loops for the total ammount of commands
             for (int i = 0; i < total_cmds; i++)
             {
                 //j represents the motor ids
+                //Loops though for each of the motors
                 for (int j = 0; j < 7; j++)
                 {
+                    //Load motor command into temp
                     temp = commands.Motor_cmds[j].Dequeue();
+
+                    //If the motor command was PASS, then move onto the next motor
                     if (temp == "PASS")
                     {
                         temp = string.Empty;
                     }
                     else
                     {
+                        
                         UART_COM.Write(temp);
                         sent_commands++;
+
+                        //The following loop ensures that the motor has started running before sending the command to the next motor
                         do
                         {
+                            //Polls until a response is recieved
                             int ch = UART_COM.ReadByte();
                             Console.Write("1 Byte Recieved\n");
+
+                            //Get relevent information out of received packet
                             int OPCODE = (0xF0 & ch) >> 4;
                             int M_ID = ch & 0x07;
+
                             if (OPCODE == 0x00)
                             {
+                                //Enters loop if device responded with the motor start indicator
                                 Set_ind_backcolor(M_ID, Color.LimeGreen);
                                 motor_idle[M_ID] = false;
                                 motor_running[M_ID] = true;
@@ -1014,16 +986,20 @@ namespace R.I.M.UI_Shell
                             }
                             else
                             {
+                                //If not starting, assume the motor sent a stop command. Turn the relevent indicator yellow to indicate that it is idle,
+                                //and set the approprate motor_running and motor_idle variables
                                 Set_ind_backcolor(M_ID, Color.Gold);
                                 motor_running[M_ID] = false;
                                 motor_idle[M_ID] = true;
                                 MRunTime[M_ID].Stop();
                                 TimeSpan ts = MRunTime[M_ID].Elapsed;
+                                //Display the time it took for the joint to move within the encoder label 
                                 Change_Encoder_Val_lbl(M_ID, String.Format("{2:00}.{3:00}",
                                     ts.Hours, ts.Minutes, ts.Seconds,
                                     ts.Milliseconds / 10));
                             }
-
+                        //Move onto the next motor command once the motor has started moving
+                        //loops in case a motor stop is recieved from another motor's completion 
                         } while (motor_idle[j] == true);
 
                     }
@@ -1057,6 +1033,7 @@ namespace R.I.M.UI_Shell
                 }
 
             }
+            //After precise execution mode has finished running, re-enable the UART data received event handler
             data_event_enabled = true;
             for (int i = 0; i < 7; i++)
                 MRunTime[i].Reset();
@@ -1065,7 +1042,7 @@ namespace R.I.M.UI_Shell
             Start_btn.Enabled = true;
         }
 
-
+        //Translater function for writing to different encoder labels
         private void Change_Encoder_Val_lbl(int id, string val)
         {
             switch (id)
@@ -1091,6 +1068,7 @@ namespace R.I.M.UI_Shell
             return;
         }
 
+        //Checks to see if all values in the given bool array are true
         private bool All_idle(bool[] arr, int sz)
         {
             bool ret = true;
@@ -1182,19 +1160,6 @@ namespace R.I.M.UI_Shell
             return true;
         }
 
-        byte UART_wait_for_msg() {
-            int r = 0;
-            while (r == 0)
-            {
-                r = UART_COM.ReadChar();
-            };
-                #if (DEBUG_MODE)
-                    Console.WriteLine("Recieved: " + r.ToString() + " from the PSoC");
-                #endif
-            return (byte)r;
-        }
-
-
         //Send a given stepper commands through UART
         private void UART_prep_send_command(PreciseExecution_steps commands)
         {
@@ -1262,6 +1227,7 @@ namespace R.I.M.UI_Shell
         //When the start button is clicked
         private void Start_btn_Click(object sender, EventArgs e)
         {
+            //Try to open the UART port
             if (!TryOpenCom())
                 return;
 
@@ -1280,15 +1246,22 @@ namespace R.I.M.UI_Shell
 
             switch (Check_enable())
             {
+                //Case for OVR (Oculus Virtual Reality) mode. Currently TODO
                 case 'o':
                     break;
+                //Case for precise execution mode
                 case 'p':
+                    //Load the commands from the entry boxes into the 'commands' object 
                     PreciseExecutionMode_CheckValid(ref commands);
+                    
+                    //Format the commands and send them to the device
                     UART_prep_send_command(commands);
                     Stop_btn.Enabled = true;
                     Start_btn.Enabled = false;
                     break;
+                //Case for programmed execution mode
                 case 'a':
+                    //Try to load the given script. If the script has an error in it, then fail the file load and return
                     if (ProgExec_parse_and_load(ref prog_commands, file_content))
                         ProgExecFLoad_lbl.Text = "File loaded succesfully";
                     else
@@ -1298,9 +1271,12 @@ namespace R.I.M.UI_Shell
                     }
                     Stop_btn.Enabled = true;
                     Start_btn.Enabled = false;
+
+                    //Start programmed execution mode
                     ProgExec_start(prog_commands);
                     break;
-
+                
+                //Case for traverse line mode. Currently TODO
                 case 't':
                     break;
                 default:
@@ -1308,46 +1284,30 @@ namespace R.I.M.UI_Shell
             }
 
 
-
-            //M1Running_ind.BackColor = Color.LimeGreen;
-            //M1_lbl.BackColor = Color.LimeGreen;
-            //M1_lbl.Text = "Running";
-
         }
 
+        //Stop button code. Currently does nothing except changed the state of the start and stop buttons.
+        //TODO
         private void Stop_btn_Click(object sender, EventArgs e)
         {
-            //Do Stop Stuff
-            /*
-            try
-            {
-                UART_COM.Close();
-            }
-            catch
-            {
-                return;
-            }
-            */
-
             Stop_btn.Enabled = false;
             Start_btn.Enabled = true;
-            
-            //M1Running_ind.BackColor = Color.IndianRed;
-            //M1_lbl.BackColor = Color.IndianRed;
-            //M1_lbl.Text = "Not Running";
         }
 
         ConfigBox Cfg_box = new ConfigBox();
 
+        //Function to load the config menu for the motor driver parameters
         private void SetUARTCOMToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //Bool intended to be used for detecting if a value changes within a user entry box
             bool[] is_changed = new bool[4];
             for (int i = 0; i < 4; i++)
                 is_changed[i] = false;
 
-
+            
             Cfg_box.StartPosition = StartPosition;
 
+            //Update the information of the config box to match the actual settings
             var temp = Cfg_box.CfgBox_Motor_Settings;
             All_MSettings.Copy(ref temp);
             Cfg_box.CfgBox_Motor_Settings = temp;
@@ -1362,47 +1322,53 @@ namespace R.I.M.UI_Shell
             if (!TryOpenCom())
                 return;
 
-            //Status_Check();
+            //Loop until user presses the "Ok" button on the config menu
             while (true)
             {
-
+                //If the user has asked the device for all of its parameters, fetch them and display to the user
                 if (Cfg_box.Fetch_btn_pressed == true)
                 {
                     Cfg_box.Param_Enables = true;
                     Cfg_box.Fetch_btn_pressed = false;
 
                     byte[] packet = new byte[3];
-                    //Send a ton of parameter data
+
+                    //Fetch the maximum acceleration of each connected motor mode (in steps/s^2)
                     for (int i = 0; i < CONNECTED_MOTORS; i++)
                     {
                         Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.ACC, ref packet, 3);
                         UART_COM.Write(Byte_array_to_literal_string(packet, 3));
                     }
-
                     Thread.Sleep(10);
+
+                    //Fetch the maximum decceleration of each connected motor mode (in steps/s^2)
                     for (int i = 0; i < CONNECTED_MOTORS; i++)
                     {
                         Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.DECEL, ref packet, 3);
                         UART_COM.Write(Byte_array_to_literal_string(packet, 3));
                     }
-
                     Thread.Sleep(10);
+
+                    //Fetch the step mode of each connected motor (full step, half step etc)
                     for (int i = 0; i < CONNECTED_MOTORS; i++)
                     {
                         Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.STEP_MODE, ref packet, 3);
                         UART_COM.Write(Byte_array_to_literal_string(packet, 3));
                     }
-
                     Thread.Sleep(10);
+
+                    //Fetch the step mode of each connected motor (full step, half step etc)
                     for (int i = 0; i < CONNECTED_MOTORS; i++)
                     {
                         Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM, PSoC_OpCodes.GETSET_GET_PARAM, i, 0 | L6470_Params.MAX_SPEED, ref packet, 3);
                         UART_COM.Write(Byte_array_to_literal_string(packet, 3));
                     }
-
                     Thread.Sleep(10);
+
                 }
 
+                //If the user has pressed the "set" button, check to see what the user has changed. 
+                //Send any changed parameters to the device and update the config menu accordingly 
                 if (Cfg_box.Set_btn_pressed == true)
                 {
                     byte[] packet = new byte[3];
@@ -1444,25 +1410,18 @@ namespace R.I.M.UI_Shell
                     }
                     Thread.Sleep(100);
                 }
-
+                //If the user has pressed the ok button, just exit
                 if(Cfg_box.Ok_btn_pressed == true)
                 {
                     Cfg_box.Ok_btn_pressed = false;
                     break;
                 }
-
-                //Update config box information
-
-                //temp = Cfg_box.CfgBox_Motor_Settings;
+                //Update the config settings
                 All_MSettings.Copy(ref temp);
                 Cfg_box.CfgBox_Motor_Settings = temp;
 
                 Cfg_box.ShowDialog();
             }
-
-
-
-
         }
 
         private void Test_BTN_Click(object sender, EventArgs e)
@@ -1531,7 +1490,7 @@ namespace R.I.M.UI_Shell
             }
         }
 
-        //Event handler for PSoC data recieved
+        //Event handler for device data recieved
         private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             if (!data_event_enabled)
@@ -1733,7 +1692,9 @@ namespace R.I.M.UI_Shell
             }
             
         }
-
+        //Checks to see if the file has any syntax errors.
+        //If there is no errors, then inform the user that it has passed the file check
+        //Else there is syntax errors 
         private void FileCheck_btn_Click(object sender, EventArgs e)
         {
             RIM_PExec temp = new RIM_PExec();

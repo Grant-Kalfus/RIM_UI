@@ -23,9 +23,11 @@ namespace R.I.M.UI_Shell
             PortList_lst.Items.AddRange(SerialPort.GetPortNames());
         }
 
+        //Bools to see what the last button to been pressed on exit was
         public bool Set_btn_pressed   { get; set; }
         public bool Fetch_btn_pressed { get; set; }
         public bool Ok_btn_pressed    { get; set; }
+
 
         public Main_wnd.Motor_Settings CfgBox_Motor_Settings{ get; set; } = new Main_wnd.Motor_Settings(); 
 
