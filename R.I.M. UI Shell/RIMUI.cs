@@ -54,8 +54,8 @@ namespace R.I.M.UI_Shell
         //Class for defining gearing ratios constants on RIM
         static class RIM_MotorConstants
         {
-            public static readonly decimal[] Motor_Ratios =    {8   , 50    , 100   , 13.79M, 50, 19.19M};
-            public static readonly decimal[] Motor_StepAngle = {0.1125M, 0.036M, 0.018M, 0.131M, 0.094M};
+            public static readonly decimal[] Motor_Ratios =    {8   , 100    , 100   , 13.79M, 50, 19.19M};
+            public static readonly decimal[] Motor_StepAngle = {0.1125M, 0.018M, 0.018M, 0.131M, 0.094M};
             //Actual motor one step angle is 0.9, but factoring gearing it is different
             public static readonly decimal[] Motor_StepDiv = {2, 4, 2, 2, 2};
 
