@@ -54,8 +54,8 @@ namespace R.I.M.UI_Shell
         //Class for defining gearing ratios constants on RIM
         static class RIM_MotorConstants
         {
-            public static readonly decimal[] Motor_Ratios =    {8   , 100    , 100   , 13.79M, 50, 19.19M};
-            public static readonly decimal[] Motor_StepAngle = {0.1125M, 0.018M, 0.018M, 0.131M, 0.094M};
+            public static readonly decimal[] Motor_Ratios =    {8   , 100      , 100   , 13.79M, 50     };
+            public static readonly decimal[] Motor_StepAngle = {0.1125M, 0.018M, 0.018M, 0.131M, 0.036M };
             //Actual motor one step angle is 0.9, but factoring gearing it is different
             public static readonly decimal[] Motor_StepDiv = {2, 4, 2, 2, 2};
 
@@ -352,22 +352,18 @@ namespace R.I.M.UI_Shell
              Encoder_Update_5 = false;
 
         //Keep track of what motors are active--currently not in use
-        const int CONNECTED_MOTORS = 5;
+        const int CONNECTED_MOTORS   = 5,
+                  CONNECTED_ENCODERS = 5;
 
         volatile public bool[] Motor_Active = new bool[CONNECTED_MOTORS];
+
+        volatile public int[] Encoder_Values = new int[CONNECTED_ENCODERS];
 
         //Boolean that enables the data recieved event handler for the UART_COM object
         bool data_event_enabled = true;
         
         //Degree mode bool
         bool degree_mode = false;
-
-        
-
-
-
-
-
 
         //For storing the stepper motor steps during percise execution mode
         public struct PreciseExecution_steps
@@ -399,10 +395,15 @@ namespace R.I.M.UI_Shell
         {
             Disable_all();
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < CONNECTED_MOTORS; i++)
             {
                 Motor_Active[i] = false;
             }
+            for (int i = 0; i < CONNECTED_ENCODERS; i++)
+            {
+                Encoder_Values[i] = 0;
+            }
+
 
             UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
 
@@ -494,6 +495,46 @@ namespace R.I.M.UI_Shell
                     break;
             }
                 
+        }
+
+        void Set_Encoder_label(int id, string text)
+        {
+            switch (id)
+            {
+                case 0:
+                    if (Encoder1Val_lbl.InvokeRequired)
+                        Encoder1Val_lbl.Invoke(new MethodInvoker(delegate { Encoder1Val_lbl.Text = text; }));
+                    else
+                        Encoder1Val_lbl.Text = text;
+                    break;
+                case 1:
+                    if (Encoder2Val_lbl.InvokeRequired)
+                        Encoder2Val_lbl.Invoke(new MethodInvoker(delegate { Encoder2Val_lbl.Text = text; }));
+                    else       
+                        Encoder2Val_lbl.Text = text;
+                    break;
+
+                case 2:
+                    if (Encoder3Val_lbl.InvokeRequired)
+                        Encoder3Val_lbl.Invoke(new MethodInvoker(delegate { Encoder3Val_lbl.Text = text; }));
+                    else       
+                        Encoder3Val_lbl.Text = text;
+                    break;
+                case 3:
+                    if (Encoder4Val_lbl.InvokeRequired)
+                        Encoder4Val_lbl.Invoke(new MethodInvoker(delegate { Encoder4Val_lbl.Text = text; }));
+                    else       
+                        Encoder4Val_lbl.Text = text;
+                    break;
+                case 4:
+                    if (Encoder5Val_lbl.InvokeRequired)
+                        Encoder5Val_lbl.Invoke(new MethodInvoker(delegate { Encoder5Val_lbl.Text = text; }));
+                    else       
+                        Encoder5Val_lbl.Text = text;
+                    break;
+                default:
+                    break;
+            }
         }
 
         //Init window
@@ -1490,6 +1531,8 @@ namespace R.I.M.UI_Shell
             }
         }
 
+        volatile bool Final_Encoder_Set = false;
+
         //Event handler for device data recieved
         private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
@@ -1591,16 +1634,16 @@ namespace R.I.M.UI_Shell
                 switch (param_type)
                 {
                     case L6470_Params.ACC:
-                        All_MSettings.Set_acc(m_id, param_info);
+                        All_MSettings.Set_acc(m_id, param_info*2);
                         break;
                     case L6470_Params.STEP_MODE:
-                        All_MSettings.Set_step_div(m_id, param_info >> 1);
+                        All_MSettings.Set_step_div(m_id, param_info*1);
                         break;
                     case L6470_Params.DECEL:
-                        All_MSettings.Set_decel(m_id, param_info);
+                        All_MSettings.Set_decel(m_id, param_info*2);
                         break;
                     case L6470_Params.MAX_SPEED:
-                        All_MSettings.Set_max_speed(m_id, param_info);
+                        All_MSettings.Set_max_speed(m_id, param_info*2);
                         break;
                 }
 
@@ -1613,21 +1656,37 @@ namespace R.I.M.UI_Shell
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_ENCODER_INFO)
             {
-                    
+                Final_Encoder_Set = false;
+
                 rx[0] = (byte)UART_COM.ReadChar();
                 rx[1] = (byte)UART_COM.ReadChar();
                 response |= rx[0];
                 response |= (ushort)(rx[1] << 8);
 
-                Set_ind_backcolor(info + 7, Color.Gold);
+                byte m_id = (byte)(info & 0x07);
+                if (m_id > CONNECTED_ENCODERS)
+                {
+                    #if (DEBUG_MODE)
+                        Console.WriteLine("Encoder id " + info.ToString() + " is out of bounds!\n");
+                    #endif
+
+                    return;
+                }
+
+                Encoder_Values[m_id] = response;
+
+                Set_ind_backcolor(m_id + 7, Color.Gold);
 
                 #if (DEBUG_MODE)
                     Console.WriteLine("Encoder id " + info.ToString() + " is currently at position: " + response.ToString());
                 #endif
 
+                if (m_id == 4)
+                {
+                    Final_Encoder_Set = true;
+                }
 
-                //if (Encoder1Val_lbl.InvokeRequired)
-                //    Encoder1Val_lbl.Invoke(new MethodInvoker(delegate { Encoder1Val_lbl.Text = response.ToString(); }));
+                Set_Encoder_label(m_id, response.ToString());
                   
             }
 
@@ -1774,6 +1833,53 @@ namespace R.I.M.UI_Shell
             }
         }
 
+        private void Encoder2Val_lbl_Click(object sender, EventArgs e)
+        {
+            if (UART_COM.IsOpen == false)
+            {
+                if (!TryOpenCom()) { return; };
+            }
+
+            byte[] packet = new byte[3];
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 1, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+        }
+
+        private void Encoder3Val_lbl_Click(object sender, EventArgs e)
+        {
+            if (UART_COM.IsOpen == false)
+            {
+                if (!TryOpenCom()) { return; };
+            }
+
+            byte[] packet = new byte[3];
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 2, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+        }
+
+        private void Encoder4Val_lbl_Click(object sender, EventArgs e)
+        {
+            if (UART_COM.IsOpen == false)
+            {
+                if (!TryOpenCom()) { return; };
+            }
+
+            byte[] packet = new byte[3];
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 3, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+        }
+
+        private void Encoder5Val_lbl_Click(object sender, EventArgs e)
+        {
+            if (UART_COM.IsOpen == false)
+            {
+                if (!TryOpenCom()) { return; };
+            }
+
+            byte[] packet = new byte[3];
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 4, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+        }
 
         private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1798,8 +1904,47 @@ namespace R.I.M.UI_Shell
 
         private void Encoder1Val_lbl_Click(object sender, EventArgs e)
         {
-            Encoder_Update_1 = !Encoder_Update_1;
+            if (UART_COM.IsOpen == false)
+            {
+                if (!TryOpenCom()) { return; };
+            }
+
+            byte[] packet = new byte[3];
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            //Encoder_Update_1 = !Encoder_Update_1;
         }
+
+        private void Get_All_Encoder_Values(bool wait = true)
+        {
+
+
+            byte[] packet = new byte[3];
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 1, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 2, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 3, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 4, 0, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            if (wait)
+            {
+                while (!Final_Encoder_Set); 
+            }
+
+        }
+
+
+
 
         private void Encoder_FetchTimer_Tick(object sender, EventArgs e)
         {
