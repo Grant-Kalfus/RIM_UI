@@ -1673,6 +1673,17 @@ namespace R.I.M.UI_Shell
                     return;
                 }
 
+                if (response == 0xFFFF)
+                {
+                    #if (DEBUG_MODE)
+                        Console.WriteLine("Encoder id " + info.ToString() + " timed out!\n");
+                    #endif
+
+                    Set_Encoder_label(m_id, "ERR");
+                    return;
+                }
+
+
                 Encoder_Values[m_id] = response;
 
                 Set_ind_backcolor(m_id + 7, Color.Gold);
@@ -1952,7 +1963,7 @@ namespace R.I.M.UI_Shell
 
             byte[] packet = new byte[3];
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < CONNECTED_ENCODERS; i++)
             {
                 if (Encoder_Update_1) {
                     //Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
