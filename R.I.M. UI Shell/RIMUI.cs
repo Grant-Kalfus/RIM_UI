@@ -393,6 +393,8 @@ namespace R.I.M.UI_Shell
 
         private void Main_wnd_Load(object sender, EventArgs e)
         {
+            Encoder_FetchTimer.Stop();
+
             Disable_all();
 
             for (int i = 0; i < CONNECTED_MOTORS; i++)
@@ -536,6 +538,37 @@ namespace R.I.M.UI_Shell
                     break;
             }
         }
+
+        string Get_Encoder_label(int id)
+        {
+            string text = "";
+
+            switch (id)
+            {
+                case 0:
+                    text = Encoder1Val_lbl.Text;
+                    break;
+                case 1:
+                    text = Encoder2Val_lbl.Text;
+                    break;
+                case 2:
+                    text = Encoder3Val_lbl.Text;
+                    break;
+                case 3:
+                    text = Encoder4Val_lbl.Text;
+                    break;
+                case 4:
+                    text = Encoder5Val_lbl.Text;
+                    break;
+                default:
+                    text = "ERR";
+                    break;
+            }
+            return text;
+        }
+
+
+
 
         //Init window
         public Main_wnd()
@@ -1156,6 +1189,17 @@ namespace R.I.M.UI_Shell
                 packet[i] = 0;
 
             switch (OPCODE) {
+                case PSoC_OpCodes.RIM_OP_MOTOR_STOP:
+                    packet[0] |= PSoC_OpCodes.RIM_OP_MOTOR_STOP;
+
+                    if (motor_id > CONNECTED_MOTORS)
+                        return false;
+
+                    packet[0] |= (byte)motor_id;
+                    packet[1] |= (byte)command;
+                    packet[2] |= (byte)(command >> 8);
+                    break;
+
                 case PSoC_OpCodes.RIM_OP_MOTOR_RUN:
 
                     packet[0] |= PSoC_OpCodes.RIM_OP_MOTOR_RUN;
@@ -1163,7 +1207,7 @@ namespace R.I.M.UI_Shell
                     if (dir == Direction.COUNTERCLOCKWISE)
                         packet[0] |= 0x08;
 
-                    if (motor_id > 7)
+                    if (motor_id > CONNECTED_MOTORS)
                     {
                         return false;
                     }
@@ -1331,6 +1375,12 @@ namespace R.I.M.UI_Shell
         //TODO
         private void Stop_btn_Click(object sender, EventArgs e)
         {
+            byte[] packet = new byte[3];
+
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STOP, 0, 0, PSoC_OpCodes.ALL_SSTOP,ref packet, 3);
+
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
             Stop_btn.Enabled = false;
             Start_btn.Enabled = true;
         }
@@ -1362,6 +1412,8 @@ namespace R.I.M.UI_Shell
             UART_COM.PortName = "COM" + Cfg_box.COMNumber.ToString();
             if (!TryOpenCom())
                 return;
+
+            AUEncoder_toggle.Enabled = true;
 
             //Loop until user presses the "Ok" button on the config menu
             while (true)
@@ -1892,6 +1944,18 @@ namespace R.I.M.UI_Shell
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
         }
 
+        private void AUEncoder_toggle_Click(object sender, EventArgs e)
+        {
+            if (AUEncoder_toggle.Checked == true)
+            {
+                Encoder_FetchTimer.Start();
+            }
+            else
+            {
+                Encoder_FetchTimer.Stop();
+            }
+        }
+
         private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Status_Check();
@@ -1956,25 +2020,25 @@ namespace R.I.M.UI_Shell
 
 
 
-
         private void Encoder_FetchTimer_Tick(object sender, EventArgs e)
         {
-            //TryOpenCom();
+            if (!TryOpenCom())
+            {
+                Encoder_FetchTimer.Stop();
+                if (AUEncoder_toggle.InvokeRequired)
+                    AUEncoder_toggle.Invoke(new MethodInvoker(delegate { AUEncoder_toggle.Checked = false; }));
+                return;
+            }
 
             byte[] packet = new byte[3];
 
             for (int i = 0; i < CONNECTED_ENCODERS; i++)
             {
-                if (Encoder_Update_1) {
-                    //Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
-                    //UART_COM.Write(Byte_array_to_literal_string(packet, 3));
-                }
-                //if (Encoder_Update_2)
-                //{
-                //    Format_packet(PSoC_OpCodes.RIM_OP_RESET_DEV, 0, 0, 0, ref packet, 3);
-                //    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
-                //}
+                if (Get_Encoder_label(i) == "ERR")
+                    continue;
 
+                Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, i, 0, ref packet, 3);
+                UART_COM.Write(Byte_array_to_literal_string(packet, 3));
             }
         }
     }
