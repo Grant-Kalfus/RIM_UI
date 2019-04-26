@@ -88,6 +88,7 @@ namespace R.I.M.UI_Shell
         {
             public Queue<string>[] Motor_cmds;
             public Queue<string>[] Encoder_cmds;
+            public Queue<string> Special_cmds;
 
             public RIM_PExec()
             {
@@ -804,6 +805,8 @@ namespace R.I.M.UI_Shell
             for (int i = 0; i < 7; i++)
                 cmd_written[i] = false;
 
+            bool special_cmd_written = false;
+
             //Split the file by line
             string []split_info = finfo.Split('\n');
 
@@ -830,6 +833,11 @@ namespace R.I.M.UI_Shell
                             cmd_written[i] = false;
                     }
 
+                    if (!special_cmd_written)
+                        commands.Special_cmds.Enqueue("PASS");
+                    else
+                        special_cmd_written = false;
+
                     line_num++;
                     continue;
                 }
@@ -848,6 +856,26 @@ namespace R.I.M.UI_Shell
                     if (temp[1] == "STEP")
                         deg_mode = false;
                     continue;
+                }
+
+                if(temp[0] == "SLEEP")
+                {
+                    if(temp.Length < 2)
+                    {
+                        errlist.Enqueue("Error with line " + line_num.ToString() + ": Not enough parameters. Expected at least 2, given " + temp.Length.ToString());
+                        error = true;
+                        continue;
+                    }
+
+                    if (!int.TryParse(temp[1], out int x))
+                    {
+                        errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid value entered: " + temp[1] + ".\nMake sure to enter a whole number\n");
+                        error = true;
+                        continue;
+                    }
+                    else
+                        commands.Special_cmds.Enqueue(x.ToString());
+
                 }
 
 
