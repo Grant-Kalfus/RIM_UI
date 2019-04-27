@@ -99,7 +99,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.TraverseLineMode_grp = new System.Windows.Forms.GroupBox();
             this.Traverse_calc = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
+            this.TravModeError_lbl = new System.Windows.Forms.Label();
             this.TL_curPos_lbl = new System.Windows.Forms.TextBox();
             this.MoveToPos_lbl = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -961,7 +961,7 @@
             this.TraverseLineMode_grp.Controls.Add(this.Y_entry);
             this.TraverseLineMode_grp.Controls.Add(this.X_entry);
             this.TraverseLineMode_grp.Controls.Add(this.Traverse_calc);
-            this.TraverseLineMode_grp.Controls.Add(this.label3);
+            this.TraverseLineMode_grp.Controls.Add(this.TravModeError_lbl);
             this.TraverseLineMode_grp.Controls.Add(this.TL_curPos_lbl);
             this.TraverseLineMode_grp.Controls.Add(this.MoveToPos_lbl);
             this.TraverseLineMode_grp.Controls.Add(this.label2);
@@ -986,15 +986,15 @@
             this.Traverse_calc.UseVisualStyleBackColor = true;
             this.Traverse_calc.Click += new System.EventHandler(this.Traverse_calc_Click);
             // 
-            // label3
+            // TravModeError_lbl
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(113, 150);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(37, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Err Lbl";
+            this.TravModeError_lbl.AutoSize = true;
+            this.TravModeError_lbl.Location = new System.Drawing.Point(113, 150);
+            this.TravModeError_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.TravModeError_lbl.Name = "TravModeError_lbl";
+            this.TravModeError_lbl.Size = new System.Drawing.Size(37, 13);
+            this.TravModeError_lbl.TabIndex = 6;
+            this.TravModeError_lbl.Text = "Err Lbl";
             // 
             // TL_curPos_lbl
             // 
@@ -1518,7 +1518,7 @@
         private System.Windows.Forms.Button FileCheck_btn;
         private System.Windows.Forms.Button LoadFile_btn;
         private System.Windows.Forms.GroupBox TraverseLineMode_grp;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label TravModeError_lbl;
         private System.Windows.Forms.TextBox TL_curPos_lbl;
         private System.Windows.Forms.Label MoveToPos_lbl;
         private System.Windows.Forms.Label label2;

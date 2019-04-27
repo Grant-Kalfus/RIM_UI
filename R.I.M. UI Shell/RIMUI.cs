@@ -54,10 +54,10 @@ namespace R.I.M.UI_Shell
         //Class for defining gearing ratios constants on RIM
         static class RIM_MotorConstants
         {
-            public static readonly decimal[] Motor_Ratios =    {8   , 100      , 100   , 13.79M, 50     };
+            public static readonly decimal[] Motor_Ratios =    {8   , 100      , 100   , 13.79M, 51     };
             public static readonly decimal[] Motor_StepAngle = {0.1125M, 0.018M, 0.018M, 0.131M, 0.036M };
             //Actual motor one step angle is 0.9, but factoring gearing it is different
-            public static readonly decimal[] Motor_StepDiv = {2, 4, 2, 2, 2};
+            public static readonly decimal[] Motor_StepDiv = {2, 4, 2, 2, 4};
 
             /*
             public const decimal M1_ratio = 8,
@@ -770,8 +770,10 @@ namespace R.I.M.UI_Shell
             if (degrees > 360)
                 degrees = 360;
 
-            return (ushort)Math.Round(degrees * (decimal)All_MSettings.All_Motor_Settings[motor_id].step_div /
-                                                RIM_MotorConstants.Motor_StepAngle[motor_id]); 
+            decimal step_angle = 1.8M / RIM_MotorConstants.Motor_Ratios[motor_id];
+
+            return (ushort)Math.Round(degrees * (decimal)All_MSettings.All_Motor_Settings[motor_id].step_div * 1.8M /
+                                                step_angle); 
         }
 
         //Programmed Execution Mode support
@@ -2078,7 +2080,7 @@ namespace R.I.M.UI_Shell
             try
             {
                 matlab.Execute(@"cd C:\Users\kalfusg\Desktop\MatLab_Kinematics_Updated_for_Actual_DH_Parameters");
-                matlab.Feval("moveRIM", 6, out object result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, x_pos, y_pos, z_pos, pitch, roll, yaw);
+                matlab.Feval("moveRIM", 6, out object result, 50.0, 40.0, 45.0, 0.0, 0.0, 0.0, x_pos, y_pos, z_pos, pitch, roll, yaw);
                 object[] res = result as object[];
                 Console.WriteLine(res[0]);
                 Console.WriteLine(res[1]);
@@ -2088,15 +2090,18 @@ namespace R.I.M.UI_Shell
                 Console.WriteLine(res[5]);
 
                 for (int i = 0; i < 6; i++)
-                    DH_Convert[i] = (double)res[0];
+                    DH_Convert[i] = (double)res[i];
 
                 
-
-                return true;
+                if(DH_Convert[0] == -999)
+                    return false;
+                else
+                    return true;
+                
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error encountered:  " + e.Message);
+                MessageBox.Show("Error encountered:  " + e.Message + "\n");
                 return false;
             }
             
@@ -2108,8 +2113,31 @@ namespace R.I.M.UI_Shell
         {
             double[] DH_Stuff = new double[6];
             double[] curpos = new double[6];
+            ushort result = 0;
+            string sign = "";
 
-            Do_DH_Conversion(ref DH_Stuff, curpos);
+
+            //If the DH conversion was successfull 
+            if(Do_DH_Conversion(ref DH_Stuff, curpos))
+            {
+                for (uint i = 0; i < 6; i++)
+                {
+                    result = Degrees_to_steps(i, (decimal)Math.Abs(DH_Stuff[i]));
+
+                    sign = DH_Stuff[i] < 0.0 ? "-" : "";
+
+                    Console.Write("Motor ID " + i.ToString() + " needs to step: " + sign + result.ToString() + "\n");
+                }
+                TravModeError_lbl.Text = "Pass";
+            }
+            else
+            {
+                Console.Write("Error: Input was out of bounds!");
+                TravModeError_lbl.Text = "Fail";
+            }
+
+
+
         }
 
         private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
