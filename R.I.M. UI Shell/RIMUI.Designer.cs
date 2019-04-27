@@ -1431,6 +1431,7 @@
             // 
             // Main_wnd
             // 
+            this.AcceptButton = this.Start_btn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(622, 422);
@@ -1439,7 +1440,9 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Common_grp);
             this.Controls.Add(this.toolStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(2);
+            this.MaximizeBox = false;
             this.Name = "Main_wnd";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "R.I.M. Test App";

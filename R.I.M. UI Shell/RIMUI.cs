@@ -2080,7 +2080,7 @@ namespace R.I.M.UI_Shell
             try
             {
                 matlab.Execute(@"cd C:\Users\kalfusg\Desktop\MatLab_Kinematics_Updated_for_Actual_DH_Parameters");
-                matlab.Feval("moveRIM", 6, out object result, 50.0, 40.0, 45.0, 0.0, 0.0, 0.0, x_pos, y_pos, z_pos, pitch, roll, yaw);
+                matlab.Feval("moveRIM", 6, out object result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, x_pos, y_pos, z_pos, pitch, roll, yaw);
                 object[] res = result as object[];
                 Console.WriteLine(res[0]);
                 Console.WriteLine(res[1]);
