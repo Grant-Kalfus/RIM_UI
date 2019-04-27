@@ -58,6 +58,7 @@
             this.TraverseLineModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.CurMode_lbl = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.Common_grp = new System.Windows.Forms.GroupBox();
             this.Stop_btn = new System.Windows.Forms.Button();
             this.Start_btn = new System.Windows.Forms.Button();
@@ -97,7 +98,7 @@
             this.MotorRunning_lbl = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.TraverseLineMode_grp = new System.Windows.Forms.GroupBox();
-            this.NextPos_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Traverse_calc = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.TL_curPos_lbl = new System.Windows.Forms.TextBox();
             this.MoveToPos_lbl = new System.Windows.Forms.Label();
@@ -127,6 +128,19 @@
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
             this.Encoder_FetchTimer = new System.Windows.Forms.Timer(this.components);
             this.AUEncoder_toggle = new System.Windows.Forms.CheckBox();
+            this.RstEncoder_btn = new System.Windows.Forms.Button();
+            this.X_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Y_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Z_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Pitch_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Roll_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Yaw_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Xpos_lbl = new System.Windows.Forms.Label();
+            this.Ypos_lbl = new System.Windows.Forms.Label();
+            this.Zpos_lbl = new System.Windows.Forms.Label();
+            this.Pitch_lbl = new System.Windows.Forms.Label();
+            this.Roll_lbl = new System.Windows.Forms.Label();
+            this.Yaw_lbl = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -161,10 +175,11 @@
             this.toolStripSeparator2,
             this.SetMode_btn,
             this.toolStripSeparator1,
-            this.CurMode_lbl});
+            this.CurMode_lbl,
+            this.toolStripSeparator4});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(594, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(622, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -377,15 +392,21 @@
             this.CurMode_lbl.Size = new System.Drawing.Size(81, 22);
             this.CurMode_lbl.Text = "Current Mode";
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+            // 
             // Common_grp
             // 
+            this.Common_grp.Controls.Add(this.RstEncoder_btn);
             this.Common_grp.Controls.Add(this.Stop_btn);
             this.Common_grp.Controls.Add(this.Start_btn);
             this.Common_grp.Location = new System.Drawing.Point(9, 225);
             this.Common_grp.Margin = new System.Windows.Forms.Padding(2);
             this.Common_grp.Name = "Common_grp";
             this.Common_grp.Padding = new System.Windows.Forms.Padding(2);
-            this.Common_grp.Size = new System.Drawing.Size(124, 193);
+            this.Common_grp.Size = new System.Drawing.Size(156, 193);
             this.Common_grp.TabIndex = 1;
             this.Common_grp.TabStop = false;
             this.Common_grp.Text = "Common Controls";
@@ -393,10 +414,10 @@
             // Stop_btn
             // 
             this.Stop_btn.Enabled = false;
-            this.Stop_btn.Location = new System.Drawing.Point(4, 110);
+            this.Stop_btn.Location = new System.Drawing.Point(4, 109);
             this.Stop_btn.Margin = new System.Windows.Forms.Padding(2);
             this.Stop_btn.Name = "Stop_btn";
-            this.Stop_btn.Size = new System.Drawing.Size(112, 75);
+            this.Stop_btn.Size = new System.Drawing.Size(148, 75);
             this.Stop_btn.TabIndex = 1;
             this.Stop_btn.Text = "Stop";
             this.Stop_btn.UseVisualStyleBackColor = true;
@@ -407,7 +428,7 @@
             this.Start_btn.Location = new System.Drawing.Point(4, 17);
             this.Start_btn.Margin = new System.Windows.Forms.Padding(2);
             this.Start_btn.Name = "Start_btn";
-            this.Start_btn.Size = new System.Drawing.Size(112, 73);
+            this.Start_btn.Size = new System.Drawing.Size(148, 73);
             this.Start_btn.TabIndex = 0;
             this.Start_btn.Text = "Start";
             this.Start_btn.UseVisualStyleBackColor = true;
@@ -416,7 +437,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.feedback_grd);
-            this.groupBox1.Location = new System.Drawing.Point(143, 224);
+            this.groupBox1.Location = new System.Drawing.Point(169, 225);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
@@ -920,14 +941,26 @@
             this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox2.Size = new System.Drawing.Size(580, 196);
+            this.groupBox2.Size = new System.Drawing.Size(606, 196);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Mode Controls";
             // 
             // TraverseLineMode_grp
             // 
-            this.TraverseLineMode_grp.Controls.Add(this.NextPos_entry);
+            this.TraverseLineMode_grp.Controls.Add(this.Yaw_lbl);
+            this.TraverseLineMode_grp.Controls.Add(this.Roll_lbl);
+            this.TraverseLineMode_grp.Controls.Add(this.Pitch_lbl);
+            this.TraverseLineMode_grp.Controls.Add(this.Zpos_lbl);
+            this.TraverseLineMode_grp.Controls.Add(this.Ypos_lbl);
+            this.TraverseLineMode_grp.Controls.Add(this.Xpos_lbl);
+            this.TraverseLineMode_grp.Controls.Add(this.Yaw_entry);
+            this.TraverseLineMode_grp.Controls.Add(this.Roll_entry);
+            this.TraverseLineMode_grp.Controls.Add(this.Pitch_entry);
+            this.TraverseLineMode_grp.Controls.Add(this.Z_entry);
+            this.TraverseLineMode_grp.Controls.Add(this.Y_entry);
+            this.TraverseLineMode_grp.Controls.Add(this.X_entry);
+            this.TraverseLineMode_grp.Controls.Add(this.Traverse_calc);
             this.TraverseLineMode_grp.Controls.Add(this.label3);
             this.TraverseLineMode_grp.Controls.Add(this.TL_curPos_lbl);
             this.TraverseLineMode_grp.Controls.Add(this.MoveToPos_lbl);
@@ -937,49 +970,50 @@
             this.TraverseLineMode_grp.Margin = new System.Windows.Forms.Padding(2);
             this.TraverseLineMode_grp.Name = "TraverseLineMode_grp";
             this.TraverseLineMode_grp.Padding = new System.Windows.Forms.Padding(2);
-            this.TraverseLineMode_grp.Size = new System.Drawing.Size(141, 173);
+            this.TraverseLineMode_grp.Size = new System.Drawing.Size(164, 173);
             this.TraverseLineMode_grp.TabIndex = 17;
             this.TraverseLineMode_grp.TabStop = false;
             this.TraverseLineMode_grp.Text = "Traverse Line Mode";
             // 
-            // NextPos_entry
+            // Traverse_calc
             // 
-            this.NextPos_entry.Location = new System.Drawing.Point(7, 82);
-            this.NextPos_entry.Margin = new System.Windows.Forms.Padding(2);
-            this.NextPos_entry.Mask = "(0.00, 0.00, 0.00)";
-            this.NextPos_entry.Name = "NextPos_entry";
-            this.NextPos_entry.Size = new System.Drawing.Size(131, 20);
-            this.NextPos_entry.TabIndex = 19;
-            this.NextPos_entry.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Traverse_calc.Location = new System.Drawing.Point(5, 146);
+            this.Traverse_calc.Margin = new System.Windows.Forms.Padding(2);
+            this.Traverse_calc.Name = "Traverse_calc";
+            this.Traverse_calc.Size = new System.Drawing.Size(104, 19);
+            this.Traverse_calc.TabIndex = 20;
+            this.Traverse_calc.Text = "Check Calculation";
+            this.Traverse_calc.UseVisualStyleBackColor = true;
+            this.Traverse_calc.Click += new System.EventHandler(this.Traverse_calc_Click);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(10, 140);
+            this.label3.Location = new System.Drawing.Point(113, 150);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(124, 13);
+            this.label3.Size = new System.Drawing.Size(37, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Error: [None | Input Error]";
+            this.label3.Text = "Err Lbl";
             // 
             // TL_curPos_lbl
             // 
             this.TL_curPos_lbl.Enabled = false;
-            this.TL_curPos_lbl.Location = new System.Drawing.Point(7, 33);
+            this.TL_curPos_lbl.Location = new System.Drawing.Point(7, 27);
             this.TL_curPos_lbl.Margin = new System.Windows.Forms.Padding(2);
             this.TL_curPos_lbl.Name = "TL_curPos_lbl";
-            this.TL_curPos_lbl.Size = new System.Drawing.Size(131, 20);
+            this.TL_curPos_lbl.Size = new System.Drawing.Size(146, 20);
             this.TL_curPos_lbl.TabIndex = 15;
             // 
             // MoveToPos_lbl
             // 
             this.MoveToPos_lbl.AutoSize = true;
-            this.MoveToPos_lbl.Location = new System.Drawing.Point(4, 66);
+            this.MoveToPos_lbl.Location = new System.Drawing.Point(4, 54);
             this.MoveToPos_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.MoveToPos_lbl.Name = "MoveToPos_lbl";
-            this.MoveToPos_lbl.Size = new System.Drawing.Size(117, 13);
+            this.MoveToPos_lbl.Size = new System.Drawing.Size(157, 13);
             this.MoveToPos_lbl.TabIndex = 17;
-            this.MoveToPos_lbl.Text = "Move To Position: x,y,z";
+            this.MoveToPos_lbl.Text = "Move To Position: x,y,z,p,r,y (m)";
             // 
             // label2
             // 
@@ -993,7 +1027,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 17);
+            this.label1.Location = new System.Drawing.Point(4, 12);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(84, 13);
@@ -1250,7 +1284,7 @@
             // 
             this.AUEncoder_toggle.AutoSize = true;
             this.AUEncoder_toggle.Enabled = false;
-            this.AUEncoder_toggle.Location = new System.Drawing.Point(455, 8);
+            this.AUEncoder_toggle.Location = new System.Drawing.Point(481, 3);
             this.AUEncoder_toggle.Name = "AUEncoder_toggle";
             this.AUEncoder_toggle.Size = new System.Drawing.Size(134, 17);
             this.AUEncoder_toggle.TabIndex = 4;
@@ -1258,11 +1292,148 @@
             this.AUEncoder_toggle.UseVisualStyleBackColor = true;
             this.AUEncoder_toggle.Click += new System.EventHandler(this.AUEncoder_toggle_Click);
             // 
+            // RstEncoder_btn
+            // 
+            this.RstEncoder_btn.Location = new System.Drawing.Point(4, 90);
+            this.RstEncoder_btn.Margin = new System.Windows.Forms.Padding(2);
+            this.RstEncoder_btn.Name = "RstEncoder_btn";
+            this.RstEncoder_btn.Size = new System.Drawing.Size(148, 19);
+            this.RstEncoder_btn.TabIndex = 6;
+            this.RstEncoder_btn.Text = "Reset Encoder Labels";
+            this.RstEncoder_btn.UseVisualStyleBackColor = true;
+            this.RstEncoder_btn.Click += new System.EventHandler(this.RstEncoder_btn_Click);
+            // 
+            // X_entry
+            // 
+            this.X_entry.Location = new System.Drawing.Point(25, 69);
+            this.X_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.X_entry.Mask = "#0.000";
+            this.X_entry.Name = "X_entry";
+            this.X_entry.PromptChar = ' ';
+            this.X_entry.Size = new System.Drawing.Size(40, 20);
+            this.X_entry.TabIndex = 25;
+            this.X_entry.ValidatingType = typeof(int);
+            // 
+            // Y_entry
+            // 
+            this.Y_entry.Location = new System.Drawing.Point(25, 93);
+            this.Y_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.Y_entry.Mask = "#0.000";
+            this.Y_entry.Name = "Y_entry";
+            this.Y_entry.PromptChar = ' ';
+            this.Y_entry.Size = new System.Drawing.Size(40, 20);
+            this.Y_entry.TabIndex = 26;
+            this.Y_entry.ValidatingType = typeof(int);
+            // 
+            // Z_entry
+            // 
+            this.Z_entry.Location = new System.Drawing.Point(25, 117);
+            this.Z_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.Z_entry.Mask = "#0.000";
+            this.Z_entry.Name = "Z_entry";
+            this.Z_entry.PromptChar = ' ';
+            this.Z_entry.Size = new System.Drawing.Size(40, 20);
+            this.Z_entry.TabIndex = 27;
+            this.Z_entry.ValidatingType = typeof(int);
+            // 
+            // Pitch_entry
+            // 
+            this.Pitch_entry.Location = new System.Drawing.Point(107, 69);
+            this.Pitch_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.Pitch_entry.Mask = "000°";
+            this.Pitch_entry.Name = "Pitch_entry";
+            this.Pitch_entry.PromptChar = ' ';
+            this.Pitch_entry.Size = new System.Drawing.Size(40, 20);
+            this.Pitch_entry.TabIndex = 28;
+            this.Pitch_entry.ValidatingType = typeof(int);
+            // 
+            // Roll_entry
+            // 
+            this.Roll_entry.Location = new System.Drawing.Point(107, 93);
+            this.Roll_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.Roll_entry.Mask = "000°";
+            this.Roll_entry.Name = "Roll_entry";
+            this.Roll_entry.PromptChar = ' ';
+            this.Roll_entry.Size = new System.Drawing.Size(40, 20);
+            this.Roll_entry.TabIndex = 29;
+            this.Roll_entry.ValidatingType = typeof(int);
+            // 
+            // Yaw_entry
+            // 
+            this.Yaw_entry.Location = new System.Drawing.Point(107, 117);
+            this.Yaw_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.Yaw_entry.Mask = "000°";
+            this.Yaw_entry.Name = "Yaw_entry";
+            this.Yaw_entry.PromptChar = ' ';
+            this.Yaw_entry.Size = new System.Drawing.Size(40, 20);
+            this.Yaw_entry.TabIndex = 30;
+            this.Yaw_entry.ValidatingType = typeof(int);
+            // 
+            // Xpos_lbl
+            // 
+            this.Xpos_lbl.AutoSize = true;
+            this.Xpos_lbl.Location = new System.Drawing.Point(4, 72);
+            this.Xpos_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Xpos_lbl.Name = "Xpos_lbl";
+            this.Xpos_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Xpos_lbl.TabIndex = 31;
+            this.Xpos_lbl.Text = "X:";
+            // 
+            // Ypos_lbl
+            // 
+            this.Ypos_lbl.AutoSize = true;
+            this.Ypos_lbl.Location = new System.Drawing.Point(4, 96);
+            this.Ypos_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Ypos_lbl.Name = "Ypos_lbl";
+            this.Ypos_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Ypos_lbl.TabIndex = 32;
+            this.Ypos_lbl.Text = "Y:";
+            // 
+            // Zpos_lbl
+            // 
+            this.Zpos_lbl.AutoSize = true;
+            this.Zpos_lbl.Location = new System.Drawing.Point(4, 120);
+            this.Zpos_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Zpos_lbl.Name = "Zpos_lbl";
+            this.Zpos_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Zpos_lbl.TabIndex = 33;
+            this.Zpos_lbl.Text = "Z:";
+            // 
+            // Pitch_lbl
+            // 
+            this.Pitch_lbl.AutoSize = true;
+            this.Pitch_lbl.Location = new System.Drawing.Point(87, 72);
+            this.Pitch_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Pitch_lbl.Name = "Pitch_lbl";
+            this.Pitch_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Pitch_lbl.TabIndex = 34;
+            this.Pitch_lbl.Text = "P:";
+            // 
+            // Roll_lbl
+            // 
+            this.Roll_lbl.AutoSize = true;
+            this.Roll_lbl.Location = new System.Drawing.Point(86, 96);
+            this.Roll_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Roll_lbl.Name = "Roll_lbl";
+            this.Roll_lbl.Size = new System.Drawing.Size(18, 13);
+            this.Roll_lbl.TabIndex = 35;
+            this.Roll_lbl.Text = "R:";
+            // 
+            // Yaw_lbl
+            // 
+            this.Yaw_lbl.AutoSize = true;
+            this.Yaw_lbl.Location = new System.Drawing.Point(87, 120);
+            this.Yaw_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Yaw_lbl.Name = "Yaw_lbl";
+            this.Yaw_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Yaw_lbl.TabIndex = 36;
+            this.Yaw_lbl.Text = "Y:";
+            // 
             // Main_wnd
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(594, 422);
+            this.ClientSize = new System.Drawing.Size(622, 422);
             this.Controls.Add(this.AUEncoder_toggle);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -1352,7 +1523,6 @@
         private System.Windows.Forms.Label MoveToPos_lbl;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.MaskedTextBox NextPos_entry;
         private System.Windows.Forms.ToolStripMenuItem setUARTCOMToolStripMenuItem;
         private System.IO.Ports.SerialPort UART_COM;
         private System.Windows.Forms.ToolStripTextBox CurUartCom_lbl;
@@ -1406,6 +1576,21 @@
         private System.Windows.Forms.ToolStripMenuItem StepMode_btn;
         private System.Windows.Forms.ToolStripMenuItem StepMode_lbl;
         private System.Windows.Forms.CheckBox AUEncoder_toggle;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.Button RstEncoder_btn;
+        private System.Windows.Forms.Button Traverse_calc;
+        private System.Windows.Forms.MaskedTextBox X_entry;
+        private System.Windows.Forms.Label Yaw_lbl;
+        private System.Windows.Forms.Label Roll_lbl;
+        private System.Windows.Forms.Label Pitch_lbl;
+        private System.Windows.Forms.Label Zpos_lbl;
+        private System.Windows.Forms.Label Ypos_lbl;
+        private System.Windows.Forms.Label Xpos_lbl;
+        private System.Windows.Forms.MaskedTextBox Yaw_entry;
+        private System.Windows.Forms.MaskedTextBox Roll_entry;
+        private System.Windows.Forms.MaskedTextBox Pitch_entry;
+        private System.Windows.Forms.MaskedTextBox Z_entry;
+        private System.Windows.Forms.MaskedTextBox Y_entry;
     }
 }
 

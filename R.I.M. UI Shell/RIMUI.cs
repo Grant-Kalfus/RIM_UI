@@ -343,7 +343,7 @@ namespace R.I.M.UI_Shell
         string file_content = string.Empty;
 
         //Matlab console instance for DH parameters
-        //MLApp.MLApp matlab = new MLApp.MLApp();
+        
 
         //Toggle for telling system whether or not to update the UI on the encoder position
         bool Encoder_Update_1 = false,
@@ -392,6 +392,8 @@ namespace R.I.M.UI_Shell
             }
         };
 
+        MLApp.MLApp matlab = new MLApp.MLApp();
+
         private void Main_wnd_Load(object sender, EventArgs e)
         {
             Encoder_FetchTimer.Stop();
@@ -407,13 +409,10 @@ namespace R.I.M.UI_Shell
                 Encoder_Values[i] = 0;
             }
 
-
+            //Change UART encoding to ASCII-Extended for charicter code transfers > 127
             UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
 
-
-            //Change UART encoding to ASCII-Extended for charicter code transfers > 127
-
-            //matlab.Visible = 0;
+            matlab.Visible = 0;
             FileCheck_btn.Enabled = false;
             FileReload_btn.Enabled = false;
         }
@@ -874,8 +873,7 @@ namespace R.I.M.UI_Shell
                         continue;
                     }
                     else
-                        commands.Special_cmds.Enqueue(x.ToString());
-
+                        commands.Special_cmds.Enqueue("S" + x.ToString());
                 }
 
 
@@ -976,6 +974,8 @@ namespace R.I.M.UI_Shell
 
                 for(int i = 0; i < 7; i++)
                     commands.Motor_cmds[i].Clear();
+
+                commands.Special_cmds.Clear();
             }
 
             return !error;
@@ -1019,6 +1019,7 @@ namespace R.I.M.UI_Shell
         //Start sequence for programmed exeuction mode
         void ProgExec_start(RIM_PExec commands)
         {
+
             //Disable event based UART handling
             data_event_enabled = false;
 
@@ -1049,6 +1050,16 @@ namespace R.I.M.UI_Shell
             //Loops for the total ammount of commands
             for (int i = 0; i < total_cmds; i++)
             {
+                temp = commands.Special_cmds.Dequeue();
+
+
+                if (temp == "PASS")
+                    temp = string.Empty;
+                else if(temp.Substring(0,1) == "S")
+                {
+                    Thread.Sleep(int.Parse(temp.Replace('S', ' ')));
+                }
+
                 //j represents the motor ids
                 //Loops though for each of the motors
                 for (int j = 0; j < 7; j++)
@@ -1059,6 +1070,16 @@ namespace R.I.M.UI_Shell
                     //If the motor command was PASS, then move onto the next motor
                     if (temp == "PASS")
                     {
+                        temp = commands.Special_cmds.Peek();
+                        if (temp == "PASS")
+                            temp = string.Empty;
+
+                        else if (temp[0] == 'S')
+                        {
+                            Thread.Sleep(int.Parse(temp.Replace('S', ' ')));
+                            commands.Special_cmds.Dequeue();
+                        }
+
                         temp = string.Empty;
                     }
                     else
@@ -1547,6 +1568,7 @@ namespace R.I.M.UI_Shell
 
         private void Test_BTN_Click(object sender, EventArgs e)
         {
+            /*
             byte[] packet = new byte[3];
 
             Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STATUS, 0, 1, 0, ref packet, 3);
@@ -1567,15 +1589,7 @@ namespace R.I.M.UI_Shell
             #if (DEBUG_MODE)
                 Debug_Output(packet, 3);
             #endif
-
-            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
-            
-
-            //matlab.Execute(@"cd C:\MATLAB_Script");
-            //matlab.Feval("myfunc", 2, out object result, 3.14, 42.0, "world");
-            //object[] res = result as object[];
-            //Console.WriteLine(res[0]);
-            //Console.WriteLine(res[1]);
+            */
         }
 
         //Get encoder info
@@ -1795,11 +1809,15 @@ namespace R.I.M.UI_Shell
 
         private void MATLABScriptRunToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //matlab.Execute(@"cd C:\MATLAB_Script");
-            //matlab.Feval("myfunc", 2, out object result, 3.14, 42.0, "world");
-            //object[] res = result as object[];
-            //Console.WriteLine(res[0]);
-            //Console.WriteLine(res[1]);
+            matlab.Execute(@"cd C:\Users\kalfusg\Desktop\MatLab_Kinematics_Updated_for_Actual_DH_Parameters");
+            matlab.Feval("moveRIM", 6, out object result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 400.0, 400.0, 400.0, 0.0, 0.0, 0.0);
+            object[] res = result as object[];
+            Console.WriteLine(res[0]);
+            Console.WriteLine(res[1]);
+            Console.WriteLine(res[2]);
+            Console.WriteLine(res[3]);
+            Console.WriteLine(res[4]);
+            Console.WriteLine(res[5]);
         }
 
         private void ClearConsoleToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1982,6 +2000,116 @@ namespace R.I.M.UI_Shell
             {
                 Encoder_FetchTimer.Stop();
             }
+        }
+
+        private void RstEncoder_btn_Click(object sender, EventArgs e)
+        {
+            Change_Encoder_Val_lbl(0, "0");
+            Change_Encoder_Val_lbl(1, "0");
+            Change_Encoder_Val_lbl(2, "0");
+            Change_Encoder_Val_lbl(3, "0");
+            Change_Encoder_Val_lbl(4, "0");
+        }
+
+
+
+        private bool Do_DH_Conversion(ref double[] DH_Convert, double[] Cur_position)
+        {
+            if (DH_Convert.Length != 6 || Cur_position.Length != 6)
+            {
+                for (int i = 0; i < DH_Convert.Length; i++)
+                {
+                    DH_Convert[i] = 0;
+                }
+                return false;
+            }
+
+            for (int i = 0; i < DH_Convert.Length; i++)
+            {
+                DH_Convert[i] = 0;
+            }
+
+
+            double x_pos,
+                   y_pos,
+                   z_pos,
+                   pitch,
+                   roll,
+                   yaw;
+
+            //Masked text box parser
+            //X
+            if (double.TryParse(X_entry.Text.Replace(" ", ""), out double x))
+                x_pos = x * 1000;
+            else
+                x_pos = 0;
+            //Y
+            if (double.TryParse(Y_entry.Text.Replace(" ", ""), out x))
+                y_pos = x * 1000;
+            else
+                y_pos = 0;
+
+            //Z
+            if (double.TryParse(Z_entry.Text.Replace(" ", ""), out x))
+                z_pos = x * 1000;
+            else
+                z_pos = 0;
+
+            //Pitch
+            if (double.TryParse(Pitch_entry.Text.Replace("°", ""), out x))
+                pitch = x * 1000;
+            else
+                pitch = 0;
+
+            //Roll
+            if (double.TryParse(Roll_entry.Text.Replace("°", ""), out x))
+                roll = x * 1000;
+            else
+                roll = 0;
+
+            //Yaw
+            if (double.TryParse(Yaw_entry.Text.Replace("°", ""), out x))
+                yaw = x * 1000;
+            else
+                yaw = 0;
+
+
+
+            try
+            {
+                matlab.Execute(@"cd C:\Users\kalfusg\Desktop\MatLab_Kinematics_Updated_for_Actual_DH_Parameters");
+                matlab.Feval("moveRIM", 6, out object result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, x_pos, y_pos, z_pos, pitch, roll, yaw);
+                object[] res = result as object[];
+                Console.WriteLine(res[0]);
+                Console.WriteLine(res[1]);
+                Console.WriteLine(res[2]);
+                Console.WriteLine(res[3]);
+                Console.WriteLine(res[4]);
+                Console.WriteLine(res[5]);
+
+                for (int i = 0; i < 6; i++)
+                    DH_Convert[i] = (double)res[0];
+
+                
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error encountered:  " + e.Message);
+                return false;
+            }
+            
+        }
+
+
+
+        private void Traverse_calc_Click(object sender, EventArgs e)
+        {
+            double[] DH_Stuff = new double[6];
+            double[] curpos = new double[6];
+
+            Do_DH_Conversion(ref DH_Stuff, curpos);
         }
 
         private void DeviceStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
