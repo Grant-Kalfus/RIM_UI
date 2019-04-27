@@ -1130,7 +1130,7 @@
             // 
             this.Servo1_entry.Location = new System.Drawing.Point(66, 131);
             this.Servo1_entry.Margin = new System.Windows.Forms.Padding(2);
-            this.Servo1_entry.Mask = "#00000000000";
+            this.Servo1_entry.Mask = "000\\°";
             this.Servo1_entry.Name = "Servo1_entry";
             this.Servo1_entry.PromptChar = ' ';
             this.Servo1_entry.Size = new System.Drawing.Size(76, 20);
