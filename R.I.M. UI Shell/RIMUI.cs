@@ -31,7 +31,7 @@ namespace R.I.M.UI_Shell
                               RIM_OP_ENCODER_INFO        = 0x40,
                               RIM_OP_ERROR               = 0x50,
                               RIM_OP_RESET_DEV           = 0x60,
-
+                              RIM_OP_SERVO               = 0x70,
                               RIM_OP_MOTOR_EXTENDED_STEP = 0x80;
 
             //For RIM_OP_MOTOR_STOP
@@ -42,10 +42,10 @@ namespace R.I.M.UI_Shell
 
             public const byte GETSET_GET_PARAM         = 0x00,
                               GETSET_SET_PARAM         = 0x01,
-                              GETSET_RECIEVED_ACCESSOR = 0x08;
+                              GETSET_RECEIVED_ACCESSOR = 0x08;
             
-            public const ushort GETSET_RECIEVED_PARAM_DATA = 0xFFE0,
-                                GETSET_RECIEVED_PARAM_TYPE = 0x001F;
+            public const ushort GETSET_RECEIVED_PARAM_DATA = 0xFFE0,
+                                GETSET_RECEIVED_PARAM_TYPE = 0x001F;
 
 
 
@@ -359,7 +359,7 @@ namespace R.I.M.UI_Shell
 
         volatile public int[] Encoder_Values = new int[CONNECTED_ENCODERS];
 
-        //Boolean that enables the data recieved event handler for the UART_COM object
+        //Boolean that enables the data received event handler for the UART_COM object
         bool data_event_enabled = true;
         
         //Degree mode bool
@@ -688,24 +688,24 @@ namespace R.I.M.UI_Shell
 
             if (Int32.TryParse(Servo1_entry.Text.Replace('°', ' '), out x))
             {
+                commands.motor_dirs[5] = 0;
                 if (x < 0)
-                    commands.motor_dirs[5] = Direction.COUNTERCLOCKWISE;
-
-                if (Math.Abs(x) > max_steps)
-                    commands.motors[5] = max_steps;
+                    commands.motors[5] = 0;
+                else if (x > 130)
+                    commands.motors[5] = 130;
                 else
-                    commands.motors[5] = (ushort)Math.Abs(x);
+                    commands.motors[5] = (ushort)x;
             }
 
             if (Int32.TryParse(Servo2_entry.Text.Replace('°', ' '), out x))
             {
+                commands.motor_dirs[6] = 0;
                 if (x < 0)
-                    commands.motor_dirs[6] = Direction.COUNTERCLOCKWISE;
-
-                if (Math.Abs(x) > max_steps)
-                    commands.motors[6] = max_steps;
+                    commands.motors[6] = 0;
+                else if (x > 4096)
+                    commands.motors[6] = 4096;
                 else
-                    commands.motors[6] = (ushort)Math.Abs(x);
+                    commands.motors[6] = (ushort)x;
             }
 
             if (degree_mode)
@@ -1009,9 +1009,9 @@ namespace R.I.M.UI_Shell
                         //The following loop ensures that the motor has started running before sending the command to the next motor
                         do
                         {
-                            //Polls until a response is recieved
+                            //Polls until a response is received
                             int ch = UART_COM.ReadByte();
-                            Console.Write("1 Byte Recieved\n");
+                            Console.Write("1 Byte received\n");
 
                             //Get relevent information out of received packet
                             int OPCODE = (0xF0 & ch) >> 4;
@@ -1040,7 +1040,7 @@ namespace R.I.M.UI_Shell
                                     ts.Milliseconds / 10));
                             }
                         //Move onto the next motor command once the motor has started moving
-                        //loops in case a motor stop is recieved from another motor's completion 
+                        //loops in case a motor stop is received from another motor's completion 
                         } while (motor_idle[j] == true);
 
                     }
@@ -1050,7 +1050,7 @@ namespace R.I.M.UI_Shell
                 while (!All_idle(motor_idle, 7))
                 {
                     int ch = UART_COM.ReadByte();
-                    Console.Write("1 Byte Recieved\n");
+                    Console.Write("1 Byte received\n");
                     int OPCODE = (0xF0 & ch) >> 4;
                     int M_ID = ch & 0x07;
                     if (OPCODE == 0x00)
@@ -1190,6 +1190,12 @@ namespace R.I.M.UI_Shell
                     packet[1] |= (byte)command;
                     packet[2] |= (byte)(command >> 8);
                     break;
+                case PSoC_OpCodes.RIM_OP_SERVO:
+                    packet[0] |= (byte)motor_id;
+                    packet[0] |= PSoC_OpCodes.RIM_OP_SERVO;
+                    packet[1] |= (byte)command;
+                    packet[2] |= (byte)(command >> 8);
+                    break;
             }
 
 
@@ -1201,7 +1207,7 @@ namespace R.I.M.UI_Shell
             return true;
         }
 
-        //Send a given stepper commands through UART
+        //Send a set of given stepper commands through UART
         private void UART_prep_send_command(PreciseExecution_steps commands)
         {
 
@@ -1214,7 +1220,7 @@ namespace R.I.M.UI_Shell
 
             for (int i = 0; i < commands.motor_num; i++)
             {
-                if (commands.motors[i] != 0)
+                if (commands.motors[i] != 0 && i < 5)
                 {
                     //Format packet into motor id, the command, and direction
                     Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, commands.motor_dirs[i], i, commands.motors[i], ref packet, 3);
@@ -1227,6 +1233,17 @@ namespace R.I.M.UI_Shell
 
 
                 }
+                else if (i > 4)
+                {
+                    Format_packet(PSoC_OpCodes.RIM_OP_SERVO, commands.motor_dirs[i], i, commands.motors[i], ref packet, 3);
+
+                #if (DEBUG_MODE)
+                    Debug_Output(packet, 3);
+                #endif
+
+                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                }
+                
 
             }
 
@@ -1533,7 +1550,7 @@ namespace R.I.M.UI_Shell
 
         volatile bool Final_Encoder_Set = false;
 
-        //Event handler for device data recieved
+        //Event handler for device data received
         private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             if (!data_event_enabled)
@@ -1551,24 +1568,54 @@ namespace R.I.M.UI_Shell
             info   = (byte)(msg & 0x0F);
 
             #if (DEBUG_MODE)
-                Console.WriteLine("Recieved Opcode: " + opcode.ToString() + ", Info: " + info.ToString());
-            #endif
+                Console.WriteLine("Received Opcode: " + opcode.ToString() + ", Info: " + info.ToString());
+#endif
 
             if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_RUN)
             {
                 Motor_Active[info] = true;
                 Set_ind_backcolor(info, Color.LimeGreen);
 
-                #if (DEBUG_MODE)
-                    Console.WriteLine("Recieved a motor start confirm");
-                #endif
+#if (DEBUG_MODE)
+                Console.WriteLine("Received a motor start confirm");
+#endif
 
+            }
+            else if (opcode == PSoC_OpCodes.RIM_OP_SERVO)
+            {
+                if (info == 0x05)
+                {
+                    rx[0] = (byte)UART_COM.ReadChar();
+                    
+                    response = rx[0];
+                    
+                    Set_ind_backcolor(info, Color.Gold);
+                    
+                    Console.Write("Servo 1 angle: " + response + "\n");
+
+                    if (Start_btn.InvokeRequired)
+                        Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
+                    if (Stop_btn.InvokeRequired)
+                        Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
+
+                }
+                else
+                {
+                    Set_ind_backcolor(info, Color.Gold);
+                    
+                    Console.Write("Servo 2 confirmation: " + response + "\n");
+
+                    if (Start_btn.InvokeRequired)
+                        Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
+                    if (Stop_btn.InvokeRequired)
+                        Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
+                }
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_STOP)
             {
                 Set_ind_backcolor(info, Color.Gold);
                 Motor_Active[info] = false;
-                
+
                 //Checker for if at least one motor is active
                 bool motor_on = false;
 
@@ -1585,16 +1632,16 @@ namespace R.I.M.UI_Shell
                         Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
                     if (Stop_btn.InvokeRequired)
                         Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
-                }     
+                }
 
-                #if (DEBUG_MODE)
-                    Console.WriteLine("Recieved a motor stop message");
-                #endif
+#if (DEBUG_MODE)
+                Console.WriteLine("Received a motor stop message");
+#endif
 
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_STATUS)
             {
-                
+
                 rx[0] = (byte)UART_COM.ReadChar();
                 rx[1] = (byte)UART_COM.ReadChar();
                 response |= rx[0];
@@ -1602,10 +1649,10 @@ namespace R.I.M.UI_Shell
 
                 Set_ind_backcolor(info, Color.Gold);
 
-                #if (DEBUG_MODE)
-                    Console.WriteLine("Motor Driver id" + info.ToString() + "Responded with: " + response.ToString("X2"));
-                #endif
-                
+#if (DEBUG_MODE)
+                Console.WriteLine("Motor Driver id" + info.ToString() + "Responded with: " + response.ToString("X2"));
+#endif
+
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_RESET_DEV)
             {
@@ -1617,9 +1664,9 @@ namespace R.I.M.UI_Shell
 
                 Set_ind_backcolor(info, Color.Gold);
 
-                #if (DEBUG_MODE)
-                    Console.WriteLine("Motor Driver id" + info.ToString() + "Responded with: " + response.ToString("X2"));
-                #endif
+#if (DEBUG_MODE)
+                Console.WriteLine("Motor Driver id" + info.ToString() + "Responded with: " + response.ToString("X2"));
+#endif
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_GETSET_PARAM)
             {
@@ -1628,28 +1675,28 @@ namespace R.I.M.UI_Shell
                 response |= rx[0];
                 response |= (ushort)(rx[1] << 8);
 
-                byte         m_id = (byte)(info & 0x07);
-                byte   param_type = (byte)(response & PSoC_OpCodes.GETSET_RECIEVED_PARAM_TYPE);
-                ushort param_info = (ushort)((response & PSoC_OpCodes.GETSET_RECIEVED_PARAM_DATA) >> 5);
+                byte m_id = (byte)(info & 0x07);
+                byte param_type = (byte)(response & PSoC_OpCodes.GETSET_RECEIVED_PARAM_TYPE);
+                ushort param_info = (ushort)((response & PSoC_OpCodes.GETSET_RECEIVED_PARAM_DATA) >> 5);
                 switch (param_type)
                 {
                     case L6470_Params.ACC:
-                        All_MSettings.Set_acc(m_id, param_info*2);
+                        All_MSettings.Set_acc(m_id, param_info * 2);
                         break;
                     case L6470_Params.STEP_MODE:
-                        All_MSettings.Set_step_div(m_id, param_info*1);
+                        All_MSettings.Set_step_div(m_id, param_info * 1);
                         break;
                     case L6470_Params.DECEL:
-                        All_MSettings.Set_decel(m_id, param_info*2);
+                        All_MSettings.Set_decel(m_id, param_info * 2);
                         break;
                     case L6470_Params.MAX_SPEED:
-                        All_MSettings.Set_max_speed(m_id, param_info*2);
+                        All_MSettings.Set_max_speed(m_id, param_info * 2);
                         break;
                 }
 
-                #if (DEBUG_MODE)
-                    Console.WriteLine("Motor Driver id: " + m_id.ToString() + " With PARAM TYPE: " + param_type.ToString("X2") + " Responded with: " + param_info.ToString("X2"));
-                #endif
+#if (DEBUG_MODE)
+                Console.WriteLine("Motor Driver id: " + m_id.ToString() + " With PARAM TYPE: " + param_type.ToString("X2") + " Responded with: " + param_info.ToString("X2"));
+#endif
 
 
 
@@ -1666,18 +1713,18 @@ namespace R.I.M.UI_Shell
                 byte m_id = (byte)(info & 0x07);
                 if (m_id > CONNECTED_ENCODERS)
                 {
-                    #if (DEBUG_MODE)
-                        Console.WriteLine("Encoder id " + info.ToString() + " is out of bounds!\n");
-                    #endif
+#if (DEBUG_MODE)
+                    Console.WriteLine("Encoder id " + info.ToString() + " is out of bounds!\n");
+#endif
 
                     return;
                 }
 
                 if (response == 0xFFFF)
                 {
-                    #if (DEBUG_MODE)
-                        Console.WriteLine("Encoder id " + info.ToString() + " timed out!\n");
-                    #endif
+#if (DEBUG_MODE)
+                    Console.WriteLine("Encoder id " + info.ToString() + " timed out!\n");
+#endif
 
                     Set_Encoder_label(m_id, "ERR");
                     return;
@@ -1688,9 +1735,9 @@ namespace R.I.M.UI_Shell
 
                 Set_ind_backcolor(m_id + 7, Color.Gold);
 
-                #if (DEBUG_MODE)
-                    Console.WriteLine("Encoder id " + info.ToString() + " is currently at position: " + response.ToString());
-                #endif
+#if (DEBUG_MODE)
+                Console.WriteLine("Encoder id " + info.ToString() + " is currently at position: " + response.ToString());
+#endif
 
                 if (m_id == 4)
                 {
@@ -1698,7 +1745,7 @@ namespace R.I.M.UI_Shell
                 }
 
                 Set_Encoder_label(m_id, response.ToString());
-                  
+
             }
 
             #if (DEBUG_MODE)
@@ -1804,7 +1851,7 @@ namespace R.I.M.UI_Shell
                 Stepper3_entry.Mask = "#00000000000";
                 Stepper4_entry.Mask = "#00000000000";
                 Stepper5_entry.Mask = "#00000000000";
-                Servo1_entry.Mask = "#00000000000";
+                Servo1_entry.Mask = @"000\°";
                 Servo2_entry.Mask = "#00000000000";
                 degree_mode = false;
                 StepMode_lbl.Text = "Step Mode";

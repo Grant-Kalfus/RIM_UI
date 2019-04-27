@@ -381,9 +381,9 @@
             this.Common_grp.Controls.Add(this.Stop_btn);
             this.Common_grp.Controls.Add(this.Start_btn);
             this.Common_grp.Location = new System.Drawing.Point(9, 225);
-            this.Common_grp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Common_grp.Margin = new System.Windows.Forms.Padding(2);
             this.Common_grp.Name = "Common_grp";
-            this.Common_grp.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Common_grp.Padding = new System.Windows.Forms.Padding(2);
             this.Common_grp.Size = new System.Drawing.Size(124, 193);
             this.Common_grp.TabIndex = 1;
             this.Common_grp.TabStop = false;
@@ -393,7 +393,7 @@
             // 
             this.Stop_btn.Enabled = false;
             this.Stop_btn.Location = new System.Drawing.Point(4, 110);
-            this.Stop_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stop_btn.Margin = new System.Windows.Forms.Padding(2);
             this.Stop_btn.Name = "Stop_btn";
             this.Stop_btn.Size = new System.Drawing.Size(112, 75);
             this.Stop_btn.TabIndex = 1;
@@ -404,7 +404,7 @@
             // Start_btn
             // 
             this.Start_btn.Location = new System.Drawing.Point(4, 17);
-            this.Start_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Start_btn.Margin = new System.Windows.Forms.Padding(2);
             this.Start_btn.Name = "Start_btn";
             this.Start_btn.Size = new System.Drawing.Size(112, 73);
             this.Start_btn.TabIndex = 0;
@@ -416,9 +416,9 @@
             // 
             this.groupBox1.Controls.Add(this.feedback_grd);
             this.groupBox1.Location = new System.Drawing.Point(143, 224);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox1.Size = new System.Drawing.Size(446, 194);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
@@ -613,7 +613,7 @@
             this.M7Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M7Running_ind.Enabled = false;
             this.M7Running_ind.Location = new System.Drawing.Point(381, 55);
-            this.M7Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.M7Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M7Running_ind.Name = "M7Running_ind";
             this.M7Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M7Running_ind.TabIndex = 9;
@@ -626,7 +626,7 @@
             this.M6Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M6Running_ind.Enabled = false;
             this.M6Running_ind.Location = new System.Drawing.Point(327, 55);
-            this.M6Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.M6Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M6Running_ind.Name = "M6Running_ind";
             this.M6Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M6Running_ind.TabIndex = 8;
@@ -639,7 +639,7 @@
             this.E7Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.E7Running_ind.Enabled = false;
             this.E7Running_ind.Location = new System.Drawing.Point(381, 114);
-            this.E7Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.E7Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E7Running_ind.Name = "E7Running_ind";
             this.E7Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E7Running_ind.TabIndex = 20;
@@ -654,7 +654,7 @@
             this.E6Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.E6Running_ind.Enabled = false;
             this.E6Running_ind.Location = new System.Drawing.Point(327, 114);
-            this.E6Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.E6Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E6Running_ind.Name = "E6Running_ind";
             this.E6Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E6Running_ind.TabIndex = 19;
@@ -668,7 +668,7 @@
             this.E5Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E5Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.E5Running_ind.Location = new System.Drawing.Point(273, 114);
-            this.E5Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.E5Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E5Running_ind.Name = "E5Running_ind";
             this.E5Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E5Running_ind.TabIndex = 18;
@@ -680,7 +680,7 @@
             this.M5Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M5Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M5Running_ind.Location = new System.Drawing.Point(273, 55);
-            this.M5Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.M5Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M5Running_ind.Name = "M5Running_ind";
             this.M5Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M5Running_ind.TabIndex = 7;
@@ -692,7 +692,7 @@
             this.M4Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M4Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M4Running_ind.Location = new System.Drawing.Point(219, 55);
-            this.M4Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.M4Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M4Running_ind.Name = "M4Running_ind";
             this.M4Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M4Running_ind.TabIndex = 6;
@@ -706,7 +706,7 @@
             this.E4Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E4Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.E4Running_ind.Location = new System.Drawing.Point(219, 114);
-            this.E4Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.E4Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E4Running_ind.Name = "E4Running_ind";
             this.E4Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E4Running_ind.TabIndex = 17;
@@ -718,7 +718,7 @@
             this.M3Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M3Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M3Running_ind.Location = new System.Drawing.Point(165, 55);
-            this.M3Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.M3Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M3Running_ind.Name = "M3Running_ind";
             this.M3Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M3Running_ind.TabIndex = 5;
@@ -732,7 +732,7 @@
             this.E3Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E3Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.E3Running_ind.Location = new System.Drawing.Point(165, 114);
-            this.E3Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.E3Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E3Running_ind.Name = "E3Running_ind";
             this.E3Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E3Running_ind.TabIndex = 16;
@@ -744,7 +744,7 @@
             this.M2Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M2Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M2Running_ind.Location = new System.Drawing.Point(111, 55);
-            this.M2Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.M2Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M2Running_ind.Name = "M2Running_ind";
             this.M2Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M2Running_ind.TabIndex = 4;
@@ -758,7 +758,7 @@
             this.E2Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E2Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.E2Running_ind.Location = new System.Drawing.Point(111, 114);
-            this.E2Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.E2Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E2Running_ind.Name = "E2Running_ind";
             this.E2Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E2Running_ind.TabIndex = 15;
@@ -772,7 +772,7 @@
             this.E1Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.E1Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.E1Running_ind.Location = new System.Drawing.Point(57, 114);
-            this.E1Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.E1Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.E1Running_ind.Name = "E1Running_ind";
             this.E1Running_ind.Size = new System.Drawing.Size(49, 55);
             this.E1Running_ind.TabIndex = 1;
@@ -784,7 +784,7 @@
             this.M1Running_ind.BackColor = System.Drawing.Color.IndianRed;
             this.M1Running_ind.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.M1Running_ind.Location = new System.Drawing.Point(57, 55);
-            this.M1Running_ind.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.M1Running_ind.Margin = new System.Windows.Forms.Padding(2);
             this.M1Running_ind.Name = "M1Running_ind";
             this.M1Running_ind.Size = new System.Drawing.Size(49, 54);
             this.M1Running_ind.TabIndex = 0;
@@ -916,9 +916,9 @@
             this.groupBox2.Controls.Add(this.PreciseExecutionMode_grp);
             this.groupBox2.Controls.Add(this.OvrCurpos_lbl);
             this.groupBox2.Location = new System.Drawing.Point(9, 24);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox2.Size = new System.Drawing.Size(580, 196);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
@@ -933,9 +933,9 @@
             this.TraverseLineMode_grp.Controls.Add(this.label2);
             this.TraverseLineMode_grp.Controls.Add(this.label1);
             this.TraverseLineMode_grp.Location = new System.Drawing.Point(435, 18);
-            this.TraverseLineMode_grp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TraverseLineMode_grp.Margin = new System.Windows.Forms.Padding(2);
             this.TraverseLineMode_grp.Name = "TraverseLineMode_grp";
-            this.TraverseLineMode_grp.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TraverseLineMode_grp.Padding = new System.Windows.Forms.Padding(2);
             this.TraverseLineMode_grp.Size = new System.Drawing.Size(141, 173);
             this.TraverseLineMode_grp.TabIndex = 17;
             this.TraverseLineMode_grp.TabStop = false;
@@ -944,7 +944,7 @@
             // NextPos_entry
             // 
             this.NextPos_entry.Location = new System.Drawing.Point(7, 82);
-            this.NextPos_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.NextPos_entry.Margin = new System.Windows.Forms.Padding(2);
             this.NextPos_entry.Mask = "(0.00, 0.00, 0.00)";
             this.NextPos_entry.Name = "NextPos_entry";
             this.NextPos_entry.Size = new System.Drawing.Size(131, 20);
@@ -965,7 +965,7 @@
             // 
             this.TL_curPos_lbl.Enabled = false;
             this.TL_curPos_lbl.Location = new System.Drawing.Point(7, 33);
-            this.TL_curPos_lbl.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TL_curPos_lbl.Margin = new System.Windows.Forms.Padding(2);
             this.TL_curPos_lbl.Name = "TL_curPos_lbl";
             this.TL_curPos_lbl.Size = new System.Drawing.Size(131, 20);
             this.TL_curPos_lbl.TabIndex = 15;
@@ -1006,9 +1006,9 @@
             this.ProgrammedExecutionMode_grp.Controls.Add(this.FileCheck_btn);
             this.ProgrammedExecutionMode_grp.Controls.Add(this.LoadFile_btn);
             this.ProgrammedExecutionMode_grp.Location = new System.Drawing.Point(269, 17);
-            this.ProgrammedExecutionMode_grp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ProgrammedExecutionMode_grp.Margin = new System.Windows.Forms.Padding(2);
             this.ProgrammedExecutionMode_grp.Name = "ProgrammedExecutionMode_grp";
-            this.ProgrammedExecutionMode_grp.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ProgrammedExecutionMode_grp.Padding = new System.Windows.Forms.Padding(2);
             this.ProgrammedExecutionMode_grp.Size = new System.Drawing.Size(160, 174);
             this.ProgrammedExecutionMode_grp.TabIndex = 16;
             this.ProgrammedExecutionMode_grp.TabStop = false;
@@ -1027,7 +1027,7 @@
             // FileReload_btn
             // 
             this.FileReload_btn.Location = new System.Drawing.Point(4, 94);
-            this.FileReload_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.FileReload_btn.Margin = new System.Windows.Forms.Padding(2);
             this.FileReload_btn.Name = "FileReload_btn";
             this.FileReload_btn.Size = new System.Drawing.Size(152, 32);
             this.FileReload_btn.TabIndex = 4;
@@ -1037,7 +1037,7 @@
             // FileCheck_btn
             // 
             this.FileCheck_btn.Location = new System.Drawing.Point(4, 58);
-            this.FileCheck_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.FileCheck_btn.Margin = new System.Windows.Forms.Padding(2);
             this.FileCheck_btn.Name = "FileCheck_btn";
             this.FileCheck_btn.Size = new System.Drawing.Size(152, 32);
             this.FileCheck_btn.TabIndex = 3;
@@ -1048,7 +1048,7 @@
             // LoadFile_btn
             // 
             this.LoadFile_btn.Location = new System.Drawing.Point(4, 21);
-            this.LoadFile_btn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.LoadFile_btn.Margin = new System.Windows.Forms.Padding(2);
             this.LoadFile_btn.Name = "LoadFile_btn";
             this.LoadFile_btn.Size = new System.Drawing.Size(152, 32);
             this.LoadFile_btn.TabIndex = 2;
@@ -1073,9 +1073,9 @@
             this.PreciseExecutionMode_grp.Controls.Add(this.Servo1_lbl);
             this.PreciseExecutionMode_grp.Controls.Add(this.Servo2_lbl);
             this.PreciseExecutionMode_grp.Location = new System.Drawing.Point(115, 14);
-            this.PreciseExecutionMode_grp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PreciseExecutionMode_grp.Margin = new System.Windows.Forms.Padding(2);
             this.PreciseExecutionMode_grp.Name = "PreciseExecutionMode_grp";
-            this.PreciseExecutionMode_grp.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.PreciseExecutionMode_grp.Padding = new System.Windows.Forms.Padding(2);
             this.PreciseExecutionMode_grp.Size = new System.Drawing.Size(150, 177);
             this.PreciseExecutionMode_grp.TabIndex = 15;
             this.PreciseExecutionMode_grp.TabStop = false;
@@ -1084,7 +1084,7 @@
             // Servo2_entry
             // 
             this.Servo2_entry.Location = new System.Drawing.Point(66, 154);
-            this.Servo2_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Servo2_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Servo2_entry.Mask = "#00000000000";
             this.Servo2_entry.Name = "Servo2_entry";
             this.Servo2_entry.PromptChar = ' ';
@@ -1094,8 +1094,8 @@
             // Servo1_entry
             // 
             this.Servo1_entry.Location = new System.Drawing.Point(66, 131);
-            this.Servo1_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.Servo1_entry.Mask = "#00000000000";
+            this.Servo1_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.Servo1_entry.Mask = "000\\°";
             this.Servo1_entry.Name = "Servo1_entry";
             this.Servo1_entry.PromptChar = ' ';
             this.Servo1_entry.Size = new System.Drawing.Size(76, 20);
@@ -1104,7 +1104,7 @@
             // Stepper5_entry
             // 
             this.Stepper5_entry.Location = new System.Drawing.Point(66, 108);
-            this.Stepper5_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stepper5_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Stepper5_entry.Mask = "#00000000000";
             this.Stepper5_entry.Name = "Stepper5_entry";
             this.Stepper5_entry.PromptChar = ' ';
@@ -1114,7 +1114,7 @@
             // Stepper4_entry
             // 
             this.Stepper4_entry.Location = new System.Drawing.Point(66, 85);
-            this.Stepper4_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stepper4_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Stepper4_entry.Mask = "#00000000000";
             this.Stepper4_entry.Name = "Stepper4_entry";
             this.Stepper4_entry.PromptChar = ' ';
@@ -1124,7 +1124,7 @@
             // Stepper3_entry
             // 
             this.Stepper3_entry.Location = new System.Drawing.Point(66, 63);
-            this.Stepper3_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stepper3_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Stepper3_entry.Mask = "#00000000000";
             this.Stepper3_entry.Name = "Stepper3_entry";
             this.Stepper3_entry.PromptChar = ' ';
@@ -1134,7 +1134,7 @@
             // Stepper2_entry
             // 
             this.Stepper2_entry.Location = new System.Drawing.Point(66, 40);
-            this.Stepper2_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stepper2_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Stepper2_entry.Mask = "#00000000000";
             this.Stepper2_entry.Name = "Stepper2_entry";
             this.Stepper2_entry.PromptChar = ' ';
@@ -1144,7 +1144,7 @@
             // Stepper1_entry
             // 
             this.Stepper1_entry.Location = new System.Drawing.Point(66, 17);
-            this.Stepper1_entry.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Stepper1_entry.Margin = new System.Windows.Forms.Padding(2);
             this.Stepper1_entry.Mask = "#00000000000";
             this.Stepper1_entry.Name = "Stepper1_entry";
             this.Stepper1_entry.PromptChar = ' ';
@@ -1253,7 +1253,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.Common_grp);
             this.Controls.Add(this.toolStrip1);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Main_wnd";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "R.I.M. Test App";
