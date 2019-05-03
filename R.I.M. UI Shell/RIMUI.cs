@@ -59,6 +59,9 @@ namespace R.I.M.UI_Shell
             //Actual motor one step angle is 0.9, but factoring gearing it is different
             public static readonly decimal[] Motor_StepDiv = {2, 4, 2, 2, 4};
 
+            public static readonly decimal[] Motor_Slopes = {0.0561M, 0.0045M, 0.0089M, 0.0655M, 0.0089M};
+            public static readonly decimal[] Motor_Offset = {0.0626M, -0.1088M, -0.0879M, -1.1927M, -1.36M};
+
             /*
             public const decimal M1_ratio = 8,
                            M1_StepAngle = 0.9M,
@@ -94,6 +97,7 @@ namespace R.I.M.UI_Shell
             {
                 Motor_cmds = new Queue<string>[7];
                 Encoder_cmds = new Queue<string>[7];
+                Special_cmds = new Queue<string>();
 
                 for (int i = 0; i < 7; i++)
                 {
@@ -770,10 +774,8 @@ namespace R.I.M.UI_Shell
             if (degrees > 360)
                 degrees = 360;
 
-            decimal step_angle = 1.8M / RIM_MotorConstants.Motor_Ratios[motor_id];
 
-            return (ushort)Math.Round(degrees * (decimal)All_MSettings.All_Motor_Settings[motor_id].step_div * 1.8M /
-                                                step_angle); 
+            return (ushort)Math.Round((Math.Abs(degrees) - RIM_MotorConstants.Motor_Offset[motor_id])/RIM_MotorConstants.Motor_Slopes[motor_id]); 
         }
 
         //Programmed Execution Mode support
@@ -844,7 +846,7 @@ namespace R.I.M.UI_Shell
                 }
 
                 //Mode selecter
-                if(temp[0] == "MODE")
+                else if(temp[0] == "MODE")
                 {
                     if (temp.Length < 2)
                     {
@@ -859,7 +861,7 @@ namespace R.I.M.UI_Shell
                     continue;
                 }
 
-                if(temp[0] == "SLEEP")
+                else if(temp[0] == "SLEEP")
                 {
                     if(temp.Length < 2)
                     {
@@ -880,7 +882,7 @@ namespace R.I.M.UI_Shell
 
 
                 //Command for move
-                if (temp[0] == "MOVE")
+                else if (temp[0] == "MOVE")
                 {
                     if(temp.Length < 4)
                     {
@@ -1043,25 +1045,10 @@ namespace R.I.M.UI_Shell
             //Total number of commands to send is the ammount times  
             int sent_commands = 0;
 
-            //Create stopwatch object for timing how long a joint takes to move 
-            Stopwatch[] MRunTime = new Stopwatch[7];
-
-            for (int i = 0; i < 7; i++)
-                MRunTime[i] = new Stopwatch();
-
             //Loops for the total ammount of commands
             for (int i = 0; i < total_cmds; i++)
             {
-                temp = commands.Special_cmds.Dequeue();
-
-
-                if (temp == "PASS")
-                    temp = string.Empty;
-                else if(temp.Substring(0,1) == "S")
-                {
-                    Thread.Sleep(int.Parse(temp.Replace('S', ' ')));
-                }
-
+                
                 //j represents the motor ids
                 //Loops though for each of the motors
                 for (int j = 0; j < 7; j++)
@@ -1072,16 +1059,6 @@ namespace R.I.M.UI_Shell
                     //If the motor command was PASS, then move onto the next motor
                     if (temp == "PASS")
                     {
-                        temp = commands.Special_cmds.Peek();
-                        if (temp == "PASS")
-                            temp = string.Empty;
-
-                        else if (temp[0] == 'S')
-                        {
-                            Thread.Sleep(int.Parse(temp.Replace('S', ' ')));
-                            commands.Special_cmds.Dequeue();
-                        }
-
                         temp = string.Empty;
                     }
                     else
@@ -1107,7 +1084,6 @@ namespace R.I.M.UI_Shell
                                 Set_ind_backcolor(M_ID, Color.LimeGreen);
                                 motor_idle[M_ID] = false;
                                 motor_running[M_ID] = true;
-                                MRunTime[M_ID].Start();
                             }
                             else
                             {
@@ -1116,12 +1092,6 @@ namespace R.I.M.UI_Shell
                                 Set_ind_backcolor(M_ID, Color.Gold);
                                 motor_running[M_ID] = false;
                                 motor_idle[M_ID] = true;
-                                MRunTime[M_ID].Stop();
-                                TimeSpan ts = MRunTime[M_ID].Elapsed;
-                                //Display the time it took for the joint to move within the encoder label 
-                                Change_Encoder_Val_lbl(M_ID, String.Format("{2:00}.{3:00}",
-                                    ts.Hours, ts.Minutes, ts.Seconds,
-                                    ts.Milliseconds / 10));
                             }
                         //Move onto the next motor command once the motor has started moving
                         //loops in case a motor stop is received from another motor's completion 
@@ -1142,26 +1112,25 @@ namespace R.I.M.UI_Shell
                         Set_ind_backcolor(M_ID, Color.LimeGreen);
                         motor_idle[M_ID] = false;
                         motor_running[M_ID] = true;
-                        MRunTime[M_ID].Start();
                     }
                     else
                     {
                         Set_ind_backcolor(M_ID, Color.Gold);
                         motor_running[M_ID] = false;
                         motor_idle[M_ID] = true;
-                        MRunTime[M_ID].Stop();
-                        TimeSpan ts = MRunTime[M_ID].Elapsed;
-                        Change_Encoder_Val_lbl(M_ID, String.Format("{2:00}.{3:00}",
-                            ts.Hours, ts.Minutes, ts.Seconds,
-                            ts.Milliseconds / 10));
                     }
                 }
 
+                temp = commands.Special_cmds.Dequeue();
+                if (temp == "PASS")
+                    temp = string.Empty;
+                else if (temp.Substring(0, 1) == "S")
+                {
+                    Thread.Sleep(int.Parse(temp.Replace('S', ' ')));
+                }
             }
             //After precise execution mode has finished running, re-enable the UART data received event handler
-            data_event_enabled = true;
-            for (int i = 0; i < 7; i++)
-                MRunTime[i].Reset();
+
 
             Stop_btn.Enabled = false;
             Start_btn.Enabled = true;
@@ -1858,7 +1827,7 @@ namespace R.I.M.UI_Shell
 
         private void MATLABScriptRunToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            matlab.Execute(@"cd C:\Users\kalfusg\Desktop\MatLab_Kinematics_Updated_for_Actual_DH_Parameters");
+            matlab.Execute(@"cd C:\MATLABScript\");
             matlab.Feval("moveRIM", 6, out object result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 400.0, 400.0, 400.0, 0.0, 0.0, 0.0);
             object[] res = result as object[];
             Console.WriteLine(res[0]);
