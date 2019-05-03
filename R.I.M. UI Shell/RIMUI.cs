@@ -54,13 +54,18 @@ namespace R.I.M.UI_Shell
         //Class for defining gearing ratios constants on RIM
         static class RIM_MotorConstants
         {
-            public static readonly decimal[] Motor_Ratios =    {8   , 100      , 100   , 13.79M, 51     };
-            public static readonly decimal[] Motor_StepAngle = {0.1125M, 0.018M, 0.018M, 0.131M, 0.036M };
+            //public static readonly decimal[] Motor_Ratios =    {8   , 100      , 100   , 13.79M, 51     };
+            //public static readonly decimal[] Motor_StepAngle = {0.1125M, 0.018M, 0.018M, 0.131M, 0.036M };
             //Actual motor one step angle is 0.9, but factoring gearing it is different
-            public static readonly decimal[] Motor_StepDiv = {2, 4, 2, 2, 4};
+            //public static readonly decimal[] Motor_StepDiv = {2, 4, 2, 2, 4};
 
             public static readonly decimal[] Motor_Slopes = {0.0561M, 0.0045M, 0.0089M, 0.0655M, 0.0089M};
             public static readonly decimal[] Motor_Offset = {0.0626M, -0.1088M, -0.0879M, -1.1927M, -1.36M};
+
+            public static readonly int[] M_Limit_Start = { 1316, 350, 876, 3737, 3493 };
+            public static readonly int[] M_Limit_End = { 1275, 2130, 1465, 1296, 2784 };
+
+            public static readonly decimal E_to_D = 360M / 4096M;
 
             /*
             public const decimal M1_ratio = 8,
@@ -396,7 +401,7 @@ namespace R.I.M.UI_Shell
             }
         };
 
-        MLApp.MLApp matlab = new MLApp.MLApp();
+        //MLApp.MLApp matlab = new MLApp.MLApp();
 
         private void Main_wnd_Load(object sender, EventArgs e)
         {
@@ -416,7 +421,7 @@ namespace R.I.M.UI_Shell
             //Change UART encoding to ASCII-Extended for charicter code transfers > 127
             UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
 
-            matlab.Visible = 0;
+            //matlab.Visible = 0;
             FileCheck_btn.Enabled = false;
             FileReload_btn.Enabled = false;
         }
@@ -1130,7 +1135,7 @@ namespace R.I.M.UI_Shell
                 }
             }
             //After precise execution mode has finished running, re-enable the UART data received event handler
-
+            data_event_enabled = true;
 
             Stop_btn.Enabled = false;
             Start_btn.Enabled = true;
@@ -1827,15 +1832,15 @@ namespace R.I.M.UI_Shell
 
         private void MATLABScriptRunToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            matlab.Execute(@"cd C:\MATLABScript\");
-            matlab.Feval("moveRIM", 6, out object result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 400.0, 400.0, 400.0, 0.0, 0.0, 0.0);
-            object[] res = result as object[];
-            Console.WriteLine(res[0]);
-            Console.WriteLine(res[1]);
-            Console.WriteLine(res[2]);
-            Console.WriteLine(res[3]);
-            Console.WriteLine(res[4]);
-            Console.WriteLine(res[5]);
+            //matlab.Execute(@"cd C:\MATLABScript\");
+            //matlab.Feval("moveRIM", 6, out object result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 400.0, 400.0, 400.0, 0.0, 0.0, 0.0);
+            //object[] res = result as object[];
+            //Console.WriteLine(res[0]);
+            //Console.WriteLine(res[1]);
+            //Console.WriteLine(res[2]);
+            //Console.WriteLine(res[3]);
+            //Console.WriteLine(res[4]);
+            //Console.WriteLine(res[5]);
         }
 
         private void ClearConsoleToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2095,8 +2100,9 @@ namespace R.I.M.UI_Shell
 
             try
             {
-                matlab.Execute(@"cd C:\Users\kalfusg\Desktop\MatLab_Kinematics_Updated_for_Actual_DH_Parameters");
-                matlab.Feval("moveRIM", 6, out object result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, x_pos, y_pos, z_pos, pitch, roll, yaw);
+                /*
+                //matlab.Execute(@"cd C:\Users\kalfusg\Desktop\MatLab_Kinematics_Updated_for_Actual_DH_Parameters");
+                //matlab.Feval("moveRIM", 6, out object result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, x_pos, y_pos, z_pos, pitch, roll, yaw);
                 object[] res = result as object[];
                 Console.WriteLine(res[0]);
                 Console.WriteLine(res[1]);
@@ -2113,14 +2119,14 @@ namespace R.I.M.UI_Shell
                     return false;
                 else
                     return true;
-                
+                */
             }
             catch (Exception e)
             {
                 MessageBox.Show("Error encountered:  " + e.Message + "\n");
                 return false;
             }
-            
+            return true;
         }
 
 
