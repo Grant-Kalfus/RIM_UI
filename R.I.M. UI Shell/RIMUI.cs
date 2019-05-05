@@ -96,13 +96,24 @@ namespace R.I.M.UI_Shell
         {
             public Queue<string>[] Motor_cmds;
             public Queue<string>[] Encoder_cmds;
+
             public Queue<string> Special_cmds;
+            public Queue<string> Timer_Starts;
+            public Queue<string> Timer_Stops;
+            
+            public string fpath;
 
             public RIM_PExec()
             {
                 Motor_cmds = new Queue<string>[7];
                 Encoder_cmds = new Queue<string>[7];
+
                 Special_cmds = new Queue<string>();
+                Timer_Starts = new Queue<string>();
+                Timer_Stops = new Queue<string>();
+
+                fpath = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+                fpath += "\\outfile.csv";
 
                 for (int i = 0; i < 7; i++)
                 {
@@ -113,10 +124,10 @@ namespace R.I.M.UI_Shell
                 {
                     Encoder_cmds[i] = new Queue<string>();
                 }
+
             }
 
         }
-
 
         //Stores hex paramters for the L6470 motor driver chip
         static class L6470_Params {
@@ -809,11 +820,17 @@ namespace R.I.M.UI_Shell
 
             //Keep track of what motors are give a commmand to execute
             bool[] cmd_written = new bool[7];
+            bool[] encoder_cmd_written = new bool[5];
 
             for (int i = 0; i < 7; i++)
                 cmd_written[i] = false;
 
+            for (int i = 0; i < 5; i++)
+                encoder_cmd_written[i] = false;
+
             bool special_cmd_written = false;
+            bool timer_start_cmd_written = false;
+            bool timer_stop_cmd_written = false;
 
             //Split the file by line
             string []split_info = finfo.Split('\n');
@@ -846,8 +863,90 @@ namespace R.I.M.UI_Shell
                     else
                         special_cmd_written = false;
 
+                    if (!timer_start_cmd_written)
+                        commands.Timer_Starts.Enqueue("PASS");
+                    else
+                        timer_start_cmd_written = false;
+
+                    if(!timer_stop_cmd_written)
+                        commands.Timer_Stops.Enqueue("PASS");
+                    else
+                        timer_stop_cmd_written = false;
+
                     line_num++;
                     continue;
+                }
+                else if(temp[0] == "FPATH")
+                {
+                    if (temp.Length < 2)
+                    {
+                        errlist.Enqueue("Error with line " + line_num.ToString() + ": Not enough parameters. Expected 2, given " + temp.Length.ToString());
+                        error = true;
+                        line_num++;
+                        continue;
+                    }
+
+                    if (Directory.Exists(temp[1]))
+                    {
+                        commands.fpath = temp[1];
+                        line_num++;
+                    }
+                    else
+                    {
+                        errlist.Enqueue("Error with line " + line_num.ToString() + ": Given directory " + temp[1] + " does not exist!");
+                        error = true;
+                        line_num++;
+                        continue;
+                    }
+
+                }
+                else if(temp[0] == "FNAME")
+                {
+                    if (temp.Length < 2)
+                    {
+                        errlist.Enqueue("Error with line " + line_num.ToString() + ": Not enough parameters. Expected 2, given " + temp.Length.ToString());
+                        error = true;
+                        line_num++;
+                        continue;
+                    }
+                    commands.fpath += "\\" + temp[1];
+                    line_num++;
+                }
+
+                else if (temp[0] == "TSTART")
+                {
+                    commands.Timer_Starts.Enqueue("TSTART" + line_num);
+                    timer_start_cmd_written = true;
+                    line_num++;
+                }
+                else if(temp[0] == "TSTOP")
+                {
+                    commands.Timer_Stops.Enqueue("TSTOP" + line_num);
+
+                    int count_start = 0,
+                         count_stop = 0;
+
+                    foreach (string s in commands.Timer_Starts.ToArray())
+                    {
+                        if (s.Substring(0, 4) == "TSTA")
+                            count_start++;
+                    }
+
+                    foreach (string s in commands.Timer_Stops.ToArray())
+                    {
+                        if (s.Substring(0, 4) == "TSTO")
+                            count_stop++;
+                    }
+
+                    if(count_start != count_stop)
+                    {
+                        errlist.Enqueue("Error encountered on line " + line_num.ToString() + ": number of timer starts and stops are not equal: " +
+                              "TSTART = "  + count_start + ", " +
+                              "TSTOP  = " + count_stop);
+                        error = true;
+                    }
+                    timer_stop_cmd_written = true;
+                    line_num++;
                 }
 
                 //Mode selecter
@@ -857,13 +956,12 @@ namespace R.I.M.UI_Shell
                     {
                         errlist.Enqueue("Error with line " + line_num.ToString() + ": Not enough parameters. Expected 2, given " + temp.Length.ToString());
                         error = true;
-                        continue;
                     }
                     if(temp[1] == "DEGREE" || temp[1] == "DEG")
                         deg_mode = true;
                     if (temp[1] == "STEP")
                         deg_mode = false;
-                    continue;
+                    line_num++;
                 }
 
                 else if(temp[0] == "SLEEP")
@@ -872,6 +970,7 @@ namespace R.I.M.UI_Shell
                     {
                         errlist.Enqueue("Error with line " + line_num.ToString() + ": Not enough parameters. Expected at least 2, given " + temp.Length.ToString());
                         error = true;
+                        line_num++;
                         continue;
                     }
 
@@ -879,10 +978,13 @@ namespace R.I.M.UI_Shell
                     {
                         errlist.Enqueue("Error with line " + line_num.ToString() + ": Invalid value entered: " + temp[1] + ".\nMake sure to enter a whole number\n");
                         error = true;
+                        line_num++;
                         continue;
                     }
                     else
                         commands.Special_cmds.Enqueue("S" + x.ToString());
+
+                    line_num++;
                 }
 
 
@@ -893,11 +995,11 @@ namespace R.I.M.UI_Shell
                     {
                         errlist.Enqueue("Error with line " + line_num.ToString() + ": Not enough parameters. Expected 4, given " + temp.Length.ToString());
                         error = true;
+                        line_num++;
                         continue;
                     }
 
 
-                    line_num++;
                     //Check for valid motor ID (bounds and user entry)
                     if (!byte.TryParse(temp[1], out byte x))
                     {
@@ -950,7 +1052,7 @@ namespace R.I.M.UI_Shell
 
                     }
 
-
+                    line_num++;
                     if (error)
                         continue;
 
@@ -970,6 +1072,23 @@ namespace R.I.M.UI_Shell
                 
 
             }
+
+            //Test that all queues have an equal number of commands
+            double all_counts = commands.Timer_Starts.Count;
+            all_counts += commands.Timer_Stops.Count;
+            all_counts += commands.Special_cmds.Count;
+            for (int i = 0; i < 7; i++)
+                all_counts += commands.Motor_cmds[i].Count;
+
+            //Divide by 10 total queues
+            all_counts /= 10;
+            if(all_counts % 1 != 0)
+            {
+                errlist.Enqueue("Error: Queue length mismatch. Make sure to use only one command type per -");
+                error = true;
+            }
+
+
             if (error)
             {
                 ProgExecFLoad_lbl.Text = "File load Failed";
@@ -985,6 +1104,8 @@ namespace R.I.M.UI_Shell
                     commands.Motor_cmds[i].Clear();
 
                 commands.Special_cmds.Clear();
+                commands.Timer_Starts.Clear();
+                commands.Timer_Starts.Clear();
             }
 
             return !error;
@@ -1037,7 +1158,6 @@ namespace R.I.M.UI_Shell
             //Since all the command queues are the same length, taking the length of any of them yields the maximum ammount of commands
             int total_cmds = commands.Motor_cmds[0].Count;
 
-            //I think that one bool is needef for this, but I won't touch it until I have access to the system again
             bool[] motor_running = new bool[7],
                       motor_idle = new bool[7];
 
@@ -1050,10 +1170,29 @@ namespace R.I.M.UI_Shell
             //Total number of commands to send is the ammount times  
             int sent_commands = 0;
 
+            //Open file to write 
+            StreamWriter outFile = new StreamWriter(commands.fpath);
+
+
+            outFile.WriteLine("-----------------------------------------");
+            outFile.WriteLine("RIM Programmed Execution Mode Output File");
+            outFile.WriteLine(DateTime.Now);
+            outFile.WriteLine("-----------------------------------------");
+            outFile.WriteLine("CommandType, LineEncountered, TimeElapsed(ms)");
+
+
+            Stopwatch RIM_Stopwatch = new Stopwatch();
+
+
             //Loops for the total ammount of commands
             for (int i = 0; i < total_cmds; i++)
             {
-                
+                temp = commands.Timer_Starts.Dequeue();
+                if(temp != "PASS")
+                {
+                    RIM_Stopwatch.Start();
+                }
+
                 //j represents the motor ids
                 //Loops though for each of the motors
                 for (int j = 0; j < 7; j++)
@@ -1126,6 +1265,16 @@ namespace R.I.M.UI_Shell
                     }
                 }
 
+                temp = commands.Timer_Stops.Dequeue();
+                if(temp != "PASS")
+                {
+                    RIM_Stopwatch.Stop();
+                    long time_taken = RIM_Stopwatch.ElapsedMilliseconds;
+                    int line_number = int.Parse(temp.Remove(0, 5));
+                    outFile.WriteLine(string.Format("TSTOP, {0}, {1}", line_number, time_taken));
+                    RIM_Stopwatch.Reset();
+                }
+
                 temp = commands.Special_cmds.Dequeue();
                 if (temp == "PASS")
                     temp = string.Empty;
@@ -1135,6 +1284,9 @@ namespace R.I.M.UI_Shell
                 }
             }
             //After precise execution mode has finished running, re-enable the UART data received event handler
+
+            outFile.Close();
+
             data_event_enabled = true;
 
             Stop_btn.Enabled = false;
