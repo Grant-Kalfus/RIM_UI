@@ -65,7 +65,8 @@ namespace R.I.M.UI_Shell
             public static readonly int[] M_Limit_Start = { 1316, 350, 876, 3737, 3493 };
             public static readonly int[] M_Limit_End = { 1275, 2130, 1465, 1296, 2784 };
 
-            public static readonly decimal E_to_D = 360M / 4096M;
+            public static readonly decimal E_to_D = 360M / 4095M;
+            internal static decimal D_to_E = 4095M / 360M;
 
             /*
             public const decimal M1_ratio = 8,
@@ -794,11 +795,92 @@ namespace R.I.M.UI_Shell
             return (ushort)Math.Round((Math.Abs(degrees) - RIM_MotorConstants.Motor_Offset[motor_id])/RIM_MotorConstants.Motor_Slopes[motor_id]); 
         }
 
+        int Loop_codes(int codes)
+        {
+            if(codes > 4095)
+            {
+                codes -= 4095;
+            } 
+            else if(codes < 0)
+            {
+                codes += 4095;
+            }
+
+            return codes;
+        }
+
+
+        void Validate_Degrees(int id, int curpos, ref Direction dir, ref decimal degrees)
+        {
+            //Convert to input degrees to encoder code
+            int encoder_code = (int)Math.Round(degrees * RIM_MotorConstants.D_to_E);
+            int bounds_start = RIM_MotorConstants.M_Limit_Start[id];
+            int bounds_end = RIM_MotorConstants.M_Limit_End[id];
+            int bounds_dist = Loop_codes(bounds_end - bounds_start);
+
+            bool in_bounds = false;
+
+            
+
+            if(bounds_end - bounds_start < 0)
+                in_bounds = (encoder_code < (bounds_start + bounds_dist)) && (Loop_codes(bounds_start + bounds_dist) < encoder_code);
+            else
+                in_bounds = (bounds_start < encoder_code) && (encoder_code < bounds_end);
+
+            //If we land in a zone that we cannot reach,
+            if (!in_bounds)
+            {
+
+                //Place encoder_code at the value that is the closest.
+                int compare = Loop_codes(bounds_end - bounds_start) / 2;
+
+                if (Loop_codes(encoder_code + compare) > bounds_end)
+                {
+                    encoder_code = bounds_end;
+                }
+                else
+                {
+                    encoder_code = bounds_start;
+                }
+            }
+            //If the shortest path is over the forbidden zone
+            else
+            {
+                //Get travel distance
+                bool shortest_forbidden = false;
+
+                //Test to see if the shortest path to the point would lead over the forbidden zone
+                for (int i = 0; i < bounds_dist; i++)
+                {
+                    if(Loop_codes(encoder_code + i) == bounds_end || Loop_codes(encoder_code + i) == bounds_start)
+                    {
+                        shortest_forbidden = true;
+                        break;
+                    }
+                }
+
+                if (shortest_forbidden)
+                {
+                    //Switch the direction
+                    if (dir == 0)
+                        dir = Direction.COUNTERCLOCKWISE;
+                    else
+                        dir = Direction.CLOCKWISE;
+
+                    encoder_code = Loop_codes(curpos - encoder_code);
+
+                    degrees = encoder_code * RIM_MotorConstants.E_to_D;
+                }
+            }
+        }
+
+
         //Programmed Execution Mode support
         //Parses an input files and converts it to commands that can be sent to RIM
         //Commands are stored in queues corrisponding to the motor and encoder
         bool ProgExec_parse_and_load(ref RIM_PExec commands, string finfo)
         {
+
             //Start at line 1
             int line_num = 1;
 
@@ -806,6 +888,13 @@ namespace R.I.M.UI_Shell
             Direction dir = 0;
             ushort steps = 0;
             decimal deg_steps = 0;
+
+            //Pull all current encoder values
+            //TODO
+            //Set of array of simulated motor positions
+            int[] motor_positions = new int[5];
+            for (int i = 0; i < 5; i++)
+                motor_positions[i] = 0;
 
             byte[] packet = new byte[3];
 
@@ -831,6 +920,8 @@ namespace R.I.M.UI_Shell
             bool special_cmd_written = false;
             bool timer_start_cmd_written = false;
             bool timer_stop_cmd_written = false;
+
+
 
             //Split the file by line
             string []split_info = finfo.Split('\n');
@@ -876,6 +967,8 @@ namespace R.I.M.UI_Shell
                     line_num++;
                     continue;
                 }
+
+                //File decider commands
                 else if(temp[0] == "FPATH")
                 {
                     if (temp.Length < 2)
@@ -913,6 +1006,7 @@ namespace R.I.M.UI_Shell
                     line_num++;
                 }
 
+                //Timer command group
                 else if (temp[0] == "TSTART")
                 {
                     commands.Timer_Starts.Enqueue("TSTART" + line_num);
@@ -964,6 +1058,7 @@ namespace R.I.M.UI_Shell
                     line_num++;
                 }
 
+                //Command to sleep
                 else if(temp[0] == "SLEEP")
                 {
                     if(temp.Length < 2)
@@ -1057,7 +1152,18 @@ namespace R.I.M.UI_Shell
                         continue;
 
                     if (deg_mode)
+                    {
+                        Validate_Degrees(id, motor_positions[id], ref dir, ref deg_steps);
+                        motor_positions[id] = (int)Math.Round(deg_steps * RIM_MotorConstants.D_to_E);
                         steps = Degrees_to_steps(id, deg_steps);
+                    }
+
+
+                    //INPUT VALIDATION STEP
+
+                    //
+
+
 
                     Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, id, steps, ref packet, 3);
 
