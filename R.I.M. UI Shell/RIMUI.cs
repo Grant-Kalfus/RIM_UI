@@ -2407,7 +2407,7 @@ namespace R.I.M.UI_Shell
                 {
                     result = Degrees_to_steps(i, (decimal)DH_Stuff[i]);
 
-                    sign = curpos[i] < 0.0 ? "-" : "";
+                    sign = DH_Stuff[i] < 0.0 ? "-" : "";
 
                     Console.Write("Motor ID " + i.ToString() + " needs to step: " + sign + result.ToString() + "\n");
                 }
