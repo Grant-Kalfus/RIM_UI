@@ -60,6 +60,7 @@
             this.CurMode_lbl = new System.Windows.Forms.ToolStripLabel();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.Common_grp = new System.Windows.Forms.GroupBox();
+            this.RstEncoder_btn = new System.Windows.Forms.Button();
             this.Stop_btn = new System.Windows.Forms.Button();
             this.Start_btn = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -98,6 +99,18 @@
             this.MotorRunning_lbl = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.TraverseLineMode_grp = new System.Windows.Forms.GroupBox();
+            this.Yaw_lbl = new System.Windows.Forms.Label();
+            this.Roll_lbl = new System.Windows.Forms.Label();
+            this.Pitch_lbl = new System.Windows.Forms.Label();
+            this.Zpos_lbl = new System.Windows.Forms.Label();
+            this.Ypos_lbl = new System.Windows.Forms.Label();
+            this.Xpos_lbl = new System.Windows.Forms.Label();
+            this.Yaw_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Roll_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Pitch_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Z_entry = new System.Windows.Forms.MaskedTextBox();
+            this.Y_entry = new System.Windows.Forms.MaskedTextBox();
+            this.X_entry = new System.Windows.Forms.MaskedTextBox();
             this.Traverse_calc = new System.Windows.Forms.Button();
             this.TravModeError_lbl = new System.Windows.Forms.Label();
             this.TL_curPos_lbl = new System.Windows.Forms.TextBox();
@@ -128,19 +141,6 @@
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
             this.Encoder_FetchTimer = new System.Windows.Forms.Timer(this.components);
             this.AUEncoder_toggle = new System.Windows.Forms.CheckBox();
-            this.RstEncoder_btn = new System.Windows.Forms.Button();
-            this.X_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Y_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Z_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Pitch_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Roll_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Yaw_entry = new System.Windows.Forms.MaskedTextBox();
-            this.Xpos_lbl = new System.Windows.Forms.Label();
-            this.Ypos_lbl = new System.Windows.Forms.Label();
-            this.Zpos_lbl = new System.Windows.Forms.Label();
-            this.Pitch_lbl = new System.Windows.Forms.Label();
-            this.Roll_lbl = new System.Windows.Forms.Label();
-            this.Yaw_lbl = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -410,6 +410,17 @@
             this.Common_grp.TabIndex = 1;
             this.Common_grp.TabStop = false;
             this.Common_grp.Text = "Common Controls";
+            // 
+            // RstEncoder_btn
+            // 
+            this.RstEncoder_btn.Location = new System.Drawing.Point(4, 90);
+            this.RstEncoder_btn.Margin = new System.Windows.Forms.Padding(2);
+            this.RstEncoder_btn.Name = "RstEncoder_btn";
+            this.RstEncoder_btn.Size = new System.Drawing.Size(148, 19);
+            this.RstEncoder_btn.TabIndex = 6;
+            this.RstEncoder_btn.Text = "Reset Encoder Labels";
+            this.RstEncoder_btn.UseVisualStyleBackColor = true;
+            this.RstEncoder_btn.Click += new System.EventHandler(this.RstEncoder_btn_Click);
             // 
             // Stop_btn
             // 
@@ -975,6 +986,132 @@
             this.TraverseLineMode_grp.TabStop = false;
             this.TraverseLineMode_grp.Text = "Traverse Line Mode";
             // 
+            // Yaw_lbl
+            // 
+            this.Yaw_lbl.AutoSize = true;
+            this.Yaw_lbl.Location = new System.Drawing.Point(87, 120);
+            this.Yaw_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Yaw_lbl.Name = "Yaw_lbl";
+            this.Yaw_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Yaw_lbl.TabIndex = 36;
+            this.Yaw_lbl.Text = "Y:";
+            // 
+            // Roll_lbl
+            // 
+            this.Roll_lbl.AutoSize = true;
+            this.Roll_lbl.Location = new System.Drawing.Point(86, 96);
+            this.Roll_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Roll_lbl.Name = "Roll_lbl";
+            this.Roll_lbl.Size = new System.Drawing.Size(18, 13);
+            this.Roll_lbl.TabIndex = 35;
+            this.Roll_lbl.Text = "R:";
+            // 
+            // Pitch_lbl
+            // 
+            this.Pitch_lbl.AutoSize = true;
+            this.Pitch_lbl.Location = new System.Drawing.Point(87, 72);
+            this.Pitch_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Pitch_lbl.Name = "Pitch_lbl";
+            this.Pitch_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Pitch_lbl.TabIndex = 34;
+            this.Pitch_lbl.Text = "P:";
+            // 
+            // Zpos_lbl
+            // 
+            this.Zpos_lbl.AutoSize = true;
+            this.Zpos_lbl.Location = new System.Drawing.Point(4, 120);
+            this.Zpos_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Zpos_lbl.Name = "Zpos_lbl";
+            this.Zpos_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Zpos_lbl.TabIndex = 33;
+            this.Zpos_lbl.Text = "Z:";
+            // 
+            // Ypos_lbl
+            // 
+            this.Ypos_lbl.AutoSize = true;
+            this.Ypos_lbl.Location = new System.Drawing.Point(4, 96);
+            this.Ypos_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Ypos_lbl.Name = "Ypos_lbl";
+            this.Ypos_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Ypos_lbl.TabIndex = 32;
+            this.Ypos_lbl.Text = "Y:";
+            // 
+            // Xpos_lbl
+            // 
+            this.Xpos_lbl.AutoSize = true;
+            this.Xpos_lbl.Location = new System.Drawing.Point(4, 72);
+            this.Xpos_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Xpos_lbl.Name = "Xpos_lbl";
+            this.Xpos_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Xpos_lbl.TabIndex = 31;
+            this.Xpos_lbl.Text = "X:";
+            // 
+            // Yaw_entry
+            // 
+            this.Yaw_entry.Location = new System.Drawing.Point(107, 117);
+            this.Yaw_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.Yaw_entry.Mask = "000°";
+            this.Yaw_entry.Name = "Yaw_entry";
+            this.Yaw_entry.PromptChar = ' ';
+            this.Yaw_entry.Size = new System.Drawing.Size(40, 20);
+            this.Yaw_entry.TabIndex = 30;
+            this.Yaw_entry.ValidatingType = typeof(int);
+            // 
+            // Roll_entry
+            // 
+            this.Roll_entry.Location = new System.Drawing.Point(107, 93);
+            this.Roll_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.Roll_entry.Mask = "000°";
+            this.Roll_entry.Name = "Roll_entry";
+            this.Roll_entry.PromptChar = ' ';
+            this.Roll_entry.Size = new System.Drawing.Size(40, 20);
+            this.Roll_entry.TabIndex = 29;
+            this.Roll_entry.ValidatingType = typeof(int);
+            // 
+            // Pitch_entry
+            // 
+            this.Pitch_entry.Location = new System.Drawing.Point(107, 69);
+            this.Pitch_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.Pitch_entry.Mask = "000°";
+            this.Pitch_entry.Name = "Pitch_entry";
+            this.Pitch_entry.PromptChar = ' ';
+            this.Pitch_entry.Size = new System.Drawing.Size(40, 20);
+            this.Pitch_entry.TabIndex = 28;
+            this.Pitch_entry.ValidatingType = typeof(int);
+            // 
+            // Z_entry
+            // 
+            this.Z_entry.Location = new System.Drawing.Point(25, 117);
+            this.Z_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.Z_entry.Mask = "#0.000";
+            this.Z_entry.Name = "Z_entry";
+            this.Z_entry.PromptChar = ' ';
+            this.Z_entry.Size = new System.Drawing.Size(40, 20);
+            this.Z_entry.TabIndex = 27;
+            this.Z_entry.ValidatingType = typeof(int);
+            // 
+            // Y_entry
+            // 
+            this.Y_entry.Location = new System.Drawing.Point(25, 93);
+            this.Y_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.Y_entry.Mask = "#0.000";
+            this.Y_entry.Name = "Y_entry";
+            this.Y_entry.PromptChar = ' ';
+            this.Y_entry.Size = new System.Drawing.Size(40, 20);
+            this.Y_entry.TabIndex = 26;
+            this.Y_entry.ValidatingType = typeof(int);
+            // 
+            // X_entry
+            // 
+            this.X_entry.Location = new System.Drawing.Point(25, 69);
+            this.X_entry.Margin = new System.Windows.Forms.Padding(2);
+            this.X_entry.Mask = "#0.000";
+            this.X_entry.Name = "X_entry";
+            this.X_entry.PromptChar = ' ';
+            this.X_entry.Size = new System.Drawing.Size(40, 20);
+            this.X_entry.TabIndex = 25;
+            this.X_entry.ValidatingType = typeof(int);
+            // 
             // Traverse_calc
             // 
             this.Traverse_calc.Location = new System.Drawing.Point(5, 146);
@@ -998,12 +1135,12 @@
             // 
             // TL_curPos_lbl
             // 
-            this.TL_curPos_lbl.Enabled = false;
             this.TL_curPos_lbl.Location = new System.Drawing.Point(7, 27);
             this.TL_curPos_lbl.Margin = new System.Windows.Forms.Padding(2);
             this.TL_curPos_lbl.Name = "TL_curPos_lbl";
             this.TL_curPos_lbl.Size = new System.Drawing.Size(146, 20);
             this.TL_curPos_lbl.TabIndex = 15;
+            this.TL_curPos_lbl.Click += new System.EventHandler(this.TL_curPos_lbl_Click);
             // 
             // MoveToPos_lbl
             // 
@@ -1291,143 +1428,6 @@
             this.AUEncoder_toggle.Text = "Auto Update Encoders";
             this.AUEncoder_toggle.UseVisualStyleBackColor = true;
             this.AUEncoder_toggle.Click += new System.EventHandler(this.AUEncoder_toggle_Click);
-            // 
-            // RstEncoder_btn
-            // 
-            this.RstEncoder_btn.Location = new System.Drawing.Point(4, 90);
-            this.RstEncoder_btn.Margin = new System.Windows.Forms.Padding(2);
-            this.RstEncoder_btn.Name = "RstEncoder_btn";
-            this.RstEncoder_btn.Size = new System.Drawing.Size(148, 19);
-            this.RstEncoder_btn.TabIndex = 6;
-            this.RstEncoder_btn.Text = "Reset Encoder Labels";
-            this.RstEncoder_btn.UseVisualStyleBackColor = true;
-            this.RstEncoder_btn.Click += new System.EventHandler(this.RstEncoder_btn_Click);
-            // 
-            // X_entry
-            // 
-            this.X_entry.Location = new System.Drawing.Point(25, 69);
-            this.X_entry.Margin = new System.Windows.Forms.Padding(2);
-            this.X_entry.Mask = "#0.000";
-            this.X_entry.Name = "X_entry";
-            this.X_entry.PromptChar = ' ';
-            this.X_entry.Size = new System.Drawing.Size(40, 20);
-            this.X_entry.TabIndex = 25;
-            this.X_entry.ValidatingType = typeof(int);
-            // 
-            // Y_entry
-            // 
-            this.Y_entry.Location = new System.Drawing.Point(25, 93);
-            this.Y_entry.Margin = new System.Windows.Forms.Padding(2);
-            this.Y_entry.Mask = "#0.000";
-            this.Y_entry.Name = "Y_entry";
-            this.Y_entry.PromptChar = ' ';
-            this.Y_entry.Size = new System.Drawing.Size(40, 20);
-            this.Y_entry.TabIndex = 26;
-            this.Y_entry.ValidatingType = typeof(int);
-            // 
-            // Z_entry
-            // 
-            this.Z_entry.Location = new System.Drawing.Point(25, 117);
-            this.Z_entry.Margin = new System.Windows.Forms.Padding(2);
-            this.Z_entry.Mask = "#0.000";
-            this.Z_entry.Name = "Z_entry";
-            this.Z_entry.PromptChar = ' ';
-            this.Z_entry.Size = new System.Drawing.Size(40, 20);
-            this.Z_entry.TabIndex = 27;
-            this.Z_entry.ValidatingType = typeof(int);
-            // 
-            // Pitch_entry
-            // 
-            this.Pitch_entry.Location = new System.Drawing.Point(107, 69);
-            this.Pitch_entry.Margin = new System.Windows.Forms.Padding(2);
-            this.Pitch_entry.Mask = "000°";
-            this.Pitch_entry.Name = "Pitch_entry";
-            this.Pitch_entry.PromptChar = ' ';
-            this.Pitch_entry.Size = new System.Drawing.Size(40, 20);
-            this.Pitch_entry.TabIndex = 28;
-            this.Pitch_entry.ValidatingType = typeof(int);
-            // 
-            // Roll_entry
-            // 
-            this.Roll_entry.Location = new System.Drawing.Point(107, 93);
-            this.Roll_entry.Margin = new System.Windows.Forms.Padding(2);
-            this.Roll_entry.Mask = "000°";
-            this.Roll_entry.Name = "Roll_entry";
-            this.Roll_entry.PromptChar = ' ';
-            this.Roll_entry.Size = new System.Drawing.Size(40, 20);
-            this.Roll_entry.TabIndex = 29;
-            this.Roll_entry.ValidatingType = typeof(int);
-            // 
-            // Yaw_entry
-            // 
-            this.Yaw_entry.Location = new System.Drawing.Point(107, 117);
-            this.Yaw_entry.Margin = new System.Windows.Forms.Padding(2);
-            this.Yaw_entry.Mask = "000°";
-            this.Yaw_entry.Name = "Yaw_entry";
-            this.Yaw_entry.PromptChar = ' ';
-            this.Yaw_entry.Size = new System.Drawing.Size(40, 20);
-            this.Yaw_entry.TabIndex = 30;
-            this.Yaw_entry.ValidatingType = typeof(int);
-            // 
-            // Xpos_lbl
-            // 
-            this.Xpos_lbl.AutoSize = true;
-            this.Xpos_lbl.Location = new System.Drawing.Point(4, 72);
-            this.Xpos_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Xpos_lbl.Name = "Xpos_lbl";
-            this.Xpos_lbl.Size = new System.Drawing.Size(17, 13);
-            this.Xpos_lbl.TabIndex = 31;
-            this.Xpos_lbl.Text = "X:";
-            // 
-            // Ypos_lbl
-            // 
-            this.Ypos_lbl.AutoSize = true;
-            this.Ypos_lbl.Location = new System.Drawing.Point(4, 96);
-            this.Ypos_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Ypos_lbl.Name = "Ypos_lbl";
-            this.Ypos_lbl.Size = new System.Drawing.Size(17, 13);
-            this.Ypos_lbl.TabIndex = 32;
-            this.Ypos_lbl.Text = "Y:";
-            // 
-            // Zpos_lbl
-            // 
-            this.Zpos_lbl.AutoSize = true;
-            this.Zpos_lbl.Location = new System.Drawing.Point(4, 120);
-            this.Zpos_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Zpos_lbl.Name = "Zpos_lbl";
-            this.Zpos_lbl.Size = new System.Drawing.Size(17, 13);
-            this.Zpos_lbl.TabIndex = 33;
-            this.Zpos_lbl.Text = "Z:";
-            // 
-            // Pitch_lbl
-            // 
-            this.Pitch_lbl.AutoSize = true;
-            this.Pitch_lbl.Location = new System.Drawing.Point(87, 72);
-            this.Pitch_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Pitch_lbl.Name = "Pitch_lbl";
-            this.Pitch_lbl.Size = new System.Drawing.Size(17, 13);
-            this.Pitch_lbl.TabIndex = 34;
-            this.Pitch_lbl.Text = "P:";
-            // 
-            // Roll_lbl
-            // 
-            this.Roll_lbl.AutoSize = true;
-            this.Roll_lbl.Location = new System.Drawing.Point(86, 96);
-            this.Roll_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Roll_lbl.Name = "Roll_lbl";
-            this.Roll_lbl.Size = new System.Drawing.Size(18, 13);
-            this.Roll_lbl.TabIndex = 35;
-            this.Roll_lbl.Text = "R:";
-            // 
-            // Yaw_lbl
-            // 
-            this.Yaw_lbl.AutoSize = true;
-            this.Yaw_lbl.Location = new System.Drawing.Point(87, 120);
-            this.Yaw_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.Yaw_lbl.Name = "Yaw_lbl";
-            this.Yaw_lbl.Size = new System.Drawing.Size(17, 13);
-            this.Yaw_lbl.TabIndex = 36;
-            this.Yaw_lbl.Text = "Y:";
             // 
             // Main_wnd
             // 

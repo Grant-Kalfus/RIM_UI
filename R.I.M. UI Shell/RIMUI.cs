@@ -65,6 +65,8 @@ namespace R.I.M.UI_Shell
             public static readonly int[] M_Limit_Start = { 1316, 350, 876, 3737, 3493 };
             public static readonly int[] M_Limit_End = { 1275, 2130, 1465, 1296, 2784 };
 
+            public static readonly int[] M_Zeros = {3556, 2108, 629, 40, 1052};
+
             public static readonly decimal E_to_D = 360M / 4095M;
             internal static decimal D_to_E = 4095M / 360M;
 
@@ -364,7 +366,7 @@ namespace R.I.M.UI_Shell
         string file_content = string.Empty;
 
         //Matlab console instance for DH parameters
-        
+        MLApp.MLApp matlab = new MLApp.MLApp();
 
         //Toggle for telling system whether or not to update the UI on the encoder position
         bool Encoder_Update_1 = false,
@@ -379,7 +381,7 @@ namespace R.I.M.UI_Shell
 
         volatile public bool[] Motor_Active = new bool[CONNECTED_MOTORS];
 
-        volatile public int[] Encoder_Values = new int[CONNECTED_ENCODERS];
+        volatile public decimal[] Encoder_Values = new decimal[CONNECTED_ENCODERS];
 
         //Boolean that enables the data received event handler for the UART_COM object
         bool data_event_enabled = true;
@@ -413,7 +415,7 @@ namespace R.I.M.UI_Shell
             }
         };
 
-        //MLApp.MLApp matlab = new MLApp.MLApp();
+        
 
         private void Main_wnd_Load(object sender, EventArgs e)
         {
@@ -433,7 +435,7 @@ namespace R.I.M.UI_Shell
             //Change UART encoding to ASCII-Extended for charicter code transfers > 127
             UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
 
-            //matlab.Visible = 0;
+            matlab.Visible = 0;
             FileCheck_btn.Enabled = false;
             FileReload_btn.Enabled = false;
         }
@@ -589,8 +591,6 @@ namespace R.I.M.UI_Shell
         }
 
 
-
-
         //Init window
         public Main_wnd()
         {
@@ -615,8 +615,6 @@ namespace R.I.M.UI_Shell
             }
             return r;
         }
-
-
 
 
         //Debug mode output when transfering packets
@@ -690,7 +688,9 @@ namespace R.I.M.UI_Shell
             if (Int32.TryParse(Stepper1_entry.Text.Replace('°', ' '), out int x))
             {
                 if (x < 0)
+                {
                     commands.motor_dirs[0] = Direction.COUNTERCLOCKWISE;
+                }
 
                 if (Math.Abs(x) > max_steps)
                     commands.motors[0] = max_steps;
@@ -701,6 +701,8 @@ namespace R.I.M.UI_Shell
             if (Int32.TryParse(Stepper2_entry.Text.Replace('°', ' '), out x))
             {
                 if (x < 0)
+                    commands.motor_dirs[1] = Direction.CLOCKWISE;
+                else
                     commands.motor_dirs[1] = Direction.COUNTERCLOCKWISE;
 
                 if (Math.Abs(x) > max_steps)
@@ -712,7 +714,10 @@ namespace R.I.M.UI_Shell
             if (Int32.TryParse(Stepper3_entry.Text.Replace('°', ' '), out x))
             {
                 if (x < 0)
+                    commands.motor_dirs[2] = Direction.CLOCKWISE;
+                else
                     commands.motor_dirs[2] = Direction.COUNTERCLOCKWISE;
+
                 if (Math.Abs(x) > max_steps)
                     commands.motors[2] = max_steps;
                 else
@@ -722,7 +727,10 @@ namespace R.I.M.UI_Shell
             if (Int32.TryParse(Stepper4_entry.Text.Replace('°', ' '), out x))
             {
                 if (x < 0)
+                    commands.motor_dirs[3] = Direction.CLOCKWISE;
+                else
                     commands.motor_dirs[3] = Direction.COUNTERCLOCKWISE;
+
                 if (Math.Abs(x) > max_steps)
                     commands.motors[3] = max_steps;
                 else
@@ -1153,8 +1161,8 @@ namespace R.I.M.UI_Shell
 
                     if (deg_mode)
                     {
-                        Validate_Degrees(id, motor_positions[id], ref dir, ref deg_steps);
-                        motor_positions[id] = (int)Math.Round(deg_steps * RIM_MotorConstants.D_to_E);
+                        //Validate_Degrees(id, motor_positions[id], ref dir, ref deg_steps);
+                        //motor_positions[id] = (int)Math.Round(deg_steps * RIM_MotorConstants.D_to_E);
                         steps = Degrees_to_steps(id, deg_steps);
                     }
 
@@ -1576,7 +1584,6 @@ namespace R.I.M.UI_Shell
 
         }
 
-
         private void QuitToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
@@ -1876,7 +1883,6 @@ namespace R.I.M.UI_Shell
             }
         }
 
-        volatile bool Final_Encoder_Set = false;
 
         //Event handler for device data received
         private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
@@ -2031,8 +2037,6 @@ namespace R.I.M.UI_Shell
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_ENCODER_INFO)
             {
-                Final_Encoder_Set = false;
-
                 rx[0] = (byte)UART_COM.ReadChar();
                 rx[1] = (byte)UART_COM.ReadChar();
                 response |= rx[0];
@@ -2067,17 +2071,13 @@ namespace R.I.M.UI_Shell
                 Console.WriteLine("Encoder id " + info.ToString() + " is currently at position: " + response.ToString());
 #endif
 
-                if (m_id == 4)
-                {
-                    Final_Encoder_Set = true;
-                }
-
                 Set_Encoder_label(m_id, response.ToString());
-
             }
 
+            
+
             #if (DEBUG_MODE)
-                Console.WriteLine("---------------------");
+            Console.WriteLine("---------------------");
             #endif
 
         }
@@ -2086,19 +2086,12 @@ namespace R.I.M.UI_Shell
         private void Main_wnd_FormClosed(object sender, FormClosedEventArgs e)
         {
             UART_COM.Close();
+            matlab.Quit();
         }
 
         private void MATLABScriptRunToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //matlab.Execute(@"cd C:\MATLABScript\");
-            //matlab.Feval("moveRIM", 6, out object result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 400.0, 400.0, 400.0, 0.0, 0.0, 0.0);
-            //object[] res = result as object[];
-            //Console.WriteLine(res[0]);
-            //Console.WriteLine(res[1]);
-            //Console.WriteLine(res[2]);
-            //Console.WriteLine(res[3]);
-            //Console.WriteLine(res[4]);
-            //Console.WriteLine(res[5]);
+            Get_All_Encoder_Values();
         }
 
         private void ClearConsoleToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2157,13 +2150,11 @@ namespace R.I.M.UI_Shell
             }
         }
 
-
         private void IndStatusCheckToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Ind_Label_Ctrl status = new Ind_Label_Ctrl();
             //status.i status[0];
         }
-
 
         private void StepMode_btn_Click(object sender, EventArgs e)
         {
@@ -2293,7 +2284,6 @@ namespace R.I.M.UI_Shell
         }
 
 
-
         private bool Do_DH_Conversion(ref double[] DH_Convert, double[] Cur_position)
         {
             if (DH_Convert.Length != 6 || Cur_position.Length != 6)
@@ -2355,12 +2345,19 @@ namespace R.I.M.UI_Shell
                 yaw = 0;
 
 
+            
 
+        
             try
             {
-                /*
-                //matlab.Execute(@"cd C:\Users\kalfusg\Desktop\MatLab_Kinematics_Updated_for_Actual_DH_Parameters");
-                //matlab.Feval("moveRIM", 6, out object result, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, x_pos, y_pos, z_pos, pitch, roll, yaw);
+
+                matlab.Execute(@"cd C:\MATLABScript\");
+                matlab.Feval("moveRIM", 6, out object result, Cur_position[0],
+                                                              Cur_position[1],
+                                                              Cur_position[2],
+                                                              Cur_position[3],
+                                                              Cur_position[4], 0.0, x_pos, y_pos, z_pos, pitch, roll, yaw);
+
                 object[] res = result as object[];
                 Console.WriteLine(res[0]);
                 Console.WriteLine(res[1]);
@@ -2377,16 +2374,13 @@ namespace R.I.M.UI_Shell
                     return false;
                 else
                     return true;
-                */
             }
             catch (Exception e)
             {
                 MessageBox.Show("Error encountered:  " + e.Message + "\n");
                 return false;
             }
-            return true;
         }
-
 
 
         private void Traverse_calc_Click(object sender, EventArgs e)
@@ -2396,15 +2390,24 @@ namespace R.I.M.UI_Shell
             ushort result = 0;
             string sign = "";
 
+            Get_All_Encoder_Values(true);
+            for (int i = 0; i < CONNECTED_ENCODERS; i++)
+            {
+                curpos[i] = (double)Encoder_Values[i];
+            }
+
+            curpos[1] *= -1;
+            curpos[2] *= -1;
+            curpos[3] *= -1;
 
             //If the DH conversion was successfull 
-            if(Do_DH_Conversion(ref DH_Stuff, curpos))
+            if (Do_DH_Conversion(ref DH_Stuff, curpos))
             {
                 for (uint i = 0; i < 6; i++)
                 {
-                    result = Degrees_to_steps(i, (decimal)Math.Abs(DH_Stuff[i]));
+                    result = Degrees_to_steps(i, (decimal)DH_Stuff[i]);
 
-                    sign = DH_Stuff[i] < 0.0 ? "-" : "";
+                    sign = curpos[i] < 0.0 ? "-" : "";
 
                     Console.Write("Motor ID " + i.ToString() + " needs to step: " + sign + result.ToString() + "\n");
                 }
@@ -2426,6 +2429,18 @@ namespace R.I.M.UI_Shell
             //Check encoder 1
             //Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
             //UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+        }
+
+        private void TL_curPos_lbl_Click(object sender, EventArgs e)
+        {
+            Get_All_Encoder_Values(true);
+            int[] encoder_deg = new int[CONNECTED_ENCODERS];
+            for (int i = 0; i < CONNECTED_ENCODERS; i++)
+            {
+                encoder_deg[i] = (int)Math.Round(Encoder_Values[i]);
+            }
+
+            TL_curPos_lbl.Text = string.Format("({0}, {1}, {2}, {3}, {4})", encoder_deg[0], -1 * encoder_deg[1], -1 * encoder_deg[2], -1 * encoder_deg[3], encoder_deg[4]);
         }
 
         private void ResetDevicesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2455,33 +2470,101 @@ namespace R.I.M.UI_Shell
             //Encoder_Update_1 = !Encoder_Update_1;
         }
 
-        private void Get_All_Encoder_Values(bool wait = true)
-        {
 
+        private ushort Get_Single_Encoder_nonasync()
+        {
+            int msg;
+            byte opcode = 0,
+                   info = 0;
+            byte[] rx = new byte[2];
+            ushort response = 0;
+
+            msg = UART_COM.ReadChar();
+            opcode = (byte)(msg & 0xF0);
+            info = (byte)(msg & 0x0F);
+
+            rx[0] = (byte)UART_COM.ReadChar();
+            rx[1] = (byte)UART_COM.ReadChar();
+            response |= rx[0];
+            response |= (ushort)(rx[1] << 8);
+
+            Console.WriteLine("Encoder id " + info.ToString() + " is currently at position: " + response.ToString());
+
+            return response;
+        }
+
+
+        private bool Get_All_Encoder_Values(bool use_neg = false, bool degrees = true)
+        {
+            data_event_enabled = false;
+            if (!TryOpenCom())
+                return false;
+
+
+            bool r = true;
 
             byte[] packet = new byte[3];
             Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 0, 0, ref packet, 3);
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+            if((Encoder_Values[0] = Get_Single_Encoder_nonasync()) == 0xFFFF)
+            {
+                r = false;
+            }
 
             Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 1, 0, ref packet, 3);
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+            if ((Encoder_Values[1] = Get_Single_Encoder_nonasync()) == 0xFFFF)
+            {
+                r = false;
+            }
 
             Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 2, 0, ref packet, 3);
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+            if ((Encoder_Values[2] = Get_Single_Encoder_nonasync()) == 0xFFFF)
+            {
+                r = false;
+            }
+
 
             Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 3, 0, ref packet, 3);
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+            if ((Encoder_Values[3] = Get_Single_Encoder_nonasync()) == 0xFFFF)
+            {
+                r = false;
+            }
 
             Format_packet(PSoC_OpCodes.RIM_OP_ENCODER_INFO, 0, 4, 0, ref packet, 3);
             UART_COM.Write(Byte_array_to_literal_string(packet, 3));
-
-            if (wait)
+            if ((Encoder_Values[4] = Get_Single_Encoder_nonasync()) == 0xFFFF)
             {
-                while (!Final_Encoder_Set); 
+                r = false;
             }
 
-        }
+            if (degrees)
+            {
+                for (int i = 0; i < CONNECTED_ENCODERS; i++)
+                { 
+                    Encoder_Values[i] = (Encoder_Values[i] - RIM_MotorConstants.M_Zeros[i]) * RIM_MotorConstants.E_to_D;
+                    if (Encoder_Values[i] < 0)
+                        Encoder_Values[i] += 360;
+                    else if (Encoder_Values[i] > 360)
+                        Encoder_Values[i] -= 360;
 
+                    if(use_neg)
+                    {
+                        if (Encoder_Values[i] > 180)
+                        {
+                            Encoder_Values[i] -= 360;
+                        }
+                    }
+                }
+                
+            }
+
+            data_event_enabled = true;
+
+            return r;
+        }
 
 
         private void Encoder_FetchTimer_Tick(object sender, EventArgs e)
