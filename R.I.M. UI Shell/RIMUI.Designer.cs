@@ -519,28 +519,26 @@
             this.label18.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label18.AutoSize = true;
             this.label18.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label18.Enabled = false;
             this.label18.ForeColor = System.Drawing.Color.Black;
-            this.label18.Location = new System.Drawing.Point(401, 30);
+            this.label18.Location = new System.Drawing.Point(397, 30);
             this.label18.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(10, 13);
+            this.label18.Size = new System.Drawing.Size(17, 13);
             this.label18.TabIndex = 30;
-            this.label18.Text = "-";
+            this.label18.Text = "0º";
             // 
             // label17
             // 
             this.label17.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label17.AutoSize = true;
             this.label17.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label17.Enabled = false;
             this.label17.ForeColor = System.Drawing.Color.Black;
-            this.label17.Location = new System.Drawing.Point(346, 30);
+            this.label17.Location = new System.Drawing.Point(343, 30);
             this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(10, 13);
+            this.label17.Size = new System.Drawing.Size(17, 13);
             this.label17.TabIndex = 29;
-            this.label17.Text = "-";
+            this.label17.Text = "0º";
             // 
             // Encoder5Val_lbl
             // 
@@ -828,7 +826,6 @@
             this.label9.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label9.AutoSize = true;
             this.label9.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label9.Enabled = false;
             this.label9.ForeColor = System.Drawing.Color.Black;
             this.label9.Location = new System.Drawing.Point(388, 4);
             this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -842,7 +839,6 @@
             this.label8.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label8.AutoSize = true;
             this.label8.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label8.Enabled = false;
             this.label8.ForeColor = System.Drawing.Color.Black;
             this.label8.Location = new System.Drawing.Point(333, 4);
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);

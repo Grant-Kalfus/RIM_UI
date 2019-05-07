@@ -65,7 +65,7 @@ namespace R.I.M.UI_Shell
             public static readonly int[] M_Limit_Start = { 1316, 350, 876, 3737, 3493 };
             public static readonly int[] M_Limit_End = { 1275, 2130, 1465, 1296, 2784 };
 
-            public static readonly int[] M_Zeros = {3556, 2108, 629, 40, 1052};
+            public static readonly int[] M_Zeros = {3556, 2108, 1410, 40, 1052};
 
             public static readonly decimal E_to_D = 360M / 4095M;
             internal static decimal D_to_E = 4095M / 360M;
@@ -105,6 +105,7 @@ namespace R.I.M.UI_Shell
             public Queue<string> Timer_Stops;
             
             public string fpath;
+            public bool append_file;
 
             public RIM_PExec()
             {
@@ -356,8 +357,6 @@ namespace R.I.M.UI_Shell
         };
 
         public volatile Motor_Settings All_MSettings = new Motor_Settings();
-
-        
 
         //Enum to keep track of motor direction
         public enum Direction {CLOCKWISE, COUNTERCLOCKWISE};
@@ -798,7 +797,7 @@ namespace R.I.M.UI_Shell
 
             if (degrees > 360)
                 degrees = 360;
-
+            degrees = Math.Abs(degrees);
 
             return (ushort)Math.Round((Math.Abs(degrees) - RIM_MotorConstants.Motor_Offset[motor_id])/RIM_MotorConstants.Motor_Slopes[motor_id]); 
         }
@@ -1013,7 +1012,11 @@ namespace R.I.M.UI_Shell
                     commands.fpath += "\\" + temp[1];
                     line_num++;
                 }
-
+                else if (temp[0] == "APPEND")
+                {
+                    commands.append_file = true;
+                    line_num++;
+                }
                 //Timer command group
                 else if (temp[0] == "TSTART")
                 {
@@ -1285,14 +1288,18 @@ namespace R.I.M.UI_Shell
             int sent_commands = 0;
 
             //Open file to write 
-            StreamWriter outFile = new StreamWriter(commands.fpath);
+            StreamWriter outFile = new StreamWriter(commands.fpath, commands.append_file);
 
 
-            outFile.WriteLine("-----------------------------------------");
-            outFile.WriteLine("RIM Programmed Execution Mode Output File");
-            outFile.WriteLine(DateTime.Now);
-            outFile.WriteLine("-----------------------------------------");
-            outFile.WriteLine("CommandType, LineEncountered, TimeElapsed(ms)");
+
+            if (!commands.append_file)
+            {
+                outFile.WriteLine("-----------------------------------------");
+                outFile.WriteLine("RIM Programmed Execution Mode Output File");
+                outFile.WriteLine(DateTime.Now);
+                outFile.WriteLine("-----------------------------------------");
+                outFile.WriteLine("CommandType, LineEncountered, TimeElapsed(ms)");
+            }
 
 
             Stopwatch RIM_Stopwatch = new Stopwatch();
@@ -2396,10 +2403,6 @@ namespace R.I.M.UI_Shell
                 curpos[i] = (double)Encoder_Values[i];
             }
 
-            curpos[1] *= -1;
-            curpos[2] *= -1;
-            curpos[3] *= -1;
-
             //If the DH conversion was successfull 
             if (Do_DH_Conversion(ref DH_Stuff, curpos))
             {
@@ -2440,7 +2443,7 @@ namespace R.I.M.UI_Shell
                 encoder_deg[i] = (int)Math.Round(Encoder_Values[i]);
             }
 
-            TL_curPos_lbl.Text = string.Format("({0}, {1}, {2}, {3}, {4})", encoder_deg[0], -1 * encoder_deg[1], -1 * encoder_deg[2], -1 * encoder_deg[3], encoder_deg[4]);
+            TL_curPos_lbl.Text = string.Format("({0}, {1}, {2}, {3}, {4})", encoder_deg[0], encoder_deg[1], encoder_deg[2], encoder_deg[3], encoder_deg[4]);
         }
 
         private void ResetDevicesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2494,7 +2497,7 @@ namespace R.I.M.UI_Shell
         }
 
 
-        private bool Get_All_Encoder_Values(bool use_neg = false, bool degrees = true)
+        private bool Get_All_Encoder_Values(bool DH_ready = false, bool degrees = true)
         {
             data_event_enabled = false;
             if (!TryOpenCom())
@@ -2542,24 +2545,42 @@ namespace R.I.M.UI_Shell
 
             if (degrees)
             {
-                for (int i = 0; i < CONNECTED_ENCODERS; i++)
-                { 
-                    Encoder_Values[i] = (Encoder_Values[i] - RIM_MotorConstants.M_Zeros[i]) * RIM_MotorConstants.E_to_D;
-                    if (Encoder_Values[i] < 0)
-                        Encoder_Values[i] += 360;
-                    else if (Encoder_Values[i] > 360)
-                        Encoder_Values[i] -= 360;
 
-                    if(use_neg)
+                for (int i = 0; i < CONNECTED_ENCODERS; i++)
+                {
+                    Encoder_Values[i] = (Encoder_Values[i] - RIM_MotorConstants.M_Zeros[i]);
+                    if (Encoder_Values[i] < 0)
+                        Encoder_Values[i] += 4095;
+                    else if (Encoder_Values[i] > 4095)
+                        Encoder_Values[i] -= 4095;
+                    if (DH_ready)
+                        Encoder_Values[i] *= RIM_MotorConstants.E_to_D;
+
+                }
+                if (DH_ready)
+                {
+                    if (Encoder_Values[0] > 180)
+                    {
+                        Encoder_Values[0] -= 360;
+                    }
+                    if (Encoder_Values[4] > 180)
+                    {
+                        Encoder_Values[4] -= 360;
+                    }
+
+                    for (int i = 1; i < 4; i++)
                     {
                         if (Encoder_Values[i] > 180)
                         {
                             Encoder_Values[i] -= 360;
                         }
+                        Encoder_Values[i] *= -1;
                     }
+
                 }
-                
+
             }
+
 
             data_event_enabled = true;
 
