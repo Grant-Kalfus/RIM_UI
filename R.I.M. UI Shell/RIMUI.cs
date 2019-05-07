@@ -764,8 +764,8 @@ namespace R.I.M.UI_Shell
                 commands.motor_dirs[6] = 0;
                 if (x < 0)
                     commands.motors[6] = 0;
-                else if (x > 4096)
-                    commands.motors[6] = 4096;
+                else if (x > 180)
+                    commands.motors[6] = 180;
                 else
                     commands.motors[6] = (ushort)x;
             }
@@ -2175,7 +2175,7 @@ namespace R.I.M.UI_Shell
                 Stepper4_entry.Mask = "#00000000000";
                 Stepper5_entry.Mask = "#00000000000";
                 Servo1_entry.Mask = @"000\°";
-                Servo2_entry.Mask = "#00000000000";
+                Servo2_entry.Mask = @"000\°";
                 degree_mode = false;
                 StepMode_lbl.Text = "Step Mode";
             }
