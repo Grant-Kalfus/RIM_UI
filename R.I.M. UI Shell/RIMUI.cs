@@ -65,8 +65,9 @@ namespace R.I.M.UI_Shell
             public static readonly int[] M_Limit_Start = { 1316, 350, 876, 3737, 3493 };
             public static readonly int[] M_Limit_End = { 1275, 2130, 1465, 1296, 2784 };
 
-            public static readonly int[] M_Zeros = {3556, 2108, 1410, 40, 1052};
+            public static readonly int[] M_Zeros = {3613, 2108, 657, 40, 1052};
 
+            //1410 old encoder 3 offset
             public static readonly decimal E_to_D = 360M / 4095M;
             internal static decimal D_to_E = 4095M / 360M;
 
@@ -799,7 +800,7 @@ namespace R.I.M.UI_Shell
                 degrees = 360;
             degrees = Math.Abs(degrees);
 
-            return (ushort)Math.Round((Math.Abs(degrees) - RIM_MotorConstants.Motor_Offset[motor_id])/RIM_MotorConstants.Motor_Slopes[motor_id]); 
+            return (ushort)Math.Abs(Math.Round((Math.Abs(degrees) - RIM_MotorConstants.Motor_Offset[motor_id])/RIM_MotorConstants.Motor_Slopes[motor_id])); 
         }
 
         int Loop_codes(int codes)
@@ -815,7 +816,6 @@ namespace R.I.M.UI_Shell
 
             return codes;
         }
-
 
         void Validate_Degrees(int id, int curpos, ref Direction dir, ref decimal degrees)
         {
@@ -1623,6 +1623,40 @@ namespace R.I.M.UI_Shell
             Disable_all('t');
         }
 
+        private void Traverse_Convert_And_Send(double[] DH_Degrees)
+        {
+            ushort temp;
+            Direction dir;
+            byte[] packet = new byte[3];
+
+            temp = Degrees_to_steps(0, (decimal)DH_Degrees[0]);
+            dir = DH_Degrees[0] < 0 ? Direction.COUNTERCLOCKWISE : Direction.CLOCKWISE;
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, 0, temp, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            temp = Degrees_to_steps(1, (decimal)DH_Degrees[1]);
+            dir = DH_Degrees[1] < 0 ? Direction.CLOCKWISE : Direction.COUNTERCLOCKWISE;
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, 1, temp, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            temp = Degrees_to_steps(2, (decimal)DH_Degrees[2]);
+            dir = DH_Degrees[2] < 0 ? Direction.CLOCKWISE : Direction.COUNTERCLOCKWISE;
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, 2, temp, ref packet, 3);
+            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            temp = Degrees_to_steps(3, (decimal)DH_Degrees[3]);
+            dir = DH_Degrees[3] < 0 ? Direction.CLOCKWISE : Direction.COUNTERCLOCKWISE;
+            //Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, 3, temp, ref packet, 3);
+            //UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+            temp = Degrees_to_steps(4, (decimal)DH_Degrees[4]);
+            dir = DH_Degrees[4] < 0 ? Direction.COUNTERCLOCKWISE : Direction.CLOCKWISE;
+            //Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, 4, temp, ref packet, 3);
+            //UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+
+        }
+
+
         //When the start button is clicked
         private void Start_btn_Click(object sender, EventArgs e)
         {
@@ -1640,8 +1674,9 @@ namespace R.I.M.UI_Shell
 
             PreciseExecution_steps commands = new PreciseExecution_steps(7);
             RIM_PExec prog_commands = new RIM_PExec();
-            
 
+            double[] DH_Degrees = new double[6];
+            double[] current_position = new double[6];
 
             switch (Check_enable())
             {
@@ -1677,6 +1712,19 @@ namespace R.I.M.UI_Shell
                 
                 //Case for traverse line mode. Currently TODO
                 case 't':
+                    Get_All_Encoder_Values(true);
+                    for (int i = 0; i < CONNECTED_ENCODERS; i++)
+                    {
+                        current_position[i] = (double)Encoder_Values[i];
+                    }
+                    if (!Do_DH_Conversion(ref DH_Degrees, current_position))
+                    {
+                        TravModeError_lbl.Text = "Fail";
+                        break;
+                    }
+                    TravModeError_lbl.Text = "Pass";
+                    Traverse_Convert_And_Send(DH_Degrees);
+
                     break;
                 default:
                     break;
@@ -1889,7 +1937,6 @@ namespace R.I.M.UI_Shell
                 Thread.Sleep(100);
             }
         }
-
 
         //Event handler for device data received
         private void UART_COM_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
@@ -2473,7 +2520,6 @@ namespace R.I.M.UI_Shell
             //Encoder_Update_1 = !Encoder_Update_1;
         }
 
-
         private ushort Get_Single_Encoder_nonasync()
         {
             int msg;
@@ -2495,7 +2541,6 @@ namespace R.I.M.UI_Shell
 
             return response;
         }
-
 
         private bool Get_All_Encoder_Values(bool DH_ready = false, bool degrees = true)
         {
@@ -2586,7 +2631,6 @@ namespace R.I.M.UI_Shell
 
             return r;
         }
-
 
         private void Encoder_FetchTimer_Tick(object sender, EventArgs e)
         {
