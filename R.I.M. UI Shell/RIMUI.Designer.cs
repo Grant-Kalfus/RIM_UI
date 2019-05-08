@@ -141,6 +141,7 @@
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
             this.Encoder_FetchTimer = new System.Windows.Forms.Timer(this.components);
             this.AUEncoder_toggle = new System.Windows.Forms.CheckBox();
+            this.Rim_pos_lbl = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -940,6 +941,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.Rim_pos_lbl);
             this.groupBox2.Controls.Add(this.TraverseLineMode_grp);
             this.groupBox2.Controls.Add(this.ProgrammedExecutionMode_grp);
             this.groupBox2.Controls.Add(this.PreciseExecutionMode_grp);
@@ -1425,6 +1427,16 @@
             this.AUEncoder_toggle.UseVisualStyleBackColor = true;
             this.AUEncoder_toggle.Click += new System.EventHandler(this.AUEncoder_toggle_Click);
             // 
+            // Rim_pos_lbl
+            // 
+            this.Rim_pos_lbl.AutoSize = true;
+            this.Rim_pos_lbl.Location = new System.Drawing.Point(5, 34);
+            this.Rim_pos_lbl.Name = "Rim_pos_lbl";
+            this.Rim_pos_lbl.Size = new System.Drawing.Size(40, 13);
+            this.Rim_pos_lbl.TabIndex = 18;
+            this.Rim_pos_lbl.Text = "(x, y, z)";
+            this.Rim_pos_lbl.Click += new System.EventHandler(this.Rim_pos_lbl_Click);
+            // 
             // Main_wnd
             // 
             this.AcceptButton = this.Start_btn;
@@ -1590,6 +1602,7 @@
         private System.Windows.Forms.MaskedTextBox Pitch_entry;
         private System.Windows.Forms.MaskedTextBox Z_entry;
         private System.Windows.Forms.MaskedTextBox Y_entry;
+        private System.Windows.Forms.Label Rim_pos_lbl;
     }
 }
 

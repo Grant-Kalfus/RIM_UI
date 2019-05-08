@@ -2436,7 +2436,6 @@ namespace R.I.M.UI_Shell
             }
         }
 
-
         private void Traverse_calc_Click(object sender, EventArgs e)
         {
             double[] DH_Stuff = new double[6];
@@ -2491,6 +2490,44 @@ namespace R.I.M.UI_Shell
             }
 
             TL_curPos_lbl.Text = string.Format("({0}, {1}, {2}, {3}, {4})", encoder_deg[0], encoder_deg[1], encoder_deg[2], encoder_deg[3], encoder_deg[4]);
+        }
+
+        private void Rim_pos_lbl_Click(object sender, EventArgs e)
+        {
+            Get_All_Encoder_Values(true);
+
+            matlab.Execute(@"cd C:\MATLABScript\");
+
+            double x, y, z;
+
+            try
+            {
+
+                matlab.Execute(@"cd C:\MATLABScript\");
+                matlab.Feval("fkRIM_ee", 3, out object result, (double)Encoder_Values[0],
+                    (double) Encoder_Values[1],
+                    (double) Encoder_Values[2],
+                    (double) Encoder_Values[3],
+                    (double) Encoder_Values[4],
+                    0.0);
+
+                object[] res = result as object[];
+                x = (double)res[0];
+                y = (double)res[1];
+                z = (double)res[2];
+
+                Rim_pos_lbl.Text = string.Format("x: {0:0.00}\ny: {1:0.00}\nz: {2:0.00}", x, y, z);
+
+                Console.WriteLine(res[0]);
+                Console.WriteLine(res[1]);
+                Console.WriteLine(res[2]);
+
+            }
+            catch (Exception f)
+            {
+                MessageBox.Show("Error encountered:  " + f.Message + "\n");
+            }
+
         }
 
         private void ResetDevicesToolStripMenuItem_Click(object sender, EventArgs e)
