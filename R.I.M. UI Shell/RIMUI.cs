@@ -65,7 +65,7 @@ namespace R.I.M.UI_Shell
             public static readonly int[] M_Limit_Start = { 1316, 350, 876, 3737, 3493 };
             public static readonly int[] M_Limit_End = { 1275, 2130, 1465, 1296, 2784 };
 
-            public static readonly int[] M_Zeros = {3613, 2108, 657, 40, 1052};
+            public static readonly int[] M_Zeros = {3613, 2108, 904, 40, 11 };
 
             //1410 old encoder 3 offset
             public static readonly decimal E_to_D = 360M / 4095M;
@@ -104,7 +104,8 @@ namespace R.I.M.UI_Shell
             public Queue<string> Special_cmds;
             public Queue<string> Timer_Starts;
             public Queue<string> Timer_Stops;
-            
+            public Queue<string> Move_to_cmds;
+
             public string fpath;
             public bool append_file;
 
@@ -116,6 +117,7 @@ namespace R.I.M.UI_Shell
                 Special_cmds = new Queue<string>();
                 Timer_Starts = new Queue<string>();
                 Timer_Stops = new Queue<string>();
+                Move_to_cmds = new Queue<string>();
 
                 fpath = Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
                 fpath += "\\outfile.csv";
@@ -415,8 +417,7 @@ namespace R.I.M.UI_Shell
             }
         };
 
-        
-
+       
         private void Main_wnd_Load(object sender, EventArgs e)
         {
             Encoder_FetchTimer.Stop();
@@ -618,7 +619,7 @@ namespace R.I.M.UI_Shell
 
 
         //Debug mode output when transfering packets
-#if (DEBUG_MODE)
+        #if (DEBUG_MODE)
         private void Debug_Output(byte[] packet, int sz)
         {
             Console.WriteLine("Sending UART packet: " + Byte_array_to_string(packet, 3));
@@ -885,7 +886,7 @@ namespace R.I.M.UI_Shell
         //Programmed Execution Mode support
         //Parses an input files and converts it to commands that can be sent to RIM
         //Commands are stored in queues corrisponding to the motor and encoder
-        bool ProgExec_parse_and_load(ref RIM_PExec commands, string finfo)
+        bool ProgExec_parse_and_load(ref RIM_PExec commands, string finfo, bool load_encoders = false)
         {
 
             //Start at line 1
@@ -895,6 +896,9 @@ namespace R.I.M.UI_Shell
             Direction dir = 0;
             ushort steps = 0;
             decimal deg_steps = 0;
+
+
+
 
             //Pull all current encoder values
             //TODO
@@ -927,6 +931,7 @@ namespace R.I.M.UI_Shell
             bool special_cmd_written = false;
             bool timer_start_cmd_written = false;
             bool timer_stop_cmd_written = false;
+            bool move_to_cmd_written = false;
 
 
 
@@ -966,17 +971,22 @@ namespace R.I.M.UI_Shell
                     else
                         timer_start_cmd_written = false;
 
-                    if(!timer_stop_cmd_written)
+                    if (!timer_stop_cmd_written)
                         commands.Timer_Stops.Enqueue("PASS");
                     else
                         timer_stop_cmd_written = false;
+
+                    if (!move_to_cmd_written)
+                        commands.Move_to_cmds.Enqueue("PASS");
+                    else
+                        move_to_cmd_written = false;
 
                     line_num++;
                     continue;
                 }
 
                 //File decider commands
-                else if(temp[0] == "FPATH")
+                else if (temp[0] == "FPATH")
                 {
                     if (temp.Length < 2)
                     {
@@ -1000,7 +1010,7 @@ namespace R.I.M.UI_Shell
                     }
 
                 }
-                else if(temp[0] == "FNAME")
+                else if (temp[0] == "FNAME")
                 {
                     if (temp.Length < 2)
                     {
@@ -1024,7 +1034,7 @@ namespace R.I.M.UI_Shell
                     timer_start_cmd_written = true;
                     line_num++;
                 }
-                else if(temp[0] == "TSTOP")
+                else if (temp[0] == "TSTOP")
                 {
                     commands.Timer_Stops.Enqueue("TSTOP" + line_num);
 
@@ -1043,26 +1053,32 @@ namespace R.I.M.UI_Shell
                             count_stop++;
                     }
 
-                    if(count_start != count_stop)
+                    if (count_start != count_stop)
                     {
                         errlist.Enqueue("Error encountered on line " + line_num.ToString() + ": number of timer starts and stops are not equal: " +
-                              "TSTART = "  + count_start + ", " +
+                              "TSTART = " + count_start + ", " +
                               "TSTOP  = " + count_stop);
                         error = true;
                     }
                     timer_stop_cmd_written = true;
                     line_num++;
                 }
+                else if (temp[0] == "MOVE_TO")
+                {
+                    commands.Move_to_cmds.Enqueue(line.Replace(" ", ""));
+                    line_num++;
+                    move_to_cmd_written = true;
+                }
 
                 //Mode selecter
-                else if(temp[0] == "MODE")
+                else if (temp[0] == "MODE")
                 {
                     if (temp.Length < 2)
                     {
                         errlist.Enqueue("Error with line " + line_num.ToString() + ": Not enough parameters. Expected 2, given " + temp.Length.ToString());
                         error = true;
                     }
-                    if(temp[1] == "DEGREE" || temp[1] == "DEG")
+                    if (temp[1] == "DEGREE" || temp[1] == "DEG")
                         deg_mode = true;
                     if (temp[1] == "STEP")
                         deg_mode = false;
@@ -1070,9 +1086,9 @@ namespace R.I.M.UI_Shell
                 }
 
                 //Command to sleep
-                else if(temp[0] == "SLEEP")
+                else if (temp[0] == "SLEEP")
                 {
-                    if(temp.Length < 2)
+                    if (temp.Length < 2)
                     {
                         errlist.Enqueue("Error with line " + line_num.ToString() + ": Not enough parameters. Expected at least 2, given " + temp.Length.ToString());
                         error = true;
@@ -1097,7 +1113,7 @@ namespace R.I.M.UI_Shell
                 //Command for move
                 else if (temp[0] == "MOVE")
                 {
-                    if(temp.Length < 4)
+                    if (temp.Length < 4)
                     {
                         errlist.Enqueue("Error with line " + line_num.ToString() + ": Not enough parameters. Expected 4, given " + temp.Length.ToString());
                         error = true;
@@ -1135,7 +1151,7 @@ namespace R.I.M.UI_Shell
                         error = true;
                     }
 
-                    if(deg_mode)
+                    if (deg_mode)
                     {
                         if (!decimal.TryParse(temp[3], out decimal y))
                         {
@@ -1263,6 +1279,97 @@ namespace R.I.M.UI_Shell
             return r;
         }
 
+        private bool Inject_traverse_command(ref RIM_PExec commands)
+        {
+            int command_before = commands.Timer_Starts.Count;
+
+            double[] traverse_cmds = new double[6];
+            double[] DH_Degrees = new double[6];
+            double[] current_position = new double[6];
+            byte[] packet = new byte[3];
+            ushort temp;
+            Direction dir;
+
+
+            for (int i = 0; i < 6; i++)
+                traverse_cmds[i] = 0;
+
+            string[] cmd = commands.Move_to_cmds.Dequeue().Split(',');
+            for(int i = 1; i < cmd.Length; i++)
+            {
+                if (!double.TryParse(cmd[i], out double x))
+                {
+                    Console.WriteLine("Error - incorrect number entered: " + cmd[i]);
+                    TravModeError_lbl.Text = "Fail";
+                    return false;
+                }
+                else
+                {
+                    traverse_cmds[i-1] = x;
+                }
+            }
+
+            if (!Get_All_Encoder_Values(true))
+            {
+                Console.WriteLine("Error - Encoder read failed");
+                TravModeError_lbl.Text = "Fail";
+                return false;
+            }
+            data_event_enabled = false;
+
+            for (int i = 0; i < CONNECTED_ENCODERS; i++)
+            {
+                current_position[i] = (double)Encoder_Values[i];
+            }
+            if (!Do_DH_Conversion(ref DH_Degrees, current_position, traverse_cmds))
+            {
+                Console.WriteLine("Error - DH Conversion failed");
+                TravModeError_lbl.Text = "Fail";
+                return false;
+            }
+
+            temp = Degrees_to_steps(0, (decimal)DH_Degrees[0]);
+            dir = DH_Degrees[0] < 0 ? Direction.COUNTERCLOCKWISE : Direction.CLOCKWISE;
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, 0, temp, ref packet, 3);
+            commands.Motor_cmds[0].Enqueue(Byte_array_to_literal_string(packet, 3));
+
+            temp = Degrees_to_steps(1, (decimal)DH_Degrees[1]);
+            dir = DH_Degrees[1] < 0 ? Direction.CLOCKWISE : Direction.COUNTERCLOCKWISE;
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, 1, temp, ref packet, 3);
+            commands.Motor_cmds[1].Enqueue(Byte_array_to_literal_string(packet, 3));
+
+            temp = Degrees_to_steps(2, (decimal)DH_Degrees[2]);
+            dir = DH_Degrees[2] < 0 ? Direction.CLOCKWISE : Direction.COUNTERCLOCKWISE;
+            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, dir, 2, temp, ref packet, 3);
+            commands.Motor_cmds[2].Enqueue(Byte_array_to_literal_string(packet, 3));
+
+
+            commands.Motor_cmds[3].Enqueue("PASS");
+            commands.Motor_cmds[4].Enqueue("PASS");
+            commands.Motor_cmds[5].Enqueue("PASS");
+            commands.Motor_cmds[6].Enqueue("PASS");
+
+            commands.Special_cmds.Enqueue("PASS");
+            commands.Timer_Starts.Enqueue("PASS");
+            commands.Timer_Stops.Enqueue("PASS");
+            commands.Move_to_cmds.Enqueue("PASS");
+            commands.Move_to_cmds.Enqueue("PASS");
+
+            for (int i = 0; i < command_before; i++)
+            {
+                for(int j = 0; j < 7; j++)
+                    commands.Motor_cmds[j].Enqueue(commands.Motor_cmds[j].Dequeue());
+
+                commands.Special_cmds.Enqueue(commands.Special_cmds.Dequeue());
+                commands.Timer_Starts.Enqueue(commands.Timer_Starts.Dequeue());
+                commands.Timer_Stops.Enqueue(commands.Timer_Stops.Dequeue());
+                commands.Timer_Stops.Enqueue(commands.Timer_Stops.Dequeue());
+                commands.Move_to_cmds.Enqueue(commands.Move_to_cmds.Dequeue());
+
+            }
+            return true;
+        }
+
         //Start sequence for programmed exeuction mode
         void ProgExec_start(RIM_PExec commands)
         {
@@ -1305,10 +1412,24 @@ namespace R.I.M.UI_Shell
             Stopwatch RIM_Stopwatch = new Stopwatch();
 
 
+
+
             //Loops for the total ammount of commands
             for (int i = 0; i < total_cmds; i++)
             {
-                temp = commands.Timer_Starts.Dequeue();
+                
+                if (commands.Move_to_cmds.Peek() != "PASS")
+                {
+                    Inject_traverse_command(ref commands);
+                    total_cmds++;
+                }
+                else
+                {
+                    commands.Move_to_cmds.Dequeue();
+                }
+
+
+                    temp = commands.Timer_Starts.Dequeue();
                 if(temp != "PASS")
                 {
                     RIM_Stopwatch.Start();
@@ -1656,7 +1777,6 @@ namespace R.I.M.UI_Shell
 
         }
 
-
         //When the start button is clicked
         private void Start_btn_Click(object sender, EventArgs e)
         {
@@ -1712,7 +1832,13 @@ namespace R.I.M.UI_Shell
                 
                 //Case for traverse line mode. Currently TODO
                 case 't':
-                    Get_All_Encoder_Values(true);
+                    if (!Get_All_Encoder_Values(true))
+                    {
+                        Console.WriteLine("Error - Encoder read failed");
+                        TravModeError_lbl.Text = "Fail";
+                        return;
+                    }
+
                     for (int i = 0; i < CONNECTED_ENCODERS; i++)
                     {
                         current_position[i] = (double)Encoder_Values[i];
@@ -2337,7 +2463,6 @@ namespace R.I.M.UI_Shell
             Change_Encoder_Val_lbl(4, "0");
         }
 
-
         private bool Do_DH_Conversion(ref double[] DH_Convert, double[] Cur_position)
         {
             if (DH_Convert.Length != 6 || Cur_position.Length != 6)
@@ -2436,6 +2561,64 @@ namespace R.I.M.UI_Shell
             }
         }
 
+        private bool Do_DH_Conversion(ref double[] DH_Convert, double[] Cur_position, double[] GoTo_Position)
+        {
+            if (DH_Convert.Length != 6 || Cur_position.Length != 6)
+            {
+                for (int i = 0; i < DH_Convert.Length; i++)
+                {
+                    DH_Convert[i] = 0;
+                }
+                return false;
+            }
+
+            for (int i = 0; i < DH_Convert.Length; i++)
+            {
+                DH_Convert[i] = 0;
+            }
+
+            try
+            {
+
+                matlab.Execute(@"cd C:\MATLABScript\");
+                matlab.Feval("moveRIM", 6, out object result, Cur_position[0],
+                                                              Cur_position[1],
+                                                              Cur_position[2],
+                                                              Cur_position[3],
+                                                              Cur_position[4], 0.0, 
+                                                              
+                                                              GoTo_Position[0] * 1000, 
+                                                              GoTo_Position[1] * 1000, 
+                                                              GoTo_Position[2] * 1000, 
+                                                              GoTo_Position[3] * 1000, 
+                                                              GoTo_Position[4] * 1000, 
+                                                              GoTo_Position[5] * 1000);
+
+
+                object[] res = result as object[];
+                Console.WriteLine(res[0]);
+                Console.WriteLine(res[1]);
+                Console.WriteLine(res[2]);
+                Console.WriteLine(res[3]);
+                Console.WriteLine(res[4]);
+                Console.WriteLine(res[5]);
+
+                for (int i = 0; i < 6; i++)
+                    DH_Convert[i] = (double)res[i];
+
+
+                if (DH_Convert[0] == -999)
+                    return false;
+                else
+                    return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Error encountered:  " + e.Message + "\n");
+                return false;
+            }
+        }
+
         private void Traverse_calc_Click(object sender, EventArgs e)
         {
             double[] DH_Stuff = new double[6];
@@ -2494,7 +2677,12 @@ namespace R.I.M.UI_Shell
 
         private void Rim_pos_lbl_Click(object sender, EventArgs e)
         {
-            Get_All_Encoder_Values(true);
+
+            if (!Get_All_Encoder_Values(true))
+            {
+                Console.WriteLine("Error - Encoder fetch failed");
+                return;
+            };
 
             matlab.Execute(@"cd C:\MATLABScript\");
 
