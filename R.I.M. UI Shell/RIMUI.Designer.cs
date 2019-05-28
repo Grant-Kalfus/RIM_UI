@@ -98,6 +98,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.MotorRunning_lbl = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.Rim_pos_lbl = new System.Windows.Forms.Label();
             this.TraverseLineMode_grp = new System.Windows.Forms.GroupBox();
             this.Yaw_lbl = new System.Windows.Forms.Label();
             this.Roll_lbl = new System.Windows.Forms.Label();
@@ -141,7 +142,7 @@
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
             this.Encoder_FetchTimer = new System.Windows.Forms.Timer(this.components);
             this.AUEncoder_toggle = new System.Windows.Forms.CheckBox();
-            this.Rim_pos_lbl = new System.Windows.Forms.Label();
+            this.loop_toggle = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -955,6 +956,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Mode Controls";
             // 
+            // Rim_pos_lbl
+            // 
+            this.Rim_pos_lbl.AutoSize = true;
+            this.Rim_pos_lbl.Location = new System.Drawing.Point(5, 34);
+            this.Rim_pos_lbl.Name = "Rim_pos_lbl";
+            this.Rim_pos_lbl.Size = new System.Drawing.Size(40, 13);
+            this.Rim_pos_lbl.TabIndex = 18;
+            this.Rim_pos_lbl.Text = "(x, y, z)";
+            this.Rim_pos_lbl.Click += new System.EventHandler(this.Rim_pos_lbl_Click);
+            // 
             // TraverseLineMode_grp
             // 
             this.TraverseLineMode_grp.Controls.Add(this.Yaw_lbl);
@@ -1171,6 +1182,7 @@
             // 
             // ProgrammedExecutionMode_grp
             // 
+            this.ProgrammedExecutionMode_grp.Controls.Add(this.loop_toggle);
             this.ProgrammedExecutionMode_grp.Controls.Add(this.ProgExecFLoad_lbl);
             this.ProgrammedExecutionMode_grp.Controls.Add(this.FileReload_btn);
             this.ProgrammedExecutionMode_grp.Controls.Add(this.FileCheck_btn);
@@ -1187,7 +1199,7 @@
             // ProgExecFLoad_lbl
             // 
             this.ProgExecFLoad_lbl.AutoSize = true;
-            this.ProgExecFLoad_lbl.Location = new System.Drawing.Point(23, 141);
+            this.ProgExecFLoad_lbl.Location = new System.Drawing.Point(17, 131);
             this.ProgExecFLoad_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.ProgExecFLoad_lbl.Name = "ProgExecFLoad_lbl";
             this.ProgExecFLoad_lbl.Size = new System.Drawing.Size(127, 13);
@@ -1427,15 +1439,15 @@
             this.AUEncoder_toggle.UseVisualStyleBackColor = true;
             this.AUEncoder_toggle.Click += new System.EventHandler(this.AUEncoder_toggle_Click);
             // 
-            // Rim_pos_lbl
+            // loop_toggle
             // 
-            this.Rim_pos_lbl.AutoSize = true;
-            this.Rim_pos_lbl.Location = new System.Drawing.Point(5, 34);
-            this.Rim_pos_lbl.Name = "Rim_pos_lbl";
-            this.Rim_pos_lbl.Size = new System.Drawing.Size(40, 13);
-            this.Rim_pos_lbl.TabIndex = 18;
-            this.Rim_pos_lbl.Text = "(x, y, z)";
-            this.Rim_pos_lbl.Click += new System.EventHandler(this.Rim_pos_lbl_Click);
+            this.loop_toggle.AutoSize = true;
+            this.loop_toggle.Location = new System.Drawing.Point(30, 149);
+            this.loop_toggle.Name = "loop_toggle";
+            this.loop_toggle.Size = new System.Drawing.Size(100, 17);
+            this.loop_toggle.TabIndex = 19;
+            this.loop_toggle.Text = "Loop Execution";
+            this.loop_toggle.UseVisualStyleBackColor = true;
             // 
             // Main_wnd
             // 
@@ -1603,6 +1615,7 @@
         private System.Windows.Forms.MaskedTextBox Z_entry;
         private System.Windows.Forms.MaskedTextBox Y_entry;
         private System.Windows.Forms.Label Rim_pos_lbl;
+        private System.Windows.Forms.CheckBox loop_toggle;
     }
 }
 

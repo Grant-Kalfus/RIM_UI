@@ -16,9 +16,11 @@ namespace R.I.M.UI_Shell
     public partial class Main_wnd : Form
     {
         //Accessors
-        
 
+        //OVR Process
+        public Process ovr_data = new Process();
 
+         
         //This class is the RIM 
         //See packet format function for details on packet structure
         static class PSoC_OpCodes
@@ -385,6 +387,10 @@ namespace R.I.M.UI_Shell
 
         volatile public decimal[] Encoder_Values = new decimal[CONNECTED_ENCODERS];
 
+        volatile public bool Motors_Ready = true;
+        volatile public int Motor_Num_Active = 0;
+
+
         //Boolean that enables the data received event handler for the UART_COM object
         bool data_event_enabled = true;
         
@@ -417,7 +423,11 @@ namespace R.I.M.UI_Shell
             }
         };
 
-       
+        private void Ovr_data_Recieve(object sender, DataReceivedEventArgs output)
+        {
+            Rim_pos_lbl.Invoke(new MethodInvoker(delegate { Rim_pos_lbl.Text = output.Data; }));
+        }
+
         private void Main_wnd_Load(object sender, EventArgs e)
         {
             Encoder_FetchTimer.Stop();
@@ -439,6 +449,15 @@ namespace R.I.M.UI_Shell
             matlab.Visible = 0;
             FileCheck_btn.Enabled = false;
             FileReload_btn.Enabled = false;
+
+            //OVR setup
+            ovr_data.StartInfo.FileName = @"F:\user_data\Desktop\Senior Design\Oculus\Debug\FullPath.exe";
+            ovr_data.StartInfo.RedirectStandardOutput = true;
+            ovr_data.StartInfo.UseShellExecute = false;
+            ovr_data.StartInfo.CreateNoWindow = true;
+            ovr_data.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            ovr_data.OutputDataReceived += new DataReceivedEventHandler(Ovr_data_Recieve);
+
         }
 
         //Function that sets an indicator that corrisponds to ID to a color C
@@ -754,8 +773,8 @@ namespace R.I.M.UI_Shell
                 commands.motor_dirs[5] = 0;
                 if (x < 0)
                     commands.motors[5] = 0;
-                else if (x > 130)
-                    commands.motors[5] = 130;
+                else if (x > 90)
+                    commands.motors[5] = 90;
                 else
                     commands.motors[5] = (ushort)x;
             }
@@ -1717,6 +1736,11 @@ namespace R.I.M.UI_Shell
 
             if (MessageBox.Show("Are you sure you want to quit?", "Quit", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 Application.Exit();
+            if(ovr_data.HasExited == false)
+            {
+                ovr_data.CancelOutputRead();
+                ovr_data.Kill();
+            }
         }
 
         private void OVRModeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1802,6 +1826,11 @@ namespace R.I.M.UI_Shell
             {
                 //Case for OVR (Oculus Virtual Reality) mode. Currently TODO
                 case 'o':
+                    ovr_data.Start();
+                    Stop_btn.Enabled = true;
+                    Start_btn.Enabled = false;
+                    //Thread.Sleep(2000);
+                    ovr_data.BeginOutputReadLine();
                     break;
                 //Case for precise execution mode
                 case 'p':
@@ -1815,19 +1844,23 @@ namespace R.I.M.UI_Shell
                     break;
                 //Case for programmed execution mode
                 case 'a':
-                    //Try to load the given script. If the script has an error in it, then fail the file load and return
-                    if (ProgExec_parse_and_load(ref prog_commands, file_content))
-                        ProgExecFLoad_lbl.Text = "File loaded succesfully";
-                    else
+                    do
                     {
-                        ProgExecFLoad_lbl.Text = "File load failed!";
-                        return;
-                    }
-                    Stop_btn.Enabled = true;
-                    Start_btn.Enabled = false;
+                        //Try to load the given script. If the script has an error in it, then fail the file load and return
+                        if (ProgExec_parse_and_load(ref prog_commands, file_content))
+                            ProgExecFLoad_lbl.Text = "File loaded succesfully";
+                        else
+                        {
+                            ProgExecFLoad_lbl.Text = "File load failed!";
+                            return;
+                        }
+                        Stop_btn.Enabled = true;
+                        Start_btn.Enabled = false;
 
-                    //Start programmed execution mode
-                    ProgExec_start(prog_commands);
+                        //Start programmed execution mode
+                        ProgExec_start(prog_commands);
+                        Thread.Sleep(100);
+                    } while (loop_toggle.Checked == true);
                     break;
                 
                 //Case for traverse line mode. Currently TODO
@@ -1863,12 +1896,21 @@ namespace R.I.M.UI_Shell
         //TODO
         private void Stop_btn_Click(object sender, EventArgs e)
         {
-            byte[] packet = new byte[3];
+            if (Check_enable() == 'o')
+            {
+                ovr_data.CancelOutputRead();
+                ovr_data.Kill();
+            }
+            else
+            {
+                byte[] packet = new byte[3];
 
-            Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STOP, 0, 0, PSoC_OpCodes.ALL_SSTOP,ref packet, 3);
+                Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_STOP, 0, 0, PSoC_OpCodes.ALL_SSTOP, ref packet, 3);
 
-            UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                UART_COM.Write(Byte_array_to_literal_string(packet, 3));
 
+
+            }
             Stop_btn.Enabled = false;
             Start_btn.Enabled = true;
         }
@@ -2090,6 +2132,8 @@ namespace R.I.M.UI_Shell
                 Motor_Active[info] = true;
                 Set_ind_backcolor(info, Color.LimeGreen);
 
+                Motors_Ready = false;
+                Motor_Num_Active++;
 #if (DEBUG_MODE)
                 Console.WriteLine("Received a motor start confirm");
 #endif
@@ -2127,6 +2171,7 @@ namespace R.I.M.UI_Shell
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_STOP)
             {
+
                 Set_ind_backcolor(info, Color.Gold);
                 Motor_Active[info] = false;
 
@@ -2137,6 +2182,13 @@ namespace R.I.M.UI_Shell
                 {
                     if (Motor_Active[i] == true)
                         motor_on = true;
+                }
+
+                Motor_Num_Active--;
+
+                if(Motor_Num_Active == 0)
+                {
+                    Motors_Ready = true;
                 }
 
                 //If all motors are off, reenable the start button
