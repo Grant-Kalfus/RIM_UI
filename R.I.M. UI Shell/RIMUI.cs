@@ -423,9 +423,51 @@ namespace R.I.M.UI_Shell
             }
         };
 
+        //For OVR mode
         private void Ovr_data_Recieve(object sender, DataReceivedEventArgs output)
         {
             Rim_pos_lbl.Invoke(new MethodInvoker(delegate { Rim_pos_lbl.Text = output.Data; }));
+            if(!Motors_Ready)
+                return;
+
+            double[] DH_Degrees = new double[6];
+            double[] current_position = new double[6];
+            double[] desired_position = new double[6];
+
+            string[] lines = output.Data.Split(',');
+
+
+            //Get position and convert from OVR coords to DH coords
+            desired_position[0] = -1 * double.Parse(lines[2]);
+            desired_position[1] = -1 * double.Parse(lines[0]);
+            desired_position[2] = double.Parse(lines[1]);
+
+            Rim_pos_lbl.Invoke(new MethodInvoker(delegate { Rim_pos_lbl.Text = string.Format("{0}, {1}, {2}", desired_position[0], desired_position[1], desired_position[2]); }));
+
+            //Fill in orientation as zero
+            for (int i = 3; i < 6; i++)
+                desired_position[i] = 0;
+
+
+            if (!Get_All_Encoder_Values(true))
+            {
+                Console.WriteLine("Error - Encoder read failed");
+                return;
+            }
+
+
+            for (int i = 0; i < CONNECTED_ENCODERS; i++)
+            {
+                current_position[i] = (double)Encoder_Values[i];
+            }
+            if (!Do_DH_Conversion(ref DH_Degrees, current_position, desired_position, true))
+            {
+                Console.WriteLine("Error - DH out of bounds!");
+                return;
+            }
+            Console.WriteLine("DH pass");
+            
+            Traverse_Convert_And_Send(DH_Degrees);
         }
 
         private void Main_wnd_Load(object sender, EventArgs e)
@@ -2515,7 +2557,7 @@ namespace R.I.M.UI_Shell
             Change_Encoder_Val_lbl(4, "0");
         }
 
-        private bool Do_DH_Conversion(ref double[] DH_Convert, double[] Cur_position)
+        private bool Do_DH_Conversion(ref double[] DH_Convert, double[] Cur_position, bool suppress_error = false)
         {
             if (DH_Convert.Length != 6 || Cur_position.Length != 6)
             {
@@ -2608,12 +2650,14 @@ namespace R.I.M.UI_Shell
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error encountered:  " + e.Message + "\n");
+                if (!suppress_error)
+                    MessageBox.Show("Error encountered:  " + e.Message + "\n");
+
                 return false;
             }
         }
 
-        private bool Do_DH_Conversion(ref double[] DH_Convert, double[] Cur_position, double[] GoTo_Position)
+        private bool Do_DH_Conversion(ref double[] DH_Convert, double[] Cur_position, double[] GoTo_Position, bool suppress_error = false)
         {
             if (DH_Convert.Length != 6 || Cur_position.Length != 6)
             {
@@ -2666,7 +2710,9 @@ namespace R.I.M.UI_Shell
             }
             catch (Exception e)
             {
-                MessageBox.Show("Error encountered:  " + e.Message + "\n");
+                if (!suppress_error)
+                    MessageBox.Show("Error encountered:  " + e.Message + "\n");
+
                 return false;
             }
         }
