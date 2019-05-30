@@ -390,6 +390,9 @@ namespace R.I.M.UI_Shell
         volatile public bool Motors_Ready = true;
         volatile public int Motor_Num_Active = 0;
 
+        volatile public int[] Servo_Pos = new int[2];
+
+        volatile public bool[] Servo_Ready = new bool[2];
 
         //Boolean that enables the data received event handler for the UART_COM object
         bool data_event_enabled = true;
@@ -423,39 +426,45 @@ namespace R.I.M.UI_Shell
             }
         };
 
+        //***********************************************************************
+        //Functions
+        //***********************************************************************
+
         //For OVR mode
         private void Ovr_data_Recieve(object sender, DataReceivedEventArgs output)
         {
             Rim_pos_lbl.Invoke(new MethodInvoker(delegate { Rim_pos_lbl.Text = output.Data; }));
-            if(!Motors_Ready)
+
+            string[] lines = output.Data.Split(',');
+            OVR_Move_Servo(lines[6]);
+
+            //Only execute commands once the motors have stopped moving
+            if (!Motors_Ready)
                 return;
 
+            
             double[] DH_Degrees = new double[6];
             double[] current_position = new double[6];
             double[] desired_position = new double[6];
-
-            string[] lines = output.Data.Split(',');
-
 
             //Get position and convert from OVR coords to DH coords
             desired_position[0] = -1 * double.Parse(lines[2]);
             desired_position[1] = -1 * double.Parse(lines[0]);
             desired_position[2] = double.Parse(lines[1]);
 
+            //Place current position of the OVR controller into the xyz text box
             Rim_pos_lbl.Invoke(new MethodInvoker(delegate { Rim_pos_lbl.Text = string.Format("{0}, {1}, {2}", desired_position[0], desired_position[1], desired_position[2]); }));
 
             //Fill in orientation as zero
             for (int i = 3; i < 6; i++)
                 desired_position[i] = 0;
 
-
+            //Get all encoder values
             if (!Get_All_Encoder_Values(true))
             {
                 Console.WriteLine("Error - Encoder read failed");
                 return;
             }
-
-
             for (int i = 0; i < CONNECTED_ENCODERS; i++)
             {
                 current_position[i] = (double)Encoder_Values[i];
@@ -468,6 +477,7 @@ namespace R.I.M.UI_Shell
             Console.WriteLine("DH pass");
             
             Traverse_Convert_And_Send(DH_Degrees);
+
         }
 
         private void Main_wnd_Load(object sender, EventArgs e)
@@ -484,6 +494,12 @@ namespace R.I.M.UI_Shell
             {
                 Encoder_Values[i] = 0;
             }
+            for (int i = 0; i < 2; i++)
+            {
+                Servo_Pos[i] = 0;
+                Servo_Ready[i] = true;
+            }
+
 
             //Change UART encoding to ASCII-Extended for charicter code transfers > 127
             UART_COM.Encoding = System.Text.Encoding.GetEncoding(28591);
@@ -491,6 +507,9 @@ namespace R.I.M.UI_Shell
             matlab.Visible = 0;
             FileCheck_btn.Enabled = false;
             FileReload_btn.Enabled = false;
+
+
+
 
             //OVR setup
             ovr_data.StartInfo.FileName = @"F:\user_data\Desktop\Senior Design\Oculus\Debug\FullPath.exe";
@@ -500,6 +519,44 @@ namespace R.I.M.UI_Shell
             ovr_data.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             ovr_data.OutputDataReceived += new DataReceivedEventHandler(Ovr_data_Recieve);
 
+        }
+
+        void OVR_Move_Servo(string input)
+        {
+            if (input == "x")
+            {
+                byte[] packet = new byte[3];
+
+                Servo_Pos[0]++;
+                if (Servo_Pos[0] > 90)
+                    Servo_Pos[0] = 90;
+
+                Format_packet(PSoC_OpCodes.RIM_OP_SERVO, 0, 5, (ushort)Servo_Pos[0], ref packet, 3);
+
+                if (Servo_Ready[0])
+                {
+                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    Servo_Ready[0] = false;
+                }
+            }
+            else if (input == "y")
+            {
+
+                byte[] packet = new byte[3];
+
+                Servo_Pos[0]--;
+                if (Servo_Pos[0] < 0)
+                    Servo_Pos[0] = 0;
+
+                Format_packet(PSoC_OpCodes.RIM_OP_SERVO, 0, 5, (ushort)Servo_Pos[0], ref packet, 3);
+
+                if (Servo_Ready[0])
+                {
+                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    Servo_Ready[0] = false;
+                }
+
+            }
         }
 
         //Function that sets an indicator that corrisponds to ID to a color C
@@ -1340,6 +1397,7 @@ namespace R.I.M.UI_Shell
             return r;
         }
 
+        //Command injection for performing traverse line commands
         private bool Inject_traverse_command(ref RIM_PExec commands)
         {
             int command_before = commands.Timer_Starts.Count;
@@ -1616,6 +1674,12 @@ namespace R.I.M.UI_Shell
                 case 4:
                     Encoder5Val_lbl.Text = val;
                     break;
+                case 5:
+                    Encoder6Val_lbl.Text = val;
+                    break;
+                case 6:
+                    Encoder7Val_lbl.Text = val;
+                    break;
                 default:
                     break;
             }
@@ -1777,12 +1841,16 @@ namespace R.I.M.UI_Shell
         {
 
             if (MessageBox.Show("Are you sure you want to quit?", "Quit", MessageBoxButtons.YesNo) == DialogResult.Yes)
-                Application.Exit();
-            if(ovr_data.HasExited == false)
             {
-                ovr_data.CancelOutputRead();
-                ovr_data.Kill();
+                if (ovr_data.HasExited == false)
+                {
+                    ovr_data.CancelOutputRead();
+                    ovr_data.Kill();
+                }
+                Application.Exit();
             }
+
+
         }
 
         private void OVRModeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2162,6 +2230,7 @@ namespace R.I.M.UI_Shell
             ushort response = 0;
 
             msg = UART_COM.ReadChar();
+
             opcode = (byte)(msg & 0xF0);
             info   = (byte)(msg & 0x0F);
 
@@ -2185,9 +2254,9 @@ namespace R.I.M.UI_Shell
             {
                 if (info == 0x05)
                 {
-                    rx[0] = (byte)UART_COM.ReadChar();
+                    //rx[0] = (byte)UART_COM.ReadChar();
                     
-                    response = rx[0];
+                    //response = rx[0];
                     
                     Set_ind_backcolor(info, Color.Gold);
                     
@@ -2198,17 +2267,22 @@ namespace R.I.M.UI_Shell
                     if (Stop_btn.InvokeRequired)
                         Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
 
+                    Servo_Ready[0] = true;
+
                 }
                 else
                 {
                     Set_ind_backcolor(info, Color.Gold);
                     
                     Console.Write("Servo 2 confirmation: " + response + "\n");
+                   
 
                     if (Start_btn.InvokeRequired)
                         Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
                     if (Stop_btn.InvokeRequired)
                         Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
+
+                    Servo_Ready[1] = true;
                 }
             }
             else if (opcode == PSoC_OpCodes.RIM_OP_MOTOR_STOP)
@@ -2233,8 +2307,8 @@ namespace R.I.M.UI_Shell
                     Motors_Ready = true;
                 }
 
-                //If all motors are off, reenable the start button
-                if (!motor_on)
+                //If all motors are off and they are not in OVR mode reenable the start button
+                if (Motors_Ready && Check_enable() != 'o')
                 {
                     if (Start_btn.InvokeRequired)
                         Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
@@ -2359,6 +2433,19 @@ namespace R.I.M.UI_Shell
         //Closes the port on form close
         private void Main_wnd_FormClosed(object sender, FormClosedEventArgs e)
         {
+            try
+            {
+                if (ovr_data.HasExited == false)
+                {
+                    ovr_data.CancelOutputRead();
+                    ovr_data.Kill();
+                }
+            }
+            catch
+            {
+                //Process was not started, so just exit as normal
+            }
+
             UART_COM.Close();
             matlab.Quit();
         }
@@ -2852,6 +2939,8 @@ namespace R.I.M.UI_Shell
             ushort response = 0;
 
             msg = UART_COM.ReadChar();
+
+           
             opcode = (byte)(msg & 0xF0);
             info = (byte)(msg & 0x0F);
 
@@ -2949,6 +3038,7 @@ namespace R.I.M.UI_Shell
 
             }
 
+            UART_COM.DiscardInBuffer();
 
             data_event_enabled = true;
 

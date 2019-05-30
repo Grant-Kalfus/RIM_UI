@@ -65,8 +65,8 @@
             this.Start_btn = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.feedback_grd = new System.Windows.Forms.TableLayoutPanel();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
+            this.Encoder7Val_lbl = new System.Windows.Forms.Label();
+            this.Encoder6Val_lbl = new System.Windows.Forms.Label();
             this.Encoder5Val_lbl = new System.Windows.Forms.Label();
             this.Encoder4Val_lbl = new System.Windows.Forms.Label();
             this.Encoder3Val_lbl = new System.Windows.Forms.Label();
@@ -119,6 +119,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.ProgrammedExecutionMode_grp = new System.Windows.Forms.GroupBox();
+            this.loop_toggle = new System.Windows.Forms.CheckBox();
             this.ProgExecFLoad_lbl = new System.Windows.Forms.Label();
             this.FileReload_btn = new System.Windows.Forms.Button();
             this.FileCheck_btn = new System.Windows.Forms.Button();
@@ -142,7 +143,6 @@
             this.UART_COM = new System.IO.Ports.SerialPort(this.components);
             this.Encoder_FetchTimer = new System.Windows.Forms.Timer(this.components);
             this.AUEncoder_toggle = new System.Windows.Forms.CheckBox();
-            this.loop_toggle = new System.Windows.Forms.CheckBox();
             this.toolStrip1.SuspendLayout();
             this.Common_grp.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -474,8 +474,8 @@
             this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
             this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
             this.feedback_grd.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.5F));
-            this.feedback_grd.Controls.Add(this.label18, 7, 1);
-            this.feedback_grd.Controls.Add(this.label17, 6, 1);
+            this.feedback_grd.Controls.Add(this.Encoder7Val_lbl, 7, 1);
+            this.feedback_grd.Controls.Add(this.Encoder6Val_lbl, 6, 1);
             this.feedback_grd.Controls.Add(this.Encoder5Val_lbl, 5, 1);
             this.feedback_grd.Controls.Add(this.Encoder4Val_lbl, 4, 1);
             this.feedback_grd.Controls.Add(this.Encoder3Val_lbl, 3, 1);
@@ -516,31 +516,31 @@
             this.feedback_grd.Size = new System.Drawing.Size(434, 172);
             this.feedback_grd.TabIndex = 4;
             // 
-            // label18
+            // Encoder7Val_lbl
             // 
-            this.label18.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label18.AutoSize = true;
-            this.label18.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label18.ForeColor = System.Drawing.Color.Black;
-            this.label18.Location = new System.Drawing.Point(397, 30);
-            this.label18.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(17, 13);
-            this.label18.TabIndex = 30;
-            this.label18.Text = "0º";
+            this.Encoder7Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder7Val_lbl.AutoSize = true;
+            this.Encoder7Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder7Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder7Val_lbl.Location = new System.Drawing.Point(397, 30);
+            this.Encoder7Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder7Val_lbl.Name = "Encoder7Val_lbl";
+            this.Encoder7Val_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Encoder7Val_lbl.TabIndex = 30;
+            this.Encoder7Val_lbl.Text = "0º";
             // 
-            // label17
+            // Encoder6Val_lbl
             // 
-            this.label17.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.label17.AutoSize = true;
-            this.label17.BackColor = System.Drawing.SystemColors.ButtonFace;
-            this.label17.ForeColor = System.Drawing.Color.Black;
-            this.label17.Location = new System.Drawing.Point(343, 30);
-            this.label17.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(17, 13);
-            this.label17.TabIndex = 29;
-            this.label17.Text = "0º";
+            this.Encoder6Val_lbl.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Encoder6Val_lbl.AutoSize = true;
+            this.Encoder6Val_lbl.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.Encoder6Val_lbl.ForeColor = System.Drawing.Color.Black;
+            this.Encoder6Val_lbl.Location = new System.Drawing.Point(343, 30);
+            this.Encoder6Val_lbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.Encoder6Val_lbl.Name = "Encoder6Val_lbl";
+            this.Encoder6Val_lbl.Size = new System.Drawing.Size(17, 13);
+            this.Encoder6Val_lbl.TabIndex = 29;
+            this.Encoder6Val_lbl.Text = "0º";
             // 
             // Encoder5Val_lbl
             // 
@@ -1196,6 +1196,16 @@
             this.ProgrammedExecutionMode_grp.TabStop = false;
             this.ProgrammedExecutionMode_grp.Text = "Programmed Execution Mode";
             // 
+            // loop_toggle
+            // 
+            this.loop_toggle.AutoSize = true;
+            this.loop_toggle.Location = new System.Drawing.Point(30, 149);
+            this.loop_toggle.Name = "loop_toggle";
+            this.loop_toggle.Size = new System.Drawing.Size(100, 17);
+            this.loop_toggle.TabIndex = 19;
+            this.loop_toggle.Text = "Loop Execution";
+            this.loop_toggle.UseVisualStyleBackColor = true;
+            // 
             // ProgExecFLoad_lbl
             // 
             this.ProgExecFLoad_lbl.AutoSize = true;
@@ -1267,7 +1277,7 @@
             // 
             this.Servo2_entry.Location = new System.Drawing.Point(66, 154);
             this.Servo2_entry.Margin = new System.Windows.Forms.Padding(2);
-            this.Servo2_entry.Mask = "#00000000000";
+            this.Servo2_entry.Mask = "000\\°";
             this.Servo2_entry.Name = "Servo2_entry";
             this.Servo2_entry.PromptChar = ' ';
             this.Servo2_entry.Size = new System.Drawing.Size(76, 20);
@@ -1439,16 +1449,6 @@
             this.AUEncoder_toggle.UseVisualStyleBackColor = true;
             this.AUEncoder_toggle.Click += new System.EventHandler(this.AUEncoder_toggle_Click);
             // 
-            // loop_toggle
-            // 
-            this.loop_toggle.AutoSize = true;
-            this.loop_toggle.Location = new System.Drawing.Point(30, 149);
-            this.loop_toggle.Name = "loop_toggle";
-            this.loop_toggle.Size = new System.Drawing.Size(100, 17);
-            this.loop_toggle.TabIndex = 19;
-            this.loop_toggle.Text = "Loop Execution";
-            this.loop_toggle.UseVisualStyleBackColor = true;
-            // 
             // Main_wnd
             // 
             this.AcceptButton = this.Start_btn;
@@ -1585,8 +1585,8 @@
         private System.Windows.Forms.ToolStripMenuItem mATLABScriptRunToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearConsoleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem DeviceStatusCheckToolStripMenuItem;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label Encoder7Val_lbl;
+        private System.Windows.Forms.Label Encoder6Val_lbl;
         private System.Windows.Forms.Label Encoder5Val_lbl;
         private System.Windows.Forms.Label Encoder4Val_lbl;
         private System.Windows.Forms.Label Encoder3Val_lbl;
