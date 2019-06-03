@@ -458,7 +458,7 @@ namespace R.I.M.UI_Shell
 
             //Place current position of the OVR controller into the xyz text box
             Rim_pos_lbl.Invoke(new MethodInvoker(delegate { Rim_pos_lbl.Text = string.Format("{0}, {1}, {2}", desired_position[0], desired_position[1], desired_position[2]); }));
-
+             /*
             if (m4_movement != 0)
             {
                 Direction motor_dir = m4_movement > 0 ? Direction.CLOCKWISE : Direction.COUNTERCLOCKWISE;
@@ -466,6 +466,7 @@ namespace R.I.M.UI_Shell
                 Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, motor_dir, 4, Degrees_to_steps(4, Math.Abs(m4_movement)), ref packet, 3);
                 UART_COM.Write(Byte_array_to_literal_string(packet, 3));
             }
+            */
 
 
             //Fill in orientation as zero
@@ -481,12 +482,18 @@ namespace R.I.M.UI_Shell
             for (int i = 0; i < CONNECTED_ENCODERS; i++)
             {
                 current_position[i] = (double)Encoder_Values[i];
+                if(current_position[i] > 4096)
+                {
+                    Console.WriteLine("Error - Encoder Read Failure");
+                    return;
+                }
             }
             if (!Do_DH_Conversion(ref DH_Degrees, current_position, desired_position, true))
             {
                 Console.WriteLine("Error - DH out of bounds!");
                 return;
             }
+            
             Console.WriteLine("DH pass");
 
 
