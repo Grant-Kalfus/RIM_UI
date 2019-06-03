@@ -437,6 +437,7 @@ namespace R.I.M.UI_Shell
 
             string[] lines = output.Data.Split(',');
             OVR_Move_Servo(lines[6]);
+            OVR_Move_Servo(lines[5]);
 
             //Only execute commands once the motors have stopped moving
             if (!Motors_Ready)
@@ -446,14 +447,26 @@ namespace R.I.M.UI_Shell
             double[] DH_Degrees = new double[6];
             double[] current_position = new double[6];
             double[] desired_position = new double[6];
+            byte[] packet = new byte[3];
 
             //Get position and convert from OVR coords to DH coords
             desired_position[0] = -1 * double.Parse(lines[2]);
             desired_position[1] = -1 * double.Parse(lines[0]);
             desired_position[2] = double.Parse(lines[1]);
+            int m4_movement = int.Parse(lines[4]);
+
 
             //Place current position of the OVR controller into the xyz text box
             Rim_pos_lbl.Invoke(new MethodInvoker(delegate { Rim_pos_lbl.Text = string.Format("{0}, {1}, {2}", desired_position[0], desired_position[1], desired_position[2]); }));
+
+            if (m4_movement != 0)
+            {
+                Direction motor_dir = m4_movement > 0 ? Direction.CLOCKWISE : Direction.COUNTERCLOCKWISE;
+
+                Format_packet(PSoC_OpCodes.RIM_OP_MOTOR_RUN, motor_dir, 4, Degrees_to_steps(4, Math.Abs(m4_movement)), ref packet, 3);
+                UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+            }
+
 
             //Fill in orientation as zero
             for (int i = 3; i < 6; i++)
@@ -475,9 +488,11 @@ namespace R.I.M.UI_Shell
                 return;
             }
             Console.WriteLine("DH pass");
-            
-            Traverse_Convert_And_Send(DH_Degrees);
 
+
+
+
+            Traverse_Convert_And_Send(DH_Degrees);
         }
 
         private void Main_wnd_Load(object sender, EventArgs e)
@@ -507,8 +522,6 @@ namespace R.I.M.UI_Shell
             matlab.Visible = 0;
             FileCheck_btn.Enabled = false;
             FileReload_btn.Enabled = false;
-
-
 
 
             //OVR setup
@@ -554,6 +567,40 @@ namespace R.I.M.UI_Shell
                 {
                     UART_COM.Write(Byte_array_to_literal_string(packet, 3));
                     Servo_Ready[0] = false;
+                }
+
+            }
+            if (input == "u")
+            {
+                byte[] packet = new byte[3];
+
+                Servo_Pos[1]++;
+                if (Servo_Pos[1] > 180)
+                    Servo_Pos[1] = 180;
+
+                Format_packet(PSoC_OpCodes.RIM_OP_SERVO, 0, 6, (ushort)Servo_Pos[1], ref packet, 3);
+
+                if (Servo_Ready[1])
+                {
+                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    Servo_Ready[1] = false;
+                }
+            }
+            else if (input == "d")
+            {
+
+                byte[] packet = new byte[3];
+
+                Servo_Pos[1]--;
+                if (Servo_Pos[1] < 0)
+                    Servo_Pos[1] = 0;
+
+                Format_packet(PSoC_OpCodes.RIM_OP_SERVO, 0, 6, (ushort)Servo_Pos[1], ref packet, 3);
+
+                if (Servo_Ready[1])
+                {
+                    UART_COM.Write(Byte_array_to_literal_string(packet, 3));
+                    Servo_Ready[1] = false;
                 }
 
             }
@@ -870,23 +917,41 @@ namespace R.I.M.UI_Shell
             if (Int32.TryParse(Servo1_entry.Text.Replace('°', ' '), out x))
             {
                 commands.motor_dirs[5] = 0;
-                if (x < 0)
+                if (x + Servo_Pos[0] < 0)
+                {
                     commands.motors[5] = 0;
-                else if (x > 90)
+                    Servo_Pos[0] = 0;
+                }
+                else if (x + Servo_Pos[0] > 90)
+                {
                     commands.motors[5] = 90;
+                    Servo_Pos[0] = 90;
+                }
                 else
-                    commands.motors[5] = (ushort)x;
+                {
+                    commands.motors[5] = (ushort)(x + Servo_Pos[0]);
+                    Servo_Pos[0] += x;
+                }
             }
 
             if (Int32.TryParse(Servo2_entry.Text.Replace('°', ' '), out x))
             {
                 commands.motor_dirs[6] = 0;
-                if (x < 0)
+                if (x + Servo_Pos[1] < 0)
+                {
                     commands.motors[6] = 0;
-                else if (x > 180)
+                    Servo_Pos[1] = 0;
+                }
+                else if (x + Servo_Pos[1] > 180)
+                {
                     commands.motors[6] = 180;
+                    Servo_Pos[1] = 180;
+                }
                 else
-                    commands.motors[6] = (ushort)x;
+                {
+                    commands.motors[6] = (ushort)(x + Servo_Pos[1]);
+                    Servo_Pos[1] += x;
+                }
             }
 
             if (degree_mode)
@@ -2264,8 +2329,6 @@ namespace R.I.M.UI_Shell
 
                     if (Start_btn.InvokeRequired)
                         Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
-                    if (Stop_btn.InvokeRequired)
-                        Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
 
                     Servo_Ready[0] = true;
 
@@ -2275,12 +2338,10 @@ namespace R.I.M.UI_Shell
                     Set_ind_backcolor(info, Color.Gold);
                     
                     Console.Write("Servo 2 confirmation: " + response + "\n");
-                   
 
                     if (Start_btn.InvokeRequired)
                         Start_btn.Invoke(new MethodInvoker(delegate { Start_btn.Enabled = true; }));
-                    if (Stop_btn.InvokeRequired)
-                        Stop_btn.Invoke(new MethodInvoker(delegate { Stop_btn.Enabled = false; }));
+   
 
                     Servo_Ready[1] = true;
                 }
@@ -2535,8 +2596,8 @@ namespace R.I.M.UI_Shell
                 Stepper3_entry.Mask = "#00000000000";
                 Stepper4_entry.Mask = "#00000000000";
                 Stepper5_entry.Mask = "#00000000000";
-                Servo1_entry.Mask = @"000\°";
-                Servo2_entry.Mask = @"000\°";
+                Servo1_entry.Mask = @"#000\°";
+                Servo2_entry.Mask = @"#000\°";
                 degree_mode = false;
                 StepMode_lbl.Text = "Step Mode";
             }

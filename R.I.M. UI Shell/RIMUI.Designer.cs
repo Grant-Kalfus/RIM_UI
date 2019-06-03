@@ -1277,7 +1277,7 @@
             // 
             this.Servo2_entry.Location = new System.Drawing.Point(66, 154);
             this.Servo2_entry.Margin = new System.Windows.Forms.Padding(2);
-            this.Servo2_entry.Mask = "000\\°";
+            this.Servo2_entry.Mask = "#000\\°";
             this.Servo2_entry.Name = "Servo2_entry";
             this.Servo2_entry.PromptChar = ' ';
             this.Servo2_entry.Size = new System.Drawing.Size(76, 20);
@@ -1287,7 +1287,7 @@
             // 
             this.Servo1_entry.Location = new System.Drawing.Point(66, 131);
             this.Servo1_entry.Margin = new System.Windows.Forms.Padding(2);
-            this.Servo1_entry.Mask = "000\\°";
+            this.Servo1_entry.Mask = "#000\\°";
             this.Servo1_entry.Name = "Servo1_entry";
             this.Servo1_entry.PromptChar = ' ';
             this.Servo1_entry.Size = new System.Drawing.Size(76, 20);
